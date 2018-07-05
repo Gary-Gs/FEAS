@@ -52,8 +52,8 @@
 								<li><a href="/fyp/fulltime/gen/faculty.php">Faculty List</a></li>
 							</ul>
 							</dd>
-					<dt class="<?php if($open==2) echo "opened"; ?>">Pre-Allocation</dt>
-						<dd style="<?php if($open==2) echo "display: block;";?>">
+					<dt class="<?php if($open==1) echo "opened"; ?>">Pre-Allocation</dt>
+						<dd style="<?php if($open==1) echo "display: block;";?>">
 							<ul class="subnav">
 								 <li><a href="/fyp/fulltime/alloc/staffpref_setting.php">Staff Pref Settings</a></li>
 								 <li><a href="/fyp/fulltime/alloc/examiner_setting.php">Faculty Settings</a></li>
@@ -61,8 +61,8 @@
 							</ul>
 						</dd>
 				
-					<dt class="<?php if($open==2) echo "opened"; ?>">Allocation</dt>
-						<dd style="<?php if($open==2) echo "display: block;";?>">
+					<dt class="<?php if($open==1) echo "opened"; ?>">Allocation</dt>
+						<dd style="<?php if($open==1) echo "display: block;";?>">
 							<ul class="subnav">	
 									<li><a href="/fyp/fulltime/alloc/allocation_setting.php">Allocation Settings</a></li>
 									<li><a href="/fyp/fulltime/alloc/allocation.php">Allocation System</a></li>
