@@ -1,0 +1,40 @@
+Anwitaman Datta|Demonstration (web-based) of cryptographic hashing|AU YUN SHENG|SCE17-0021|1||
+Anwitaman Datta|Demonstration (web-based) of cryptographic hashing|LIM ZI YANG|SCE17-0023|2||
+Anwitaman Datta|Demonstration (web-based) of elliptic curve cryptography calculations|YAO KAN|SCE17-0024|3||
+Anwitaman Datta|Demonstration (web-based) of statistical analysis of a basic mono alphabetic substitution cipher|TAN HAN JENN ZACHARIAS|SCE17-0031|4||
+Wen Yonggang|Blockchain Application: Implementation and Application|ZHOU ZHIYAO|SCE17-0427|5||
+Sinha Sharad|Machine Learning Based Cybersecurity Analytics|TANG YAN SHUO|SCE17-0459|6||
+Lam Kwok Yan|Windows Management Instrumentation (WMI) Security|CHEW ZHI JIE|SCE17-0181|7||
+Lam Kwok Yan|A Big Data Text Mining for Document Summarization|CUI BOLUN|SCE17-0183|8||
+Lam Kwok Yan|STIX Representation of Cyber Threat Intelligence|PHUA KIN WEE|SCE17-0185|9||
+Lam Kwok Yan|Behaviour-Based Malware Detector|JORDAN KWONG ZHENG XI|SCE17-0187|10||
+Lam Kwok Yan|Lightweight Deception Systems using Honeypot Techniques|TIMOTHY LEE KOK KIANG|SCE17-0188|11||
+Lam Kwok Yan|Multimodal biometric authentication framework|NEO JUN HAO|SCE17-0189|12||
+Lam Kwok Yan|Malware Attribution|FOO CE ZHI|SCE17-0190|13||
+Liu Yang|Deep learning for Cybersecurity Analysis|KOH HONG DA|SCE17-0257|14||
+Liu Yang|Solving real world security problems: hacking and protection (1)|GEDE BAGUS BAYU PENTIUM|SCE17-0256|15||
+Liu Yang|Solving real world security problems: hacking and protection (2)|JOSHUA TAN JUN MING|SCE17-0254|16||
+Liu Yang|Solving real world security problems: hacking and protection (3)|THOMAS THAM TING HOI|SCE17-0456|17||
+Liu Yang|Solving real world security problems: hacking and protection (4)|NG SHI KAI|SCE17-0457|18||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|GONG JING|SCE17-0255|19||
+Liu Yang|Mining Linkedin for the Job Trend|CHOW WEI JUN BERNARD|SCE17-0252|20
+||Cyber Security|1
+||Cyber Security, Computer Architecture, Hardware Acceleration|2
+||Cyber Security, Data Analytics, Knowledge Representation/ Ontology|3
+||Cyber Security, Data Analytics, Machine Learning|4
+||Cyber Security, Data Analytics, Software and Applications|5
+||Cyber Security, Data Analytics, Web-based Applications, Mobile Applications|6
+||Cyber Security, Data Security|7
+||Cyber Security, Knowledge Representation/ Ontology|8
+||Cyber Security, Logic and Formal Methods|9
+||Cyber Security, Machine Learning, Software and Applications|10
+||Cyber Security, Mobile Applications, Logic and Formal Methods|11
+||Cyber Security, Mobile Applications, Machine Learning, Logic and Formal Methods|12
+||Cyber Security, Smartphone Systems and Applications, System Security|13
+||Cyber Security, System Security|14
+||Cyber Security, System Security, Data Mining, Program Analysis and Optimization|15
+||Cyber Security, System Security, Operating Systems|16
+||Machine Learning|17
+||Machine Learning, Data Structure and Algorithms|18
+||Machine Learning, Data Mining|19
+||Machine Learning, Theory %26 Algorithms|20

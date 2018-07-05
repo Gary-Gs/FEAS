@@ -1,0 +1,23 @@
+Arijit Khan|An In-depth Usability Analysis of Distributed Graph Processing Frameworks|LIU SIYUAN|SCE17-0036|1||
+Chia Liang Tien, Clement|Understanding Image Aesthetics from EXIF Data|YAN RAN|SCE17-0073|2||
+Kong Wai-Kin Adams|Information extraction from bibliography data|TOH ZHU ER JOEL|SCE17-0156|3||
+Kong Wai-Kin Adams|Mining social media data|TAN POH LIAN|SCE17-0154|4||
+Kong Wai-Kin Adams|Web-based interactive graph visualization|NG CHIN TECK|SCE17-0155|5||
+Ong Yew Soon|Choose-your-own-project 4|CHIA SHAO HUI, GIDEON|SCE17-0354|6||
+Sun Aixin|Intelligent Question and Answering System|LAU YI HONG|SCE17-0359|7||
+Sun Aixin|Development of a forum search system|SUN ZHIHAO|SCE17-0361|8||
+Zheng Jie|Genomic data mining for ageing and longevity research|RACHEL SEAH PEI JUN|SCE16-0757|9||
+Zheng Jie|Visualisation and integration of large genetic/epigenetic data sets related to evolution and control of immune-related pathways|SISI SALIA|SCE17-0453|10
+||Database Systems, Data Analytics, Mobile Applications|1
+||Database Systems, Data Analytics, Web-based Applications, Software and Applications|2
+||Database Systems, Data Analytics, Web-based Applications, Software and Applications, Mobile Applications|3
+||Database Systems, Mobile Applications, Human Computer Interaction|4
+||Data Mining, Data Analytics, Data Structure and Algorithms|5
+||Data Mining, Data Analytics, Bioinformatics, Medical Informatics, Database Systems|6
+||Data Mining, Data Analytics, Graph Theory|7
+||Data Analytics, Sensor Networks|8
+||Data Analytics, Social Networks, Web-based Applications|9
+||Data Analytics, Visual Computing, Bioinformatics, Data Mining, Web-based Applications|10
+||Data Analytics|11
+||Bioinformatics, Biomedical Systems, Data Mining, Machine Learning|12
+||Bioinformatics, Data Analytics, Data Mining, Web-based Applications, Database Systems|13

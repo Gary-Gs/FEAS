@@ -1,0 +1,22 @@
+Suresh Sundaram |Computational Cognition for Big Data Analytics|NEO JIA JUN|SCE17-0365|1||
+Chng Eng Siong|Project Chat-Bot : Information retrieval with concept ontology|KURNIAWAN ARYANTO FAMILI|SCE17-0077|2||
+Kwoh Chee Keong|Detection of virulence factors of influenza viruses|PAULINE EMERALD RANJAN|SCE17-0177|3||
+Sun Aixin|Design and development of an Android app for medical consultation|JOHAN TAN NGIAP HAN|SCE17-0362|4||
+Sun Aixin|Design and development of an iOS app for medical consultation|ADAM TAN TENG GUAN|SCE17-0363|5||
+Sun Aixin|Intelligent Question and Answering System|LAU YI HONG|SCE17-0359|6||
+Tan Ah Hwee|Cognitive Data Analytics|WU EVAN|SCE17-0383|7||
+Kwoh Chee Keong|Applying machine learning techniques to identify potential critical virulent sites based on genome set of influenza A virus|CHAN WEI AN DARREN|SCE17-0179|8||
+Lin Feng|Cellular image classification|WANG XIAOTING|SCE17-0237|9||
+Kwoh Chee Keong|Optimization of Influenza Genome Database and Development of Influenza Genomic Analysis Web Services|ONG TSE YIN|SCE17-0178|10
+||Artificial Intelligence, Biomedical Systems, Data Mining|1
+||Artificial Intelligence, Data Analytics|2
+||Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|3
+||Artificial Intelligence, Human Computer Interaction|4
+||Artificial Intelligence, Human Computer Interaction, Machine Learning|5
+||Bioinformatics, Biomedical Systems, Data Mining, Machine Learning|6
+||Bioinformatics, Data Analytics, Data Mining, Web-based Applications, Database Systems|7
+||Bioinformatics, Data Mining, Machine Learning, Sensor Networks, Human Computer Interaction|8
+||Bioinformatics, Human Computer Interaction, Machine Learning, Data Mining, Real-Time / Embedded Systems|9||Biomedical Systems, Human Computer Interaction, Machine Learning|10||Data Analytics, Artificial Intelligence|11
+||Data Analytics, Visual Computing, Bioinformatics, Data Mining, Web-based Applications|12
+||Data Mining, Data Analytics, Bioinformatics, Medical Informatics, Database Systems|13
+||Machine Learning, Data Mining|14

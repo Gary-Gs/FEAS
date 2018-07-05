@@ -1,0 +1,13 @@
+Oh Hong Lye|Electronic Eye for Visually Impaired|YEO KAI YEAT|SCE17-0289|1||
+Oh Hong Lye|Elderly monitoring system|ONG JEFFREY|SCE17-0286|2||
+Oh Hong Lye|Elderly Monitoring Tag|ONG KIAN YU|SCE17-0287|3||
+Oh Hong Lye|Elderly Physical Well Being System|LIN LIGANG LINCOLN|SCE17-0290|4||
+Oh Hong Lye|Designing a Computational Thinking Workshop - Content, Monitoring and Assessment Framework|SIM LONG SIANG|SCE17-0282|5||
+Oh Hong Lye|Class Room in a box|CHOY ZHAN HUA|SCE17-0284|6||
+Oh Hong Lye|Classroom Management and Curriculum development with NFC|QUAY JUN HAO JEREL|SCE17-0285|7||
+Oh Hong Lye|RPI-based Alexa system|KHOO JU SENG BRYANT|SCE17-0283|8
+||Computer Architecture|1
+||Computer Architecture, Digital Systems|2
+||Computer vision, Image processing and Pattern recognition|3
+||Digital Systems, Image Analysis %26 Processing, Verilog and VHDL-based Designs, Hardware Acceleration, Field Programmable Gate Arrays (FPGA)|4
+||Microprocessor-based Systems, Machine Learning|5

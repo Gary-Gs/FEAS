@@ -1,0 +1,4 @@
+Quek Hiok Chai|Development of EEG Signal Processing Algorithm and Control Mechanism for a Brain-Computer Interface based Game|CHEW YAO KANG|SCE17-0405|1||
+Quek Hiok Chai|Image familiarity detection from Brain Signal|LEE CHUN KIAT|SCE17-0406|2||
+Tan Ah Hwee|Brain Computer Interface via EEG Signals|KOH JI PENG|SCE17-0378|3||
+Smitha Kavallur Pisharath Gopi|Differentiating positive and negative stress using brain waves|LIM WEI JIE|SCE17-0148|4__

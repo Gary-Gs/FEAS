@@ -1,0 +1,9 @@
+Lin Shang-Wei|Stack Overflow Data Analysis (1)|ANG WEI LOON|SCE16-0455|1||
+Lin Shang-Wei|Auto-Documentation for Stack Overflow|TAN RI SHENG|SCE16-0452|2||
+Lin Shang-Wei|Malware Detection for Mobile Devices|CHIA JIA HONG|SCE16-0250|3||
+Lin Shang-Wei|Cyber Security System Verification|HONG QING FU|SCE16-0249|4||
+Lin Shang-Wei|Automatic Program Repair and Synthesis|LEE YUE YU|SCE16-0248|5||
+Lin Shang-Wei|Program Analysis and Verification|ONG XUAN JIE|SCE16-0247|6||
+Lin Shang-Wei|Embedded and Mobile System Verification|HU SIYU|SCE16-0246|7
+||Artificial Intelligence|1
+||Machine Learning|2

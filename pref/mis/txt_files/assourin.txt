@@ -1,0 +1,9 @@
+Lee Bu Sung, Francis|Visualisation and management tool for supercomputer resource|SHAO YIYANG|SCE17-0210|1||
+Lin Feng|Tetrahedral mesh construction for body dynamics|ONG BEE LEE|SCE17-0234|2||
+Miao Chun Yan|Game-like course objects|LANCE LI WENJIE|SCE17-0270|3||
+Seah Hock Soon|Direct Stylization of 3D Animations in Real-time|CHIEW YEE XIN|SCE17-0324|4||
+Seah Hock Soon|Serious Virtual Reality Game|JOSHUA MARTIN TJAHJADI|SCE17-0326|5||
+Zheng Jianmin|3D virtual museum design and navigation|MOHIT PUNDIR|SCE17-0447|6
+||Computer Graphics|1
+||Computer Graphics, Human Computer Interaction|2
+||Computer graphics/animation, Virtual reality|3

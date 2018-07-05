@@ -1,0 +1,10 @@
+Cai Jianfei|Deep learning based pose estimation|REN DAXUAN|SCE17-0047|1|
+Cham Tat Jen|3D Scanning on Mobile Phone|PECK JING HENG|SCE17-0058|2|
+Owen Noel Newton Fernando|Natural Feature tracking solution for outdoor Augmented Reality|YEO SHI JING|SCE17-0301|3|
+Lin Feng|Deep learning for retinal image understanding|CHUA HUI MIN|SCE17-0235|4|
+Lin Feng|Tetrahedral mesh construction for body dynamics|ONG BEE LEE|SCE17-0234|5|
+Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|6|
+Lee Bu Sung, Francis|Stitching of images|KOK CHUAN YONG|SCE17-0208|7|
+Miao Chun Yan|Avatar Augmented Virtual World|KELVIN CHANDRA|SCE17-0269|8|
+Owen Noel Newton Fernando|Mobile based museum navigation system|SEAH ZHONG DA|SCE17-0299|9|
+Dusit Niyato|NTU Smart Multimedia Tour|SOH JUN HAO|SCE17-0103|10

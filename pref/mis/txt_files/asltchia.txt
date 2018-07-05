@@ -1,0 +1,7 @@
+Cham Tat Jen|High Dynamic Range Panoramas using a Mobile Phone|TIOH HON ZHEN|SCE17-0056|1
+Cham Tat Jen|3D Scanning on Mobile Phone|PECK JING HENG|SCE17-0058|2
+Deepu Rajan|Water detection in video sequences|SAIFUL HILAL BIN ZAINAL ABIDIN|SCE17-0090|3
+Goh Wooi Boon|Computer-enhanced ornamental gardens and water features|LIM JAI CHYI|SCE17-0115|4
+Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|5
+Tan Ah Hwee|Wellness Monitoring through Wearable Devices|MOHAMMAD ASRAF BIN ABDUL HAMID|SCE17-0379|6
+||Computer vision, Image processing and Pattern recognition|1

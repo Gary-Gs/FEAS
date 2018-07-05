@@ -1,0 +1,14 @@
+Yeo Chai Kiat|ElderSense, Development of an IoT System for Independent Elderly Living|KONG ZHONG HAN|SCE16-0460|1||
+Lau Chiew Tong|Development of healthcare applications on mobile devices|TAY WEI KIAN|SCE16-0194|2||
+Lau Chiew Tong|IOT - Development of a Home Automation System 1|LEO KAY HOWE|SCE16-0198|3||
+Tan Ah Hwee|A Web Portal for the Social Support of the Elderly|KOK JIAN RONG KELVIN|SCE16-0403|4||
+Oh Hong Lye|Wireless Gateway (using Raspberry Pi Board) with internet connectivity for remote monitoring and management.|PEH BI YIN JODY|SCE16-0300|5||
+Seah Hock Soon|Design and Prototyping of a Web-Based Educational Game|JOYCE CHUA XIN TIAN|SCE16-0360|6||
+Smitha Kavallur Pisharath Gopi|Emotion recognition using Brain computer Interface|SEAH SZE LIAN|SCE16-0158|7||
+Ta Nguyen Binh Duong|Evaluating commercial cloud services%27 performance|FELIX PRONOLO|SCE16-0392|8||
+Lam Siew Kei|Implementing Security for Internet of Things (IoT)|LOW JIAN HUI|SCE16-0320|9||
+Cham Tat Jen|Paint-Your-Mind: Image Creation for Non-Artists|TANG JUN HAO|SCE16-0069|10
+||Web-based Applications|1
+||Computer Animation/ Games, Mobile Applications|2
+||Mobile Applications, Web-based Applications|3
+||Smartphone Systems and Applications|4

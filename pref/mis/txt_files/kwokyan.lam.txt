@@ -1,0 +1,23 @@
+Alwen Fernanto Tiu|Two-Factor Secure Password Manager|JAYAKUMAR SANJANA|SCE16-0014|1||
+Anwitaman Datta|A web demo of the RSA and ECC public key cryptography algorithms|STEFAN ARTAPUTRA INDRIAWAN|SCE16-0031|2||
+Cai Wentong|Investigation of a Teaching Operating System|YAO YAWEN|SCE16-0065|3||
+Chia Liang Tien, Clement|Deep Learning For Face Recognition.|SEETOH RUI MING, DANIEL|SCE16-0131|4||
+Chng Eng Siong|Speech and signal enhancement using microphone array|CHEN ZHE|SCE16-0087|5||
+Hui Siu Cheung|Automatic English Grammar Checker|ZILLION GOVIN|SCE16-0146|6||
+Hui Siu Cheung|Mobile Document Image Analysis and Recognition for Web Search|DEKA AULIYA AKBAR|SCE16-0152|7||
+Hui Siu Cheung|Question Answering Forum System for Mathematics|SITI AMIRAH BINTE SELAMAT|SCE16-0153|8||
+Ke Yiping, Kelly|Information extraction from bibliography data|LYNETTE NEO SHI YUN|SCE16-0161|9||
+Lam Siew Kei|Implementing Security for Internet of Things (IoT)|LOW JIAN HUI|SCE16-0320|10||
+Li Fang|Anomaly Detection through Enhanced Sentiment Analysis on Social Media Data|ZHAO JINGYING|SCE16-0220|11||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|SIOW JING KAI|SCE16-0265|12||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (1)|TOH ZHEN JIE|SCE16-0268|13||
+Vinod Achutavarrier Prasad|Development of Biometric recognition system using Electroencephalogram (EEG) signals|ERICSEN|SCE16-0425|14||
+Vun Chan Hua, Nicholas|Implementing Security for Internet of Things (IoT)|DANIEL CHIA KANG JIE|SCE16-0321|15||
+Wen Yonggang|Blockchain: Implementation and Application|LEE XIU QUAN|SCE16-0444|16
+Cloud Computing, Cyber Security, Web-based Applications, Mobile Applications|1
+||Cloud Computing, Distributed Computing Systems, Data Analytics|2
+||Cloud Computing, Mobile Applications, Distributed Computing Systems|3
+||Cyber Security, Data Security|4
+||Cyber Security, Data Security, Operating Systems|5
+||Cyber Security, Operating Systems|6
+||Cyber Security, System Security, Data Mining, Program Analysis and Optimization|7

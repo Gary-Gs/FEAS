@@ -1,0 +1,8 @@
+Lau Chiew Tong|IOT - Development of a Home Automation System 3|LI ZIQI|SCE16-0193|1||
+Lau Chiew Tong|Development of applications for mobile devices I|LEE ZHENG XIAN ERIC|SCE16-0196|2||
+Goh Wooi Boon|Tangible User Interface for Learning Musical Concepts|OW LI JUAN|SCE16-0120|3||
+Wen Yonggang|Blockchain: Implementation and Application|LEE XIU QUAN|SCE16-0444|4
+||e-Learning|1
+||Machine Learning|2
+||Artificial Intelligence|3
+||Artificial Intelligence, Data Analytics|4

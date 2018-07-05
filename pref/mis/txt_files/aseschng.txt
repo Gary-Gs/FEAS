@@ -1,0 +1,14 @@
+Arijit Khan|Analyzing Word Networks|GOH AIK PING ANDY|SCE17-0039|1||
+Cai Jianfei|Deep learning based pose estimation|REN DAXUAN|SCE17-0047|2||
+Cham Tat Jen|Kinect-based Automatic Sign Language Recognition|GLADYS KHOR CHIAO YUIN|SCE17-0060|3||
+Deepu Rajan|Water detection in video sequences|SAIFUL HILAL BIN ZAINAL ABIDIN|SCE17-0090|4||
+Guan Cuntai|Development of a BCI Algorithm for Anxiety/Calmness Detection towards a Training System for Adolescence|JONATHAN TAN ZHI HAN|SCE17-0117|5||
+Jagath C Rajapakse|Detection of affects (emotions) of programming through keyboard dynamics and mouse behaviors|LIU HUALIN|SCE17-0321|6||
+Li Fang|Python on-line exam system|DOAN DUY DUC|SCE17-0217|7||
+Sinno Jialin Pan|Transfer Learning through Deep Learning II|LEE RHUI DIH|SCE17-0308|8
+||Artificial Intelligence|1
+||Artificial Intelligence, Data Analytics|2
+||Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|3
+||Artificial Intelligence, Machine Learning, Natural Language Processing/ Text Mining|4
+||Data Analytics|5
+||Machine Learning|6

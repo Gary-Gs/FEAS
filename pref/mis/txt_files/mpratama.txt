@@ -1,0 +1,27 @@
+Kong Wai-Kin Adams|Giant Panda Face Localization and Identification|KOH SI ZHENG|SCE17-0174|1||
+Jagath C Rajapakse|Automatic grading of computer programs using machine learning|FU QIANG|SCE17-0322|2||
+Yeo Chai Kiat|Malware Detection from Visual Analysis of Binary Files|WANG YI LIN|SCE17-0437|3||
+Guan Cuntai|Development of a BCI Algorithm for Anxiety/Calmness Detection towards a Training System for Adolescence|JONATHAN TAN ZHI HAN|SCE17-0117|4||
+Chia Liang Tien, Clement|Better Image Aesthetics via CNN Networks (Deep Learning)|LU CHENGHAO|SCE17-0071|5||
+Kong Wai-Kin Adams|Mining social media data|TAN POH LIAN|SCE17-0154|6||
+Kwoh Chee Keong|Applying machine learning techniques to identify potential critical virulent sites based on genome set of influenza A virus|CHAN WEI AN DARREN|SCE17-0179|7||
+Kwoh Chee Keong|Optimization of Influenza Genome Database and Development of Influenza Genomic Analysis Web Services|ONG TSE YIN|SCE17-0178|8||
+Jagath C Rajapakse|Deep neural networks to predict affect of e-learning from video data|DALMIA SACHIN|SCE17-0315|9||
+Suresh Sundaram |Computational Cognition for Big Data Analytics|NEO JIA JUN|SCE17-0365|10||
+Miao Chun Yan|Explaining Human Activities from Sensor Data|CHAN JIAN CONG|SCE17-0272|11||
+Qian Kemao|Deep learning of features from textureless images|YANG YAQIAN|SCE17-0313|12||
+Jagath C Rajapakse|Deep neural network approach to predict actions from videos|GARG UTSAV|SCE17-0314|13||
+Kwoh Chee Keong|Detection of virulence factors of influenza viruses|PAULINE EMERALD RANJAN|SCE17-0177|14||
+Hui Siu Cheung|Detecting and Analyzing Fake News with Deep Learning|TAN JIE REN JOEL|SCE17-0140|15||
+Kong Wai-Kin Adams|Hierarchical topic detection from text data|CHEN ZIAO|SCE17-0153|16||
+Guan Cuntai|Mental Fatigue Detection from a Brain Computer Interface (BCI)|SOH KOK WENG|SCE17-0119|17||
+Hui Siu Cheung|Deep Learning for Mining Social Comments|WONG REN JIE|SCE17-0460|18
+||Artificial Intelligence|1||
+Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|2
+||Artificial Intelligence, Data Analytics|3
+||Artificial Intelligence, Machine Learning|4
+||Data Analytics, Data Mining|5
+||Data Analytics, Machine Learning|6
+||Machine Learning|7
+||Machine Learning, Data Mining|8
+||Machine Learning, Real-Time / Embedded Systems, Image Analysis %26 Processing, Video/Audio/Speech Processing|9

@@ -1,0 +1,5 @@
+Guan Cuntai|Mental Fatigue Detection from a Brain Computer Interface (BCI)|SOH KOK WENG|SCE17-0119|1||
+Sinha Sharad|Tracking Vulnerable People Using Body Worn QR Codes|GOH KHAI HONG|SCE17-0339|2||
+Vivek Chaturvedi|A novel Time-tabling and course allocation methodology|THOMAS LIM JUN WEI|SCE17-0408|3
+||Biomedical Systems, Human Computer Interaction, Machine Learning|1
+||Biomedical Systems, Image Analysis %26 Processing, Medical Informatics, Software and Applications, Mobile Applications|2

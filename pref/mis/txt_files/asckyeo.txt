@@ -1,0 +1,7 @@
+Chan Syin|Android Tablet Game Development for Dementia Patient - Games (1)|LOH YONG LIANG|SCE16-0075|1||
+Chan Syin|Android Tablet Game Development for Dementia Patient - Games (2)|PRESLEY LIM EE KIAT|SCE16-0073|2||
+Chan Syin|Person-centred care for dementia patients (Back end system)|LAU WEI DE|SCE16-0076|3||
+Chan Syin|Person-centred care for dementia patients (Back end system)|DESMOND PHUA JUN GUANG|SCE16-0077|4||
+Chan Syin|Person-centred care for dementia patients (Front end Android App)|NINA TAN MIN ER|SCE16-0074|5||
+Chan Syin|Person-centred care for dementia patients (Front end Android App)|TAN KAH HENG|SCE16-0078|6
+||Artificial Intelligence, Data Analytics|1

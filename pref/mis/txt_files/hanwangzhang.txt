@@ -1,0 +1,6 @@
+Xavier Bresson|Graph Generative Adversarial Networks|STEFAN SETYADI TJENG|SCE17-0436|1||
+Xavier Bresson|Graph Convolutional Neural Networks for Computer Vision|SINGH PRIYANSHU KUMAR|SCE17-0435|2||
+Xavier Bresson|Reinforcement Learning for Self-Driving Cars|HO SONG YAN|SCE17-0434|3
+||Artificial Intelligence|1
+||Artificial Intelligence, Machine Learning, Image Analysis %26 Processing|2
+||Artificial Intelligence, Machine Learning|3

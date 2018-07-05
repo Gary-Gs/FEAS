@@ -1,0 +1,26 @@
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|GONG JING|SCE17-0255|1||
+Wen Yonggang|Docker - Build, Ship, and Run Any App, Anywhere|DANG XUAN VU|SCE17-0430|2||
+Wen Yonggang|Energy-Sustainable Cloud Computing (I): MapReduce/Hadoop|TRINH HOANG ANH|SCE17-0429|3||
+Smitha Kavallur Pisharath Gopi|Web simulator for branch prediction techniques|LEONG XINNI|SCE17-0151|4||
+Wen Yonggang|Accelerating real world applications with parallel computing platform|LIU WOON YUNG|SCE17-0426|5||
+Liu Yang|Solving real world security problems: hacking and protection (2)|JOSHUA TAN JUN MING|SCE17-0254|6||
+Wen Yonggang|Blockchain Application: Implementation and Application|ZHOU ZHIYAO|SCE17-0427|7||
+Smitha Kavallur Pisharath Gopi|Control of a robotic arm using ARM microcontroller|LIM JINGZHEN|SCE17-0146|8||
+Yeo Chai Kiat|Software Tool to Access Harddisk Firmware|SHIU WEI KIT|SCE17-0438|9||
+Yeo Chai Kiat|Detection of Harddisk Firmware Manipulation|MAVRIC TAN SOON HENG|SCE17-0439|10||
+Liu Yang|Solving real world security problems: hacking and protection (1)|GEDE BAGUS BAYU PENTIUM|SCE17-0256|11||
+Mo Li|Big data analytics for smart transportation (1)|CHUA QIN LEI|SCE17-0226|12||
+Mo Li|Big data analytics for smart transportation (2)|SOH GUO HAO STEFFANO|SCE17-0225|13||
+Tan Rui|Sleep Monitoring using Smartphone|CHUA JIE YONG|SCE17-0393|14||
+Tan Rui|Urban Data Analytics for Better Power Grid Management|STEFAN SELVARAJOO|SCE17-0397|15||
+Zhang Jie|Simulation of Peer-to-Peer Car Sharing in Singapore|JENNY YU CHIEH NING|SCE17-0440|16||
+Lin Shang-Wei|Malware Detection for Mobile Devices|LEW WEI HAO|SCE17-0244|17||
+Qian Kemao|Using GPUs for image processing|LUONG VIET HOANG|SCE17-0310|18||
+Liu Yang|Deep learning for Cybersecurity Analysis|KOH HONG DA|SCE17-0257|19||
+Sinha Sharad|Geo-Location Based Credit Card Fraud Detection|LEE BOON PENG|SCE17-0343|20||
+Mo Li|Big data analytics for smart transportation (3)|WONG SIN KWAN|SCE17-0229|21||
+Liu Yang|Solving real world security problems: hacking and protection (3)|THOMAS THAM TING HOI|SCE17-0456|22||
+Liu Yang|Solving real world security problems: hacking and protection (4)|NG SHI KAI|SCE17-0457|23
+||Computer Architecture|1
+||High-Performance Computing|2
+||Microprocessor-based Systems, Mobile Applications|3

@@ -1,0 +1,8 @@
+Gao Cong|Building knowledge graphs of location from social media data (1)|SIM FRANCIS|SCE17-0084|1|
+Gao Cong|Mining functional region of Singapore for smart city (1)|NG JUN HAO|SCE17-0085|2|
+Gao Cong|Data Analytics on Maps (2)|MATTHEW KOH JOON MIN|SCE17-0086|3|
+Lin Shang-Wei|Vulnerability detection for web services|TEO JING WEI, EDMUND|SCE17-0238|4|
+Lin Shang-Wei|Automatic removal of malicious code fragments from infected host software|JEREMY CHAN MUN JUNG|SCE17-0242|5|
+Lin Shang-Wei|Malware Detection for Mobile Devices|LEW WEI HAO|SCE17-0244|6
+||Artificial Intelligence|1
+||Computer Animation/ Games, Software and Applications, Human Computer Interaction|2

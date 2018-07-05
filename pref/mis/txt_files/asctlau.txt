@@ -1,0 +1,8 @@
+Chan Syin|Person-centred care for dementia patients (Front end Android App)|TAN WEI HENG|SCE17-0061|1||
+Chan Syin|Multimodal Mental Fatigue Assessment|JAMIE YAP YI QI|SCE17-0062|2||
+Chan Syin|Android Tablet Game Development for Dementia Patient - Games (2)|CLAUDINE JACQUI GAN|SCE17-0064|3||
+Chan Syin|Academic performance tracking and analytics|RANDY LIM WEI LUN|SCE17-0067|4||
+Chan Syin|Person-centred care for dementia patients (Back end system)|ANG WEI SIANG|SCE17-0065|5||
+Chan Syin|Person-centred care for dementia patients (Front end Android App)|NG JIAN XIONG|SCE17-0066|6||
+Chan Syin|Person-centred care for dementia patients (Back end system)|SIM WEI KEONG DAVIDSON|SCE17-0068|7||
+Chan Syin|Passthoughts  EEG-based Authentication and Personalization|NG SHI YING KENNETH|SCE17-0069|8

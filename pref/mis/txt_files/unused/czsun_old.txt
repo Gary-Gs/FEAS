@@ -1,0 +1,13 @@
+Tang Xueyan|Cloud-assisted Rendering Support for Mobile Online Gaming (Part A)|CHAN YEW HUAI KENNY|SCE16-0416|1||
+Mo Li|Android smartphone participatory sensing (1)|KOH KIAN BOON|SCE16-0224|2||
+Mo Li|Big data analytics for smart transportation (2)|MAYBELLE CHUNG HUISHI|SCE16-0225|3||
+Mo Li|Big data analytics for smart transportation (1)|ZHANG JIE|SCE16-0226|4||
+Mo Li|Wireless Mesh Networking (2)|ONG WEI JIE|SCE16-0227|5||
+Mo Li|Wireless Mesh Networking (1)|LEONARD CHOO|SCE16-0228|6||
+Bo An|Design of Personal Negotiation Assistant|CHNG HWEE TING|SCE16-0049|7||
+Bo An|Designing Negotiation Agents to Parcitipate in International Competition|LUONG VAN AN|SCE16-0051|8||
+Bo An|Building a Simulator for Electric Vehicles%27 Charging Behavior|QUEK MING KAI, ELTON|SCE16-0054|9||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|SIOW JING KAI|SCE16-0265|10||
+Liu Yang|Solving real world security problems: hacking and protection (2)|XAVIER YEO BOON SHENG|SCE16-0266|11||
+Liu Yang|Solving real world security problems: hacking and protection (1)|YAP YAO MING|SCE16-0267|12||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (1)|TOH ZHEN JIE|SCE16-0268|13

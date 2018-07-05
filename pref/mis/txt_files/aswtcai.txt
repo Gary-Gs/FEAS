@@ -1,0 +1,11 @@
+Tang Xueyan|Development of A Crawler to Collect Online Game Playing Traces (Part A)|PAN JIANGDONG|SCE17-0402|1||
+Tang Xueyan|Development of A Crawler to Collect Online Game Playing Traces (Part B)|ANDRE CULHAM|SCE17-0401|2||
+Lee Bu Sung, Francis|Visualisation and management tool for supercomputer resource|SHAO YIYANG|SCE17-0210|3||
+Suresh Sundaram |Development of air-traffic simulation model|THAI QUOC KHANH|SCE17-0369|4||
+Wen Yonggang|Accelerating real world applications with parallel computing platform|LIU WOON YUNG|SCE17-0426|5||
+Arvind Easwaran|Making Real-time Predictions in Multicore Computer Systems|LEONARD LEONG JIA WEN|SCE17-0041|6||
+Tang Xueyan|Influence Maximization for Viral Marketing in Online Social Networks (Part B)|LU YAMAN|SCE17-0400|7||
+Tang Xueyan|Influence Maximization for Viral Marketing in Online Social Networks (Part A)|OOI MEI WAH|SCE17-0404|8||
+Mo Li|Big data analytics for smart transportation (1)|CHUA QIN LEI|SCE17-0226|9||
+Mo Li|Big data analytics for smart transportation (2)|SOH GUO HAO STEFFANO|SCE17-0225|10||
+Mo Li|Big data analytics for smart transportation (3)|WONG SIN KWAN|SCE17-0229|11

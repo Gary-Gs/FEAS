@@ -1,0 +1,7 @@
+Goh Wooi Boon|Interactive stereoscopic VR headset application on smartphone|ONG JUN LONG|SCE16-0117|1||
+Goh Wooi Boon|Collaborative education game in a physical space|LEE JIE MING|SCE16-0118|2||
+Goh Wooi Boon|Tangible User Interface for Learning Musical Concepts|OW LI JUAN|SCE16-0120|3||
+Goh Wooi Boon|Tangible User Interface for Learning Pre-school Mathematics|CHUA JING XIANG|SCE16-0119|4||
+Ng Wee Keong|Mobile game app development-Gamification on running|JENNIFER CHAN YI TING|SCE16-0287|5||
+Ng Wee Keong|User Experience Assessment On Websites/Mobile Web Apps (Ecommerce)|TEO KIAN BOON|SCE16-0288|6||
+Ng Wee Keong|User Experience Assessment on Websites and Mobile Applications of Movie Vendors In Singapore|ZION CHEE WEI XIANG|SCE16-0291|7

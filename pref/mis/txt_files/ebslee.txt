@@ -1,0 +1,8 @@
+Goh Wooi Boon|Tangible User Interface for Memory Training|MARVEN TAN WEI JUN|SCE17-0113|1||
+Mo Li|Big data analytics for smart transportation (2)|SOH GUO HAO STEFFANO|SCE17-0225|2||
+Mo Li|Big data analytics for smart transportation (3)|WONG SIN KWAN|SCE17-0229|3||
+Mo Li|Wireless and mobile localization and tracking (1)|LIANG JIAN LIN|SCE17-0228|4||
+Zheng Jianmin|3D virtual museum design and navigation|MOHIT PUNDIR|SCE17-0447|5||
+Vun Chan Hua, Nicholas|Remote driven robotic vehicle system.|LAWRENCE KONG JUAN KHONG|SCE17-0419|6||
+Wen Yonggang|Accelerating real world applications with parallel computing platform|LIU WOON YUNG|SCE17-0426|7
+||Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|1

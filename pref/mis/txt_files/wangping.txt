@@ -1,0 +1,22 @@
+Li Fang|Enhancing Social Media Sentiment Analysis with Sarcasm Detection|LIEW JUN KAI EDWARD|SCE17-0212|1||
+Li Fang|Mystery of palms|YONG GUO JUN|SCE17-0213|2||
+Li Fang|Java Programming on-line exam system|JESSICA TJONG|SCE17-0214|3||
+Li Fang|Social Media Sentiment Enhanced Stock Market Prediction Analysis|ADRIAN TAN YONG CHANG|SCE17-0215|4||
+Li Fang|Ad Campaign Management System - Appnexus Affiliation/Company: K Wizdom Pte Ltd|SIA CHENG YONG|SCE17-0216|5||
+Li Fang|Python on-line exam system|DOAN DUY DUC|SCE17-0217|6||
+Li Fang|Investigation on Effective Solutions against Insider Attacks|ANG JUN HAO|SCE17-0218|7||
+Li Fang|Interactive Learning|NGUYEN KHANH LINH|SCE17-0219|8||
+Li Fang|FYP examiner allocation system improvement part 2|KAREN CHEE|SCE17-0220|9||
+Li Fang|FYP examiner allocation system improvement part 2|TAN JUN HAO|SCE17-0221|10||
+Li Fang|FYP examiner allocation system improvement|KOK SZE AN|SCE17-0222|11||
+Lau Chiew Tong|Development of applications for mobile devices I|TRUDY SIH SHU MIN|SCE17-0206|12||
+Lau Chiew Tong|IOT - Development of a Home Automation System 1|LEONG KAH YUAN ANDREW|SCE17-0205|13||
+Shen Zhiqi|Promotions and Loyalty Management System (PLMS) for Shopping Malls|NICOLE LIOW WEI XUAN|SCE17-0329|14|
+Sun Aixin|Design and development of an Android app for medical consultation|JOHAN TAN NGIAP HAN|SCE17-0362|15||
+Sun Aixin|Intelligent Question and Answering System|LAU YI HONG|SCE17-0359|16||
+Wen Yonggang|Blockchain Application: Implementation and Application|ZHOU ZHIYAO|SCE17-0427|17||
+Tan Rui|Sleep Monitoring using Smartphone|CHUA JIE YONG|SCE17-0393|18||
+Tan Rui|Urban Data Analytics for Better Power Grid Management|STEFAN SELVARAJOO|SCE17-0397|19
+||Artificial Intelligence|1
+||Artificial Intelligence, Machine Learning|2
+||Data Analytics, Mobile Applications, Data Mining|3

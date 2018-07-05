@@ -1,0 +1,32 @@
+Cham Tat Jen|3D Scanning on Mobile Phone|PECK JING HENG|SCE17-0058|1||
+Owen Noel Newton Fernando|Mobile based museum navigation system|SEAH ZHONG DA|SCE17-0299|2||
+Owen Noel Newton Fernando|Natural Feature tracking solution for outdoor Augmented Reality|YEO SHI JING|SCE17-0301|3||
+Owen Noel Newton Fernando|Develop a system that utilises augmented reality to assist users to DIY repairs/fixing by referring to community generated tutorials - part 2|IVAN TEO WEI JING|SCE17-0303|4||
+Owen Noel Newton Fernando|eExhibitor: Visitor assisting platform|LEUNG KAI YIU|SCE17-0298|5||
+Owen Noel Newton Fernando|Web and Mobile based GPS Trail Visualizer|ANDREAS CHRISNA MAYONG|SCE17-0305|6||
+Shen Zhiqi|Unity 3D Game for Shopping Mall Promotions|OON CHEE SENG|SCE17-0338|7||
+Alexei Sourin|Study on Music Visualisation|DODDY ANDERSON TJHOEA|SCE17-0012|8||
+Alexei Sourin|Visual immersive geometry|SEE JUN WEI|SCE17-0013|9||
+Goh Wooi Boon|Mobile exergaming with the smartphone camera|KENFRAND GOSTI|SCE17-0114|10||
+Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|11
+Artificial Intelligence, Computer Animation/ Games|1
+||Artificial Intelligence, Human Computer Interaction|2
+||Artificial Intelligence, Human Computer Interaction, Machine Learning|3
+||Artificial Intelligence, Image Analysis %26 Processing, Robotics|4
+||Artificial Intelligence, Machine Learning, Human Computer Interaction|5
+||Computer Animation/ Games, Human Computer Interaction|6
+||Computer Animation/ Games, Mixed Reality, Virtual Reality|7
+||Computer Animation/ Games, Mobile Applications|8
+||Computer Animation/ Games, Software and Applications, Human Computer Interaction|9
+||Computer Graphics|10
+||Computer Graphics, Data Analytics|11
+||Computer Graphics, Human Computer Interaction|12
+||Computer graphics/animation, Virtual reality|13
+||Gamification, Human Computer Interaction, Serious Games|14
+||Image Analysis & Processing, Data Structure and Algorithms, Visual Computing, Mobile Applications|15
+||Image Analysis & Processing, Mobile Applications|16
+||Mixed Reality, Smartphone Systems and Applications, Mobile Applications, Human Computer Interaction|17
+||Mixed Reality, Smartphone Systems and Applications, Mobile Applications, Image Analysis & Processing, Human Computer Interaction|18
+||Mobile Applications, Computer Animation/ Games, Wireless and Mobile Networks, Smartphone Systems and Applications, Visual Computing|19
+||Web-based Applications, Computer Animation/ Games, Cyber Security|20
+||Web-based Applications, Virtual Reality, Computer Graphics, Human Computer Interaction|21

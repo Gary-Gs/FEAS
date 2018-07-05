@@ -1,0 +1,6 @@
+Oh Hong Lye|Designing a Computational Thinking Workshop - Content, Monitoring and Assessment Framework|SIM LONG SIANG|SCE17-0282|1
+Oh Hong Lye|RPI-based Alexa system|KHOO JU SENG BRYANT|SCE17-0283|2|
+Oh Hong Lye|Class Room in a box|CHOY ZHAN HUA|SCE17-0284|3||
+Oh Hong Lye|Classroom Management and Curriculum development with NFC|QUAY JUN HAO JEREL|SCE17-0285|4||
+Douglas Leslie Maskell|Software for a smart thermodynamics-based fast battery analyser/charger|CHIN TIAN BOON|SCE17-0097|5||
+Goh Wooi Boon|Computer-enhanced ornamental gardens and water features|LIM JAI CHYI|SCE17-0115|6

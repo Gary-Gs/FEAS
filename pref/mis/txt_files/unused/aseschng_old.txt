@@ -1,0 +1,10 @@
+Jagath C Rajapakse|Neurofeedback from EEG signals|SREYASHI DASGUPTA|SCE16-0336|1||
+Lin Weisi|Sentiment Analysis on twitter using Deep learning|RAJI CHERIAN KEVIN|SCE16-0252|2||
+Tan Ah Hwee|Human Activity Recognition through Wearable Devices|EDWIN CANDINEGARA|SCE16-0405|3||
+Tan Ah Hwee|Brain Computer Interface for Analyzing Emotions|TANG CHENG|SCE16-0404|4||
+Sinno Jialin Pan|Transfer Learning through Deep Learning|NGUYEN HOANG SON|SCE16-0313|5||
+Zheng Jie|Visual data mining of large-scale genomics data for immunology|GUPTA AAKASH|SCE16-0478|6||
+Sun Aixin|A study of medical terms in Wikipedia and professional websites|AW TENG TENG|SCE16-0379|7|
+Sun Aixin|Intelligent Question and Answering System|KRYLICIA CHAN CAI YAN|SCE16-0381|8
+||Artificial Intelligence|1
+||Natural Language Processing/ Text Mining|2

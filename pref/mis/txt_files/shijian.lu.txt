@@ -1,0 +1,8 @@
+Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|1||
+Cai Jianfei|Deep learning based pose estimation|REN DAXUAN|SCE17-0047|2||
+Xavier Bresson|Semi-Supervised Classification with Reseeding|ZHU YIMIN|SCE17-0431|3||
+Chia Liang Tien, Clement|Better Image Aesthetics via CNN Networks (Deep Learning)|LU CHENGHAO|SCE17-0071|4||
+Hui Siu Cheung|Mobile Mathematical Formula Image Recognition|NG YAO SHENG|SCE17-0142|5||
+Kong Wai-Kin Adams|Giant Panda Face Localization and Identification|KOH SI ZHENG|SCE17-0174|6||
+Ng Wee Keong|Smart Receipt System - Image Processing, Data Analytics and Web Server Development|THAM GUO BIN|SCE17-0279|7||
+Cham Tat Jen|Kinect-based Automatic Sign Language Recognition|GLADYS KHOR CHIAO YUIN|SCE17-0060|8

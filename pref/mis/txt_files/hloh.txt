@@ -1,0 +1,5 @@
+Smitha Kavallur Pisharath Gopi|Control of a robotic arm using ARM microcontroller|LIM JINGZHEN|SCE17-0146|1||
+Lam Siew Kei|Light-Weight Single Image Super-Resolution for Embedded Systems|LEONG LEE TIAN|SCE17-0196|2||
+Vun Chan Hua, Nicholas|Low power motion tracking wireless node for IoT applications.|DAVIN WIJAYA|SCE17-0420|3||
+Vivek Chaturvedi|Hardware security|CHANDANI DEVI D/O RAMRUP|SCE17-0413|4||
+Chia Liang Tien, Clement|Understanding Image Aesthetics from EXIF Data|YAN RAN|SCE17-0073|5

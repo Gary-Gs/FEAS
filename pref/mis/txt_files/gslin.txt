@@ -1,0 +1,21 @@
+Sinno Jialin Pan|Fine-grained Sentiment Analysis|JAISWAL SHANTANU|SCE17-0306|1||
+Sinno Jialin Pan|Transfer Learning through Deep Learning II|LEE RHUI DIH|SCE17-0308|2||
+Sinno Jialin Pan|Large-scale WiFi-based Indoor Localization|CHAN JUN YAN|SCE17-0309|3||
+Sinno Jialin Pan|Watch-based Activity Recognition through Machine Learning|ZHAO QINGMEI|SCE17-0458|4||
+Sinno Jialin Pan|Transfer Learning Applications|ZHANG WANLU|SCE17-0307|5||
+Cai Jianfei|Deep learning based pose estimation|REN DAXUAN|SCE17-0047|6||
+Jagath C Rajapakse|Deep neural network approach to predict actions from videos|GARG UTSAV|SCE17-0314|7||
+Xavier Bresson|Graph Convolutional Neural Networks for Computer Vision|SINGH PRIYANSHU KUMAR|SCE17-0435|8||
+Xavier Bresson|Graph Generative Adversarial Networks|STEFAN SETYADI TJENG|SCE17-0436|9||
+Lee Bu Sung, Francis|Stitching of images|KOK CHUAN YONG|SCE17-0208|10||
+Lam Siew Kei|Light-Weight Single Image Super-Resolution for Embedded Systems|LEONG LEE TIAN|SCE17-0196|11||
+Kong Wai-Kin Adams|Giant Panda Face Localization and Identification|KOH SI ZHENG|SCE17-0174|12||
+Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|13||
+Cham Tat Jen|Kinect-based Automatic Sign Language Recognition|GLADYS KHOR CHIAO YUIN|SCE17-0060|14||
+Xavier Bresson|Reinforcement Learning for Self-Driving Cars|HO SONG YAN|SCE17-0434|15||
+Xavier Bresson|Semi-Supervised Classification with Reseeding|ZHU YIMIN|SCE17-0431|16||
+Deepu Rajan|Water detection in video sequences|SAIFUL HILAL BIN ZAINAL ABIDIN|SCE17-0090|17||
+Sun Aixin|Intelligent Question and Answering System|LAU YI HONG|SCE17-0359|18
+||Computer vision, Image processing and Pattern recognition|1
+||Image Analysis %26 Processing|2
+||Machine Learning|3

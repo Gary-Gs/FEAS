@@ -1,0 +1,13 @@
+Ta Nguyen Binh Duong|Distributed machine learning on public clouds|TRAN QUANG MINH|SCE16-0390|1||
+Ta Nguyen Binh Duong|Mobile distributed machine learning|TRAN VU XUAN NHAT|SCE16-0393|2||
+Goh Wooi Boon|Interactive stereoscopic VR headset application on smartphone|ONG JUN LONG|SCE16-0117|3||
+Yeo Chai Kiat|Screen-Camera Communication using Mobile Devices|KOH WEI JUN|SCE16-0459|4||
+Tan Ah Hwee|Brain Computer Interface for Analyzing Emotions|TANG CHENG|SCE16-0404|5||
+Tan Ah Hwee|Capturing, Storage and Retrieval of Personal Memory|GUPTA AJAY KUMAR SALONI|SCE16-0406|6||
+Vun Chan Hua, Nicholas|Web-based remote driven robotic vehicle.|LU YIHANG|SCE16-0435|7||
+Tan Rui|Collaborative Information Processing Middleware for IoT - Part I: Visualization of an IoT Simulator.|LOW ZHI REN LEONARD|SCE16-0409|8||
+Li Fang|What can the structure of the palmprint tell us?|BOON KOK CHIN|SCE16-0214|9||
+Goh Wooi Boon|Tangible User Interface for Learning Musical Concepts|OW LI JUAN|SCE16-0120|10
+||Artificial Intelligence, Machine Learning|1
+||Cloud Computing, Machine Learning|2
+||Cloud Computing, Distributed Computing Systems, Data Analytics|3

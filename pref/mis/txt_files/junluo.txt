@@ -1,0 +1,9 @@
+Mo Li|Android smartphone participatory sensing (1)|KOH KIAN BOON|SCE16-0224|1||
+Mo Li|Big data analytics for smart transportation (2)|MAYBELLE CHUNG HUISHI|SCE16-0225|2||
+Mo Li|Big data analytics for smart transportation (1)|ZHANG JIE|SCE16-0226|3||
+Tan Rui|Clock synchronization over Bluetooth|CHANG JUN WEI|SCE16-0408|4||
+Tan Rui|Collaborative Information Processing Middleware for IoT - Part I: Visualization of an IoT Simulator.|LOW ZHI REN LEONARD|SCE16-0409|5||
+Tan Rui|Sleep Monitoring using Smartphone|JAIN NOOPUR|SCE16-0412|6
+||Smartphone Systems and Applications, Web-based Applications, Human Computer Interaction, Mobile Applications|1
+||Ubiquitous/ Pervasive Computing, Smartphone Systems and Applications|2
+||Ubiquitous/ Pervasive Computing, Cyber Security, Sensor Networks, Information Retrieval/ Processing|3

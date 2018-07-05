@@ -1,0 +1,7 @@
+Sun Aixin|Design and development of an iOS app for medical consultation|ADAM TAN TENG GUAN|SCE17-0363|1||
+Sun Aixin|Design and development of an Android app for medical consultation|JOHAN TAN NGIAP HAN|SCE17-0362|2||
+Sun Aixin|Development of a forum search system|SUN ZHIHAO|SCE17-0361|3||
+Sun Aixin|Development of a mobile application for price sharing and comparison|KOO YAN CHONG|SCE17-0360|4||
+Sun Aixin|Intelligent Question and Answering System|LAU YI HONG|SCE17-0359|5||
+Sun Aixin|Design and development of a grant management system|THOMAS KHOO JIA HAO|SCE17-0357|6||
+Wen Yonggang|Blockchain Application: Implementation and Application|ZHOU ZHIYAO|SCE17-0427|7

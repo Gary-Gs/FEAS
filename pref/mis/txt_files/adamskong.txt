@@ -1,0 +1,30 @@
+Hui Siu Cheung|Mobile Mathematical Formula Image Recognition|NG YAO SHENG|SCE17-0142|1|
+Hui Siu Cheung|Mobile Handwritten Mathematical Formula Recognition|SOKHONN RAINY|SCE17-0143|2|
+Hui Siu Cheung|Hand-drawn Graph Sketch Matching for e-Learning Mathematics|PHAN ANH TUAN|SCE17-0139|3|
+Hui Siu Cheung|Development of an Automated Essay Scoring System over the Web|LEE TECK SANG|SCE17-0141|4||
+Hui Siu Cheung|Detecting and Analyzing Fake News with Deep Learning|TAN JIE REN JOEL|SCE17-0140|5||
+Hui Siu Cheung|Deep Learning for Mining Social Comments|WONG REN JIE|SCE17-0460|6||
+Huang Shell Ying|Search of unknown region with limited endurance by unmanned aerial vehicles (2)|ONG CHAO JIAN|SCE17-0137|7||
+Hui Siu Cheung|Restaurant reviews: named entity recognition and sentiment analysis|LEE SHEN JUIN|SCE17-0145|8||
+Lam Kwok Yan|A Big Data Text Mining for Document Summarization|CUI BOLUN|SCE17-0183|9||
+Lam Kwok Yan|Behaviour-Based Malware Detector|JORDAN KWONG ZHENG XI|SCE17-0187|10||
+Lam Kwok Yan|Lightweight Deception Systems using Honeypot Techniques|TIMOTHY LEE KOK KIANG|SCE17-0188|11||
+Lam Kwok Yan|Malware Attribution|FOO CE ZHI|SCE17-0190|12||
+Lam Kwok Yan|Multimodal biometric authentication framework|NEO JUN HAO|SCE17-0189|13||
+Lam Kwok Yan|STIX Representation of Cyber Threat Intelligence|PHUA KIN WEE|SCE17-0185|14||
+Lam Kwok Yan|Windows Management Instrumentation (WMI) Security|CHEW ZHI JIE|SCE17-0181|15
+||Artificial Intelligence|1
+||Artificial Intelligence, Data Analytics|2
+||Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|3
+||Artificial Intelligence, Data Analytics, Data Mining, Natural Language Processing/ Text Mining|4
+||Artificial Intelligence, Machine Learning|5
+||Artificial Intelligence, Machine Learning, Human Computer Interaction|6
+||Artificial Intelligence, Machine Learning, Image Analysis %26 Processing|7
+||Image Analysis & Processing|8
+||Image Analysis & Processing, Computer Animation/ Games, Mobile Applications, Video/Audio/Speech Processing, Human Computer Interaction|9
+||Image Analysis & Processing, Data Structure and Algorithms, Visual Computing, Mobile Applications|10
+||Image Analysis & Processing, Graph Theory, Theory & Algorithms, Software and Applications|11
+||Image Analysis & Processing, Machine Learning, Artificial Intelligence, Data Analytics, Information Retrieval/ Processing|12
+||Image Analysis & Processing, Mobile Applications|13
+||Image Analysis & Processing, Mobile Applications, Visual Computing|14
+||Information Retrieval/ Processing, Data Analytics|15

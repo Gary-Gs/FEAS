@@ -1,0 +1,33 @@
+Huang Shell Ying|Dynamic quay crane scheduling in container terminals|JASON LEE CHIN HENG|SCE17-0134|1||
+Huang Shell Ying|Control policies for an AS/RS with multiple lifts (1)|JOEY NG MANQI|SCE17-0135|2||
+Huang Shell Ying|Control policies for an AS/RS with multiple lifts (2)|EMILY CHIN SHU MIN|SCE17-0136|3||
+Huang Shell Ying|Search of unknown region with limited endurance by unmanned aerial vehicles (2)|ONG CHAO JIAN|SCE17-0137|4||
+Cai Wentong|A comparative study of two microscopic road traffic simulators|NG ZI PENG|SCE17-0051|5||
+Cai Wentong|Traffic Flow Simulation Validation|ANG YONG CHUAN|SCE17-0053|6||
+Cai Wentong|Where is everyone?|SEE JUN RONG SEBASTIAN|SCE17-0054|7||
+Mo Li|Big data analytics for smart transportation (1)|CHUA QIN LEI|SCE17-0226|8||
+Mo Li|Big data analytics for smart transportation (2)|SOH GUO HAO STEFFANO|SCE17-0225|9||
+Mo Li|Big data analytics for smart transportation (3)|WONG SIN KWAN|SCE17-0229|10||
+Mo Li|Wireless Mesh Networking (1)|LEE JIA JING|SCE17-0227|11||
+Mo Li|Wireless and mobile localization and tracking (1)|LIANG JIAN LIN|SCE17-0228|12||
+Mo Li|Wireless Mesh Networking (2)|ZHANG TONGSHUO|SCE17-0230|13||
+Mo Li|Wireless and mobile localization and tracking (2)|LIM HAO ZHE|SCE17-0224|14||
+Ta Nguyen Binh Duong|Mobile distributed machine learning|LE PHUOC HOANG LONG|SCE17-0370|15||
+Ta Nguyen Binh Duong|NTU Camp%27s Execution Platform|CAROLYN KOH XIN HUI|SCE17-0372|16||
+Ta Nguyen Binh Duong|NTU Camps%26#65533; Preparation Platform|TAN TING HWEE|SCE17-0373|17||
+Ta Nguyen Binh Duong|Co-resident attacks on public cloud infrastructures|TOH YUZHOU JABRIAN|SCE17-0374|18||
+Ta Nguyen Binh Duong|Build yourself a compiler|NGO LE BAO TRUNG|SCE17-0375|19
+||Cloud Computing|1
+||Cloud Computing, Computer Architecture, Parallel Computing|2
+||Cloud Computing, Machine Learning|3
+||Cloud Computing, Machine Learning, High-Performance Computing|4
+||Cloud Computing, Mobile Applications|5
+||Data Analytics, Data Mining, Social Networks, Theory %26 Algorithms, Web-based Applications|6
+||Data Analytics, Data Mining, Database Systems, Social Networks, Theory & Algorithms|7
+||Data Analytics, Database Systems, Distributed Computing Systems, Graph Theory, Human Computer Interaction|8
+||Data Analytics, Distributed Computing Systems, Web-based Applications|9
+||Data Analytics, Sensor Networks|10
+||Data Analytics, Social Networks, Web-based Applications|11
+||Data Mining, Social Networks|12
+||Data Mining, Social Networks, Web-based Applications|13
+||Distributed Computing Systems, Data Structure and Algorithms, Cloud Computing, System Security|14

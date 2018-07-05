@@ -1,0 +1,18 @@
+A S Madhukumar|Green Data centre: Power Management|WONG WAY-NE|SCE16-0003|1||
+Douglas Leslie Maskell|Smart rechargable battery management system|ALDRICH LIM YU WEI|SCE16-0099|2|
+Luo Jun|Wrist Tracking for Ubiquitous Human-Machine Interface|PRAJOGO TIO|SCE16-0283|3||
+Mo Li|Android smartphone participatory sensing (1)|KOH KIAN BOON|SCE16-0224|4||
+Mo Li|Big data analytics for smart transportation (1)|ZHANG JIE|SCE16-0226|5||
+Mo Li|Big data analytics for smart transportation (2)|MAYBELLE CHUNG HUISHI|SCE16-0225|6||
+Wen Yonggang|Blockchain: Implementation and Application|LEE XIU QUAN|SCE16-0444|7||
+Arvind Easwaran|Real-time Networking in Zedboard|TEO HAN YANG|SCE16-0045|8||
+Arvind Easwaran|Real-time Video Processing in Zedboard|CHUA RUI XIANG IVAN|SCE16-0043|9
+||Data Analytics, Gamification, Mobile Applications, Sensor Networks|1
+||Machine Learning, Sensor Networks, Ubiquitous/ Pervasive Computing|2
+||Sensor Networks, Data Analytics, Machine Learning, Software and Applications|3
+||Sensor Networks, Low-power Computing|4
+||Ubiquitous/ Pervasive Computing, Cyber Security, Sensor Networks, Information Retrieval/ Processing|5
+||Web-based Applications, Human Computer Interaction, Sensor Networks, Software and Applications|6
+||Wireless and Mobile Networks, Microprocessor-based Systems, Sensor Networks, Theory %26 Algorithms|7
+||Wireless and Mobile Networks, Mobile Applications, Sensor Networks, Smartphone Systems and Applications|8
+||Wireless and Mobile Networks, Sensor Networks, Smartphone Systems and Applications|9

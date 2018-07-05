@@ -1,0 +1,11 @@
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|GONG JING|SCE17-0255|1||
+Liu Yang|Deep learning for Cybersecurity Analysis|KOH HONG DA|SCE17-0257|2||
+Liu Yang|Mining Linkedin for the Job Trend|CHOW WEI JUN BERNARD|SCE17-0252|3||
+Liu Yang|Solving real world security problems: hacking and protection (1)|GEDE BAGUS BAYU PENTIUM|SCE17-0256|4||
+Liu Yang|Solving real world security problems: hacking and protection (2)|JOSHUA TAN JUN MING|SCE17-0254|5||
+Liu Yang|Solving real world security problems: hacking and protection (3)|THOMAS THAM TING HOI|SCE17-0456|6||
+Liu Yang|Solving real world security problems: hacking and protection (4)|NG SHI KAI|SCE17-0457|7
+||Cyber Security, Data Analytics, Software and Applications|1
+||Cyber Security, Logic and Formal Methods|2
+||Cyber Security, Mobile Applications, Logic and Formal Methods|3
+||Cyber Security, Mobile Applications, Machine Learning, Logic and Formal Methods|4

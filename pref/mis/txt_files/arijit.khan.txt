@@ -1,0 +1,7 @@
+Sinno Jialin Pan|Transfer Learning through Deep Learning II|LEE RHUI DIH|SCE17-0308|1
+Xavier Bresson|Graph Generative Adversarial Networks|STEFAN SETYADI TJENG|SCE17-0436|2
+Xavier Bresson|Semi-Supervised Classification with Reseeding|ZHU YIMIN|SCE17-0431|3
+||Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|1
+||Data Analytics, Machine Learning|2
+||Data Analytics, Data Mining, Database Systems, Social Networks, Theory %26 Algorithms|3
+||Data Analytics, Data Mining, Bioinformatics, Data Structure and Algorithms, Database Systems|4

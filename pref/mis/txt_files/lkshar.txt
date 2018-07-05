@@ -1,0 +1,14 @@
+Lin Shang-Wei|Vulnerability detection for web services|TEO JING WEI, EDMUND|SCE17-0238|1||
+Liu Yang|Solving real world security problems: hacking and protection (1)|GEDE BAGUS BAYU PENTIUM|SCE17-0256|2||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|GONG JING|SCE17-0255|3||
+Liu Yang|Solving real world security problems: hacking and protection (3)|THOMAS THAM TING HOI|SCE17-0456|4||
+Liu Yang|Solving real world security problems: hacking and protection (2)|JOSHUA TAN JUN MING|SCE17-0254|5||
+Ta Nguyen Binh Duong|Co-resident attacks on public cloud infrastructures|TOH YUZHOU JABRIAN|SCE17-0374|6||
+Lin Shang-Wei|Malware Detection for Mobile Devices|LEW WEI HAO|SCE17-0244|7||
+Liu Yang|Solving real world security problems: hacking and protection (4)|NG SHI KAI|SCE17-0457|8||
+Liu Yang|Deep learning for Cybersecurity Analysis|KOH HONG DA|SCE17-0257|9||
+Lin Shang-Wei|Automatic removal of malicious code fragments from infected host software|JEREMY CHAN MUN JUNG|SCE17-0242|10||
+Ta Nguyen Binh Duong|Dependency scanner: detecting security vulnerabilities in applications (Python)|EUGENE TAN PING HONG|SCE17-0377|11
+||Cyber Security|1
+||Cyber Security, System Security, Data Mining, Program Analysis and Optimization|2
+||Cyber Security, Data Analytics, Web-based Applications, Mobile Applications|3

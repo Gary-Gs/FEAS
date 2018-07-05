@@ -1,0 +1,7 @@
+Sinha Sharad|Tracking Vulnerable People Using Body Worn QR Codes|GOH KHAI HONG|SCE17-0339|1||
+Sinha Sharad|Geo-Location Based Credit Card Fraud Detection|LEE BOON PENG|SCE17-0343|2||
+Sinha Sharad|Machine Learning Based Cybersecurity Analytics|TANG YAN SHUO|SCE17-0459|3||
+Smitha Kavallur Pisharath Gopi|Web simulator for branch prediction techniques|LEONG XINNI|SCE17-0151|4||
+Smitha Kavallur Pisharath Gopi|Game design and control using EEG signals (II)|KHARE SIMRAN|SCE17-0149|5
+||Cloud Computing, Computer Architecture, Parallel Computing|1
+||Real-Time / Embedded Systems, Computer Architecture, Operating Systems|2

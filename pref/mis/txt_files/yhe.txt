@@ -1,0 +1,8 @@
+Cai Jianfei|Deep learning based pose estimation|REN DAXUAN|SCE17-0047|1||
+Zheng Jianmin|Exploring efficient data layouts for image convolutions|TENG YEE JING|SCE17-0448|2||
+Zheng Jianmin|3D virtual museum design and navigation|MOHIT PUNDIR|SCE17-0447|3||
+Goh Wooi Boon|Tangible User Interface for Memory Training|MARVEN TAN WEI JUN|SCE17-0113|4||
+Goh Wooi Boon|Computer-enhanced ornamental gardens and water features|LIM JAI CHYI|SCE17-0115|5||
+Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|6||
+Miao Chun Yan|Avatar Augmented Virtual World|KELVIN CHANDRA|SCE17-0269|7||
+Shen Zhiqi|Unity 3D Game for Shopping Mall Promotions|OON CHEE SENG|SCE17-0338|8

@@ -1,0 +1,9 @@
+Gao Cong|Mobile Apps for Point of Interest Recommendation|TRAN DANG TUAN ANH|SCE15-0108|1||
+Quek Hiok Chai|Sentiment analysis in reviews|ABDUL RASYID BIN SAPUAN|SCE16-0329|2||
+Quek Hiok Chai|Deep Learning Fuzzy Neural Network for Stock Modelling|GUPTA SHANTANU|SCE16-0335|3||
+Quek Hiok Chai|Sparse data modelling|YAN HONGXU|SCE16-0334|4||
+Quek Hiok Chai|Non stationary data modelling with neural fuzzy system for stock modelling|VO DUY TUNG|SCE16-0330|5||
+Yeo Chai Kiat|A Study on Spread Pattern of Online Social Network Rumour|YANG CHENYAN|SCE16-0461|6||
+Yeo Chai Kiat|A study on rumour detection on Online Social Networks|CHENG GIBSON|SCE16-0462|7
+||Data Structure and Algorithms|1
+||Machine Learning|2

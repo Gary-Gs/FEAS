@@ -1,0 +1,12 @@
+Cham Tat Jen|High Dynamic Range Panoramas using a Mobile Phone|TIOH HON ZHEN|SCE17-0056|1||
+Cham Tat Jen|3D Scanning on Mobile Phone|PECK JING HENG|SCE17-0058|2||
+Cai Jianfei|Deep learning based pose estimation|REN DAXUAN|SCE17-0047|3||
+Chia Liang Tien, Clement|Better Image Aesthetics via CNN Networks (Deep Learning)|LU CHENGHAO|SCE17-0071|4||
+Chia Liang Tien, Clement|Intelligent Remote/Trigger - A Photographer%27s Buddy (Arduino Based)|CHUA WENXI|SCE17-0072|5||
+Chia Liang Tien, Clement|Understanding Image Aesthetics from EXIF Data|YAN RAN|SCE17-0073|6||
+Lam Siew Kei|Light-Weight Single Image Super-Resolution for Embedded Systems|LEONG LEE TIAN|SCE17-0196|7||
+Liu Yang|Solving real world security problems: hacking and protection (4)|NG SHI KAI|SCE17-0457|8||
+Liu Yang|Solving real world security problems: hacking and protection (3)|THOMAS THAM TING HOI|SCE17-0456|9||
+Liu Yang|Solving real world security problems: hacking and protection (2)|JOSHUA TAN JUN MING|SCE17-0254|10||
+Liu Yang|Solving real world security problems: hacking and protection (1)|GEDE BAGUS BAYU PENTIUM|SCE17-0256|11||
+Oh Hong Lye|Elderly monitoring system|ONG JEFFREY|SCE17-0286|12

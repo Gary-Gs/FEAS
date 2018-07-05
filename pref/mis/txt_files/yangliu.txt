@@ -1,0 +1,8 @@
+Lam Kwok Yan|Windows Management Instrumentation (WMI) Security|CHEW ZHI JIE|SCE17-0181|1||
+Lam Kwok Yan|A Big Data Text Mining for Document Summarization|CUI BOLUN|SCE17-0183|2||
+Lam Kwok Yan|STIX Representation of Cyber Threat Intelligence|PHUA KIN WEE|SCE17-0185|3||
+Lam Kwok Yan|Behaviour-Based Malware Detector|JORDAN KWONG ZHENG XI|SCE17-0187|4||
+Lam Kwok Yan|Lightweight Deception Systems using Honeypot Techniques|TIMOTHY LEE KOK KIANG|SCE17-0188|5||
+Lam Kwok Yan|Malware Attribution|FOO CE ZHI|SCE17-0190|6||
+Sinha Sharad|Machine Learning Based Cybersecurity Analytics|TANG YAN SHUO|SCE17-0459|7
+||Cyber Security|1

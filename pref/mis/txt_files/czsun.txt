@@ -1,0 +1,21 @@
+Tang Xueyan|Influence Maximization for Viral Marketing in Online Social Networks (Part B)|LU YAMAN|SCE17-0400|1||
+Tang Xueyan|Development of A Crawler to Collect Online Game Playing Traces (Part B)|ANDRE CULHAM|SCE17-0401|2||
+Tang Xueyan|Development of A Crawler to Collect Online Game Playing Traces (Part A)|PAN JIANGDONG|SCE17-0402|3||
+Tang Xueyan|Influence Maximization for Viral Marketing in Online Social Networks (Part A)|OOI MEI WAH|SCE17-0404|4||
+Mo Li|Wireless and mobile localization and tracking (2)|LIM HAO ZHE|SCE17-0224|5||
+Mo Li|Big data analytics for smart transportation (2)|SOH GUO HAO STEFFANO|SCE17-0225|6||
+Mo Li|Big data analytics for smart transportation (1)|CHUA QIN LEI|SCE17-0226|7||
+Mo Li|Wireless Mesh Networking (1)|LEE JIA JING|SCE17-0227|8||
+Mo Li|Wireless and mobile localization and tracking (1)|LIANG JIAN LIN|SCE17-0228|9||
+Mo Li|Big data analytics for smart transportation (3)|WONG SIN KWAN|SCE17-0229|10|
+Mo Li|Wireless Mesh Networking (2)|ZHANG TONGSHUO|SCE17-0230|11||
+Cai Wentong|A comparative study of two microscopic road traffic simulators|NG ZI PENG|SCE17-0051|12||
+Cai Wentong|Traffic Flow Simulation Validation|ANG YONG CHUAN|SCE17-0053|13||
+Cai Wentong|Where is everyone?|SEE JUN RONG SEBASTIAN|SCE17-0054|14||
+Liu Yang|Mining Linkedin for the Job Trend|CHOW WEI JUN BERNARD|SCE17-0252|15||
+Liu Yang|Solving real world security problems: hacking and protection (2)|JOSHUA TAN JUN MING|SCE17-0254|16||
+Liu Yang|Behaviour-based Malware Detection on the Android Phones (2)|GONG JING|SCE17-0255|17||
+Liu Yang|Solving real world security problems: hacking and protection (1)|GEDE BAGUS BAYU PENTIUM|SCE17-0256|18||
+Liu Yang|Deep learning for Cybersecurity Analysis|KOH HONG DA|SCE17-0257|19||
+Liu Yang|Solving real world security problems: hacking and protection (3)|THOMAS THAM TING HOI|SCE17-0456|20||
+Liu Yang|Solving real world security problems: hacking and protection (4)|NG SHI KAI|SCE17-0457|21
