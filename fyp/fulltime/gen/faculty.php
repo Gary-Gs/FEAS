@@ -255,7 +255,11 @@ $conn_db_ntu = null;
 									<option value="" selected>SELECT</option>
 									<?php
 									foreach ($AL_Staff as $key => $value) {
-										$StaffID_Filter = $_REQUEST["filter_StaffID"];
+									    if(isset($_REQUEST["filter_StaffID"])){
+                                            $StaffID_Filter = $_REQUEST["filter_StaffID"];
+                                        } else {
+									        $StaffID_Filter = null;
+                                        }
 										$StaffID = $key;
 										$StaffName = $value;
 										if($StaffID_Filter == $StaffID){
