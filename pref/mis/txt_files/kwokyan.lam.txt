@@ -14,7 +14,7 @@ Liu Yang|Behaviour-based Malware Detection on the Android Phones (1)|TOH ZHEN JI
 Vinod Achutavarrier Prasad|Development of Biometric recognition system using Electroencephalogram (EEG) signals|ERICSEN|SCE16-0425|14||
 Vun Chan Hua, Nicholas|Implementing Security for Internet of Things (IoT)|DANIEL CHIA KANG JIE|SCE16-0321|15||
 Wen Yonggang|Blockchain: Implementation and Application|LEE XIU QUAN|SCE16-0444|16
-Cloud Computing, Cyber Security, Web-based Applications, Mobile Applications|1
+||Cloud Computing, Cyber Security, Web-based Applications, Mobile Applications|1
 ||Cloud Computing, Distributed Computing Systems, Data Analytics|2
 ||Cloud Computing, Mobile Applications, Distributed Computing Systems|3
 ||Cyber Security, Data Security|4

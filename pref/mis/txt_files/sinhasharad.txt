@@ -3,7 +3,7 @@ Vivek Chaturvedi|Development of Cloud data center simulation environment|WONG YI
 Smitha Kavallur Pisharath Gopi|Web simulator for branch prediction techniques|LEONG XINNI|SCE17-0151|3||
 Smitha Kavallur Pisharath Gopi|Control of a robotic arm using ARM microcontroller|LIM JINGZHEN|SCE17-0146|4||
 Vivek Chaturvedi|Chinese currency model|CHOPRA VIRAT KRISHAN|SCE17-0414|5
-Biomedical Systems, Microprocessor-based Systems|1
+||Biomedical Systems, Microprocessor-based Systems|1
 ||Cloud Computing, High-Performance Computing, Microprocessor-based Systems|2
 ||Computer Architecture, Digital Systems|3
 ||Real-Time / Embedded Systems, Computer Architecture, Operating Systems|4

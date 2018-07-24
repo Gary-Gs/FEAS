@@ -16,8 +16,8 @@ Hui Siu Cheung|Detecting and Analyzing Fake News with Deep Learning|TAN JIE REN 
 Kong Wai-Kin Adams|Hierarchical topic detection from text data|CHEN ZIAO|SCE17-0153|16||
 Guan Cuntai|Mental Fatigue Detection from a Brain Computer Interface (BCI)|SOH KOK WENG|SCE17-0119|17||
 Hui Siu Cheung|Deep Learning for Mining Social Comments|WONG REN JIE|SCE17-0460|18
-||Artificial Intelligence|1||
-Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|2
+||Artificial Intelligence|1
+||Artificial Intelligence, Data Analytics, Data Mining, Machine Learning|2
 ||Artificial Intelligence, Data Analytics|3
 ||Artificial Intelligence, Machine Learning|4
 ||Data Analytics, Data Mining|5

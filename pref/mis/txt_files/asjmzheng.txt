@@ -9,7 +9,7 @@ Alexei Sourin|Study on Music Visualisation|DODDY ANDERSON TJHOEA|SCE17-0012|8||
 Alexei Sourin|Visual immersive geometry|SEE JUN WEI|SCE17-0013|9||
 Goh Wooi Boon|Mobile exergaming with the smartphone camera|KENFRAND GOSTI|SCE17-0114|10||
 Goh Wooi Boon|Vision-based pattern recognition and analysis with mobile phones|LU LINXUAN|SCE17-0111|11
-Artificial Intelligence, Computer Animation/ Games|1
+||Artificial Intelligence, Computer Animation/ Games|1
 ||Artificial Intelligence, Human Computer Interaction|2
 ||Artificial Intelligence, Human Computer Interaction, Machine Learning|3
 ||Artificial Intelligence, Image Analysis %26 Processing, Robotics|4
