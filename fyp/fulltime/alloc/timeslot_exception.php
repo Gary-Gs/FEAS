@@ -26,7 +26,7 @@
 		die($e->getMessage());
 	}
 	
-	$NO_OF_DAYS = 5;
+	$NO_OF_DAYS = 3;
 	
 	$exceptionCount	= max(count($exceptions), $MIN_ENTRIES)+1;
 	

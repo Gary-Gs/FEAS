@@ -165,22 +165,23 @@ require_once('../../../Utility.php');
 		
 		
 		$allocate_code =0;
+
+		// ------------------------------------start of allocation-------------------------
 		if (count($projects) == 0 || count($staffs) == 0)
 		{		
 			 $error_code = 1;
 		}
-		
 		//else if($NO_OF_DAYS <= 0 || $MAX_SLOTS <= 0 || $NO_OF_ROOMS <= 0)
 		else if($NO_OF_DAYS <= 0 || $MAX_SLOTS <= 0 )
 		{
 			$error_code = 2;
-
 		}
 		else
 		{
+		    // prepare staff list with respective time exceptions
 			$staffList= indexStaff ($staffs, $exceptions);
 			
-			
+			// prepare project list (sorted by supervising count >=4 , then from the rest sorted by examiner count) (to reduce movements)
 			$projectList = indexProjects($staffList, $projects, $projectList);
 			
 			$overallTimeTable = array();
@@ -196,8 +197,6 @@ require_once('../../../Utility.php');
 			}
 			
 			 if (count($projectList)>0) {
-				
-				
 				//debugging statements
 				//echo "<br>";
 				//echo "left over projects count: ";
@@ -241,9 +240,8 @@ function removeAssignedProjects ($projectList)  {
 function indexStaff  ($staffs, $exceptions) {
 	//Staff
 	foreach($staffs as $staff) { //Index Staff by staffid
-				$staffList[ $staff['staffid'] ] = new Staff($staff['staffid'],
-															$staff['salutation'],
-															$staff['staffname']);											
+				$staffList[ $staff['staffid'] ] = new Staff($staff['staffid'],  $staff['salutation'], $staff['staffname']);
+
 				foreach ($exceptions as $exception)
 				{
 					if ($exception['staff_id'] == $staff['staffid'])
@@ -293,10 +291,7 @@ function indexProjects ($staffList, $projects, $projectList) {
 		echo ("examiner id: ". $project->getExaminer());
 		echo ("<br>");
 	}*/
-	
-	
-	
-	
+
 	return $projectList;
 }
 
@@ -314,7 +309,6 @@ function indexProjects ($staffList, $projects, $projectList) {
 						//echo ("<br>");
                         $staff->setSupervisingNo( $info["supervising_count"]);
 				}
-				
 		}
     }	
 	foreach($projects as $project) { //Index Project By pno											
@@ -322,8 +316,6 @@ function indexProjects ($staffList, $projects, $projectList) {
 			//Assuming Perfect Data where all staff are found in StaffList
 			$staffList[ $project['staffid'] ] -> assignment_list[ $project['pno'] ] = $projectList [$project ['pno']];
 			//$staffList[ $project['examinerid'] ] -> assignment_list[ $project['pno'] ] = $projectList [$project ['pno']];
-	
-	
 			}
 	//Phase 1: Recalculate Priority Model
 	uasort($staffList, "CmpPriorityDesc");	//Calculate Staff Priority
@@ -336,7 +328,6 @@ function indexProjects ($staffList, $projects, $projectList) {
 			//var_dump($projectList[ $project->getID() ]);
 		}
 	}
-	
 	;
 	return $projectList;
 }*/
@@ -361,7 +352,6 @@ function allocateTimeSlotsByDay ($dayIndex,$staffList, $projectList, $MAX_SLOTS,
 	
 	$NO_OF_ROOMS  = count($rooms_table);
 	
-	
 	//echo "<br>";
 	//echo "DayNo: ". $day1;
 	
@@ -373,11 +363,9 @@ function allocateTimeSlotsByDay ($dayIndex,$staffList, $projectList, $MAX_SLOTS,
 	if (sizeof($timetable)>0 ) {
 		$totalTimeTableSlots = array_sum(array_map("count", $timetable[0]));
 	}
-		
-	
+
 	$projectList= assignRooms($projectList, $staffList, $timetable, $slotused, $dayIndex, $NO_OF_ROOMS, $NO_OF_TIMESLOTS);
-	
-		
+
 	return $projectList;
 	
 }
@@ -400,7 +388,6 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 		//echo $current_project;
 	    //echo "<br>";
 
-	
 		for($room = 0; $room < $NO_OF_ROOMS; $room++){
 			
 			$current_slot = $slotused[$index][$room];
@@ -411,17 +398,16 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 			//echo $room;
 			//echo "<br>";
 			//$roomN =  $room< $NO_OF_ROOMS ? 'true' : 'false';
-			//echo ("room check: " .$roomN);  
-			
+			//echo ("room check: " .$roomN);
 			//echo "<br>";
-			if ( $current_slot >= $NO_OF_TIMESLOTS[$dayIndex] )	//Full
+			if ( $current_slot >= $NO_OF_TIMESLOTS[$dayIndex] )	// room full
 			{
 					//echo "<br/>timeslot full";
 					//echo "<br/>";
 					continue;
 					//break;
 			}
-			else
+			else // if room not full
 			{
 
 							//Check for collision
@@ -429,9 +415,7 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 							
 							$current_supervisor = $current_project->getStaff();
 							$current_examiner = $current_project->getExaminer();
-							
-							
-							
+
 							$supervisor_available = $staffList[$current_supervisor]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$current_slot]->getStartTime(), $timeslots_table[$dayIndex][$current_slot]->getEndTime());
 							
 							$examiner_available = $staffList[$current_examiner]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$current_slot]->getStartTime(), $timeslots_table[$dayIndex][$current_slot]->getEndTime());
@@ -440,12 +424,10 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 							
 							for($r = 0; !$collision && $r < $NO_OF_ROOMS; $r++)
 							{
-
 								if ($timetable[$index][$r][$current_slot] != null)
 								{
 									$adjacent_supervisor = $timetable[$index][$r][$current_slot]->getStaff();
 									$adjacent_examiner = $timetable[$index][$r][$current_slot]->getExaminer();
-
 									if ($current_supervisor == $adjacent_supervisor ||
 										$current_supervisor == $adjacent_examiner ||
 										$current_examiner == $adjacent_supervisor ||
@@ -455,12 +437,10 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 										//echo "<br>";
 										//echo "current supervisor:";
 										//echo $current_supervisor;
-										
 										//echo "<br>";
 										//echo "adjacent supervisor:";
 										//echo $adjacent_supervisor;									
 										//echo "<br>";
-										
 										//echo "current examiner:";
 										//echo $current_examiner;									
 										//echo "<br>";
@@ -470,8 +450,6 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 									}
 								}
 							}
-							
-							
 								
 							//Collision Detected. Abort current allocation cycle. (Try Next Slot)
 							if (!$supervisor_available || !$examiner_available || $collision)
