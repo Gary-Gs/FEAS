@@ -352,13 +352,17 @@ function allocateTimeSlotsByDay ($dayIndex,$staffList, $projectList, $MAX_SLOTS,
 	
 }
 function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex, $NO_OF_ROOMS, $NO_OF_TIMESLOTS) {
-	global $timeslots_table, $overallTimeTable;
+	global $timeslots_table, $overallTimeTable, $MAX_SLOTS ;
 
 	//Phase 2.1: Sequential Assignment
 	//Check if timeslot available	
 	$collisionCount=0;
 	$index=0;
 	for($i = 0; $i < count($projectList); $i++) {
+        // break out of project list loop when room/slots for the day is full
+        if ($timetable[$index][$NO_OF_ROOMS-1][$MAX_SLOTS-1] != null) {
+            break;
+        }
 
 		$current_project = array_values($projectList)[$i];
 
