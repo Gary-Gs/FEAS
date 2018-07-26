@@ -182,6 +182,7 @@ else
 
     $overallTimeTable = array();
 
+    // first round allocation (sequential)
     for($dayIndex =0;$dayIndex<$NO_OF_DAYS;$dayIndex++) {
         $optOut = $settings[$dayIndex]["opt_out"];
         if ($optOut ==0) {
@@ -192,12 +193,40 @@ else
         }
     }
 
+    // second round allocation (by remaining vacancies)
      if (count($projectList)>0) {
-        $j = $i-1;
-        $projectList = assignRemainingProjects ($projectList,$staffList, $j, $NO_OF_TIMESLOTS);
-        insertValuesIntoDB ($j, $projectList);
-        $projectList = removeAssignedProjects ($projectList);
+        //find day index of vacancy day
+         $vacantDay = null;
+         for ($i=0; $i<$NO_OF_DAYS && $vacantDay==null;$i++) {
+             $currentSlot = array();
+             $roomSlot = 0;
+             $rooms_table = retrieveRooms ($i+1, "allocation_settings_room" );
+             $NO_OF_ROOMS  = count($rooms_table);
+             $currentSlot = array_fill(0, 1, array_fill(0,$NO_OF_ROOMS,0));
+             for ($k=0; $k<$NO_OF_ROOMS && $vacantDay==null;$k++) {
+                 $currentSlot[0][$k] = 0;
+                 for ($z=0;$z<$MAX_SLOTS && $vacantDay==null;$z++) {
+                     if ($overallTimeTable[$i][0][$k][$z] == null) {
+                        $vacantDay = $i;
+                     } else {
+                         $currentSlot[0][$k]++;
+                         $roomSlot = $k;
+                     }
+                 }
+             }
+             // try every vacant day
+             while ($vacantDay != null && $currentSlot[0][$roomSlot] < $MAX_SLOTS) {
+                 $projectList= assignRooms($projectList, $staffList, $overallTimeTable[$vacantDay], $currentSlot, $vacantDay, $NO_OF_ROOMS, $NO_OF_TIMESLOTS);
+                 insertValuesIntoDB ($vacantDay, $projectList);
+                 $projectList = removeAssignedProjects ($projectList);
+                 $currentSlot[0][$roomSlot]++;
+             }
+             if (count($projectList)>0) {
+                 $vacantDay = null;
+             }
+         }
     }
+
     //Check if there are leftover projects
     $allocate_code = 1;
     foreach($projectList as $project)
@@ -205,7 +234,6 @@ else
         if (!$project->isAssignedTimeslot())	//Incomplete allocation
         {
             $allocate_code = 0;
-
         }
     }
     //exit;
@@ -429,118 +457,6 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 
     $overallTimeTable[$dayIndex] = $timetable;
     return $projectList;
-}
-//Phase 2.2: Remaining Assignment		
-function assignRemainingProjects ($projectList,$staffList, $dayIndex, $NO_OF_TIMESLOTS) {
-	global $timeslots_table, $overallTimeTable;
-	$index =0;
-	$actualDay = $dayIndex+1;
-	$rooms_table = retrieveRooms ($actualDay, "allocation_settings_room");
-	$NO_OF_ROOMS  = count($rooms_table);
-	$slotused = createSlotUsed($actualDay,$NO_OF_ROOMS);
-	$timetable  = $overallTimeTable[$dayIndex];
-
-			for($i = 0; $i < count($projectList); $i++)
-			{
-				$assigned = false;
-				$current_project = array_values($projectList)[$i];
-				//echo "<br/>";
-				//echo "[2] current compared : "; 
-				//echo $current_project ;
-
-				//Check if timeslot available
-				$assigned = false;
-			     
-					
-					for($room = 0; $room < $NO_OF_ROOMS; $room++) {
-						//echo "<br/>";
-						
-					
-						$timeTableProject = $timetable[$index][$room];
-						$room1 = $room +1;
-						for ($slotCount=0;$slotCount <sizeof($timeTableProject);$slotCount++) {
-							$projectAssigned = $timetable[$index][$room][$slotCount];
-							if (!(isset($projectAssigned ))) {
-								$collision = false;
-								
-							
-								
-								$current_supervisor = $current_project->getStaff();
-								$current_examiner = $current_project->getExaminer();
-								
-								$supervisor_available = $staffList[$current_supervisor]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$slotCount]->getStartTime(), $timeslots_table[$dayIndex][$slotCount]->getEndTime());
-								
-								$examiner_available = $staffList[$current_examiner]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$slotCount]->getStartTime(), $timeslots_table[$dayIndex][$slotCount]->getEndTime());
-							
-								for($r = 0; !$collision && $r < $NO_OF_ROOMS; $r++)
-								{
-									if ($timetable[$index][$r][$slotCount] != null)
-									{
-										$adjacent_supervisor = $timetable[$index][$r][$slotCount]->getStaff();
-										$adjacent_examiner = $timetable[$index][$r][$slotCount]->getExaminer();
-										
-										if ($current_supervisor == $adjacent_supervisor ||
-											$current_supervisor == $adjacent_examiner ||
-											$current_examiner == $adjacent_supervisor ||
-											$current_examiner == $adjacent_examiner)
-										{	
-											//echo "<br>";
-											//echo "current supervisor:";
-										    //echo $current_supervisor;
-										
-											//echo "<br>";
-											//echo "adjacent supervisor:";
-											//echo $adjacent_supervisor;									
-											//echo "<br>";
-										
-											//echo "current examiner:";
-											//echo $current_examiner;									
-											//echo "<br>";
-										
-										
-											//echo "adjacent examiner:";
-											//echo $adjacent_examiner;									
-											//echo "<br>";
-											$collision = true;
-										}
-									}
-								}
-
-							//Collision Detected. Abort current allocation cycle. (Try Next Slot)
-							if (!$supervisor_available || !$examiner_available || $collision )
-							{
-								//echo "<br>";
-								//echo "collide";
-								//echo "<br>";
-								
-								continue;
-							}
-								
-								if (!$current_project->isAssignedTimeslot()) {
-									$timetable[$index][$room][$slotCount] = $current_project;
-									
-									$current_project->assignTimeslot($index, $room, $slotCount);
-									
-									$testSlot = $slotCount + 1;
-									//echo "<br>";
-									//echo "[2]day: ".$actualDay." currentslot : ".$testSlot." room: ".$room1; 
-									//echo "<br>";
-									//echo ("[2] assigned project: ".$current_project->getID(). " assigned: ". $current_project->isAssignedTimeslot());
-									//echo "<br>";
-								}
-							}
-							else {
-								//echo "[2]  existing: ";
-								//echo $projectAssigned;
-							}
-							//echo "<br/>";
-						}
-	
-					}
-				}
-				
-			$overallTimeTable[$dayIndex] = $timetable;
-			return $projectList;
 }
 function insertValuesIntoDB ($dayIndex, $projectList) {
 			//Bulk Insert

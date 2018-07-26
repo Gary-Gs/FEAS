@@ -1,0 +1,444 @@
+RUNNING RANDOM-RANDOM ALOGRITHM
+Total Examinable Staffs      : 0079 
+Total Projects               : 0387 
+Total Examinable Projects    : 0284 
+Total Buffer Projects        : 0000 
+Total Workload               : 1548 = (0387 + 0000) * 4
+Target Workload              : 0020 = 1548 / 0079
+Number of Staff (Overload|Underload)         : (0011|0068) 
+Number of Staff (ProjPref|AreaPref|NoPref)   : (0041|0030|0025) --- from underload staff only
+Total Preferences (ProjPref|AreaPref)        :  0671 = 0439 + 0232
+
+********************** Start of Project Pref Allocation ********************** 
+Random Staff : assklam         ; Workload (Initial|After) : (10|18) ; Added assklam         to No Pref Array List.
+Random Staff : sinhasharad     ; Workload (Initial|After) : (07|12) ; Added sinhasharad     to No Pref Array List.
+Random Staff : ashsseah        ; Workload (Initial|After) : (08|18) ; Added ashsseah        to No Pref Array List.
+Random Staff : aswtcai         ; Workload (Initial|After) : (14|21) ; Workload Full
+Random Staff : shang-wei.lin   ; Workload (Initial|After) : (11|18) ; Added shang-wei.lin   to No Pref Array List.
+Random Staff : assourav        ; Workload (Initial|After) : (05|14) ; Added assourav        to No Pref Array List.
+Random Staff : aseschng        ; Workload (Initial|After) : (12|19) ; Added aseschng        to No Pref Array List.
+Random Staff : asxytang        ; Workload (Initial|After) : (16|21) ; Workload Full
+Random Staff : yhe             ; Workload (Initial|After) : (09|14) ; Added yhe             to No Pref Array List.
+Random Staff : wangping        ; Workload (Initial|After) : (05|21) ; Workload Full
+Random Staff : asltchia        ; Workload (Initial|After) : (19|21) ; Workload Full
+Random Staff : ebslee          ; Workload (Initial|After) : (13|17) ; Added ebslee          to No Pref Array List.
+Random Staff : hloh            ; Workload (Initial|After) : (17|20) ; Added hloh            to No Pref Array List.
+Random Staff : gslin           ; Workload (Initial|After) : (08|18) ; Added gslin           to No Pref Array List.
+Random Staff : ctguan          ; Workload (Initial|After) : (13|17) ; Added ctguan          to No Pref Array List.
+Random Staff : asdrajan        ; Workload (Initial|After) : (03|07) ; Added asdrajan        to No Pref Array List.
+Random Staff : ssundaram       ; Workload (Initial|After) : (09|09) ; Added ssundaram       to No Pref Array List.
+Random Staff : wslin           ; Workload (Initial|After) : (00|02) ; Added wslin           to No Pref Array List.
+Random Staff : zhengjie        ; Workload (Initial|After) : (06|14) ; Added zhengjie        to No Pref Array List.
+Random Staff : mpratama        ; Workload (Initial|After) : (08|17) ; Added mpratama        to No Pref Array List.
+Random Staff : asjfcai         ; Workload (Initial|After) : (08|09) ; Added asjfcai         to No Pref Array List.
+Random Staff : liu             ; Workload (Initial|After) : (08|18) ; Added liu             to No Pref Array List.
+Random Staff : czsun           ; Workload (Initial|After) : (00|06) ; Added czsun           to No Pref Array List.
+Random Staff : shijian.lu      ; Workload (Initial|After) : (08|10) ; Added shijian.lu      to No Pref Array List.
+Random Staff : vchaturvedi     ; Workload (Initial|After) : (11|14) ; Added vchaturvedi     to No Pref Array List.
+Random Staff : awkng           ; Workload (Initial|After) : (15|18) ; Added awkng           to No Pref Array List.
+Random Staff : assourin        ; Workload (Initial|After) : (05|08) ; Added assourin        to No Pref Array List.
+Random Staff : asjmzheng       ; Workload (Initial|After) : (16|21) ; Workload Full
+Random Staff : yangliu         ; Workload (Initial|After) : (19|21) ; Workload Full
+Random Staff : sg.sourav       ; Workload (Initial|After) : (03|12) ; Added sg.sourav       to No Pref Array List.
+Random Staff : zqshen          ; Workload (Initial|After) : (12|14) ; Added zqshen          to No Pref Array List.
+Random Staff : lkshar          ; Workload (Initial|After) : (00|04) ; Added lkshar          to No Pref Array List.
+********************** End of Project Pref Allocation ********************** 
+Staff Allocated              : 41   
+Number of Staff (Overload|Underload)         : (0011|0068) 
+Number of Staff (ProjPref|AreaPref|NoPref)   : (0000|0030|0051) --- from underload staff only
+
+********************** Start of Area Pref Allocation ********************** 
+
+Random Staff : gslin           ; Workload (Initial|After) : (18|21) ; Workload Full
+gslin => Machine Learning, 
+SCE17-0081 => Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0118 => Artificial Intelligence,Human Computer Interaction,Machine Learning 
+SCE17-0120 => Machine Learning,Human Computer Interaction,Artificial Intelligence 
+
+Random Staff : zhengjie        ; Workload (Initial|After) : (14|17) ; Added zhengjie        to No Pref Array List.
+zhengjie => Artificial Intelligence, Biomedical systems, Data Mining, Data analytics, Machine Learning, Human Computer Interaction, Bioinformatics, Web-based Applications, Database Systems, Sensor Networks, Real-Time / Embedded Systems, Visual Computing, Medical informatics, 
+SCE15-0445 => Database Systems,Data Analytics,Web-based Applications,Software and Applications 
+SCE16-0555 => Multimedia Systems,Human Computer Interaction,Information Retrieval/ Processing 
+SCE17-0020 => Data Analytics,Social Networks,Web-based Applications 
+
+Random Staff : qhliang         ; Workload (Initial|After) : (01|04) ; Added qhliang         to No Pref Array List.
+qhliang => e-Learning, Machine Learning, Artificial Intelligence, Data analytics, 
+SCE17-0099 => Software and Applications,Artificial Intelligence,Web-based Applications 
+SCE17-0106 => Artificial Intelligence,Natural Language Processing/ Text Mining,Data Mining,Data Analytics 
+SCE17-0108 => Artificial Intelligence,Data Analytics,Data Mining,Natural Language Processing/ Text Mining 
+
+Random Staff : mpratama        ; Workload (Initial|After) : (17|20) ; Added mpratama        to No Pref Array List.
+mpratama => Artificial Intelligence, Data analytics, Data Mining, Machine Learning, Real-Time / Embedded Systems, Video/Audio/Speech Processing, 
+SCE17-0028 => Data Analytics,Data Mining,Web-based Applications 
+SCE17-0034 => Data Analytics,Data Mining,Social Networks,Theory & Algorithms,Web-based Applications 
+SCE17-0037 => Data Analytics,Data Mining,Database Systems,Social Networks,Theory & Algorithms 
+
+Random Staff : assklam         ; Workload (Initial|After) : (18|21) ; Workload Full
+assklam => Computer Architecture, Digital Systems, Verilog and VHDL-based Designs, Hardware Acceleration, Field Programmable Gate Arrays (FPGA), Microprocessor-based systems, Machine Learning, 
+SCE17-0095 => Field Programmable Gate Arrays (FPGA),Hardware Acceleration,Verilog and VHDL-based Designs,Computer Architecture 
+SCE17-0121 => Machine Learning,Human Computer Interaction,Artificial Intelligence 
+SCE17-0122 => Machine Learning,Human Computer Interaction,Artificial Intelligence 
+
+Random Staff : sg.sourav       ; Workload (Initial|After) : (12|15) ; Added sg.sourav       to No Pref Array List.
+sg.sourav => Cyber Security, Computer Architecture, Hardware Acceleration, Data analytics, Machine Learning, Software and Applications, Web-based Applications, Mobile Applications, Data Security, Logic and Formal Methods, Smartphone systems and applications, System Security, Data Mining, Program Analysis and Optimization, Operating Systems, Data Structure and Algorithms, 
+SCE17-0003 => Wireless and Mobile Networks,Cyber Security,Computer Networks 
+SCE17-0033 => Data Analytics,Social Networks,Web-based Applications 
+SCE17-0040 => Data Mining,Information Retrieval/ Processing,Database Systems,Data Analytics,Human Computer Interaction 
+
+Random Staff : yangliu         ; Workload (Initial|After) : (21|21) ; Added yangliu         to No Pref Array List.
+yangliu => Cyber Security, 
+SCE17-0376 => Cyber Security,Data Analytics,Web-based Applications,Mobile Applications 
+
+Random Staff : asxytang        ; Workload (Initial|After) : (21|21) ; Added asxytang        to No Pref Array List.
+asxytang => Cloud Computing, Computer Architecture, Parallel Computing, Machine Learning, High-Performance Computing, Mobile Applications, Data analytics, Data Mining, Social networks, Web-based Applications, Database Systems, Theory & Algorithms, Distributed Computing Systems, Graph Theory, Human Computer Interaction, Sensor Networks, Data Structure and Algorithms, System Security, 
+SCE17-0001 => Wireless and Mobile Networks,Computer Networks,Theory & Algorithms 
+SCE17-0065 => Web-based Applications,Database Systems 
+SCE17-0066 => Mobile Applications,Database Systems,Human Computer Interaction 
+SCE17-0068 => Web-based Applications,Database Systems,Data Security,Smartphone Systems and Applications,Software and Applications 
+SCE17-0076 => Information Retrieval/ Processing,Multimedia Systems,Data Mining 
+SCE17-0082 => Multimedia Systems,Human Computer Interaction,Information Retrieval/ Processing,Web-based Applications 
+SCE17-0084 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining 
+SCE17-0085 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining 
+SCE17-0086 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining,Web-based Applications 
+SCE17-0101 => Computer Animation/ Games,Software and Applications,Human Computer Interaction 
+SCE17-0102 => Computer Animation/ Games,Software and Applications,Human Computer Interaction 
+SCE17-0105 => Human Computer Interaction,Real-Time / Embedded Systems,Software and Applications 
+SCE17-0109 => Artificial Intelligence,Natural Language Processing/ Text Mining,Data Mining,Data Analytics 
+SCE17-0112 => Mobile Applications,Computer Animation/ Games,Wireless and Mobile Networks,Smartphone Systems and Applications,Visual Computing 
+SCE17-0141 => Data Analytics,Machine Learning 
+SCE17-0144 => Machine Learning 
+SCE17-0145 => Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0150 => Computer Architecture,Logic and Formal Methods,e-Learning 
+SCE17-0161 => Image Analysis & Processing,Graph Theory,Theory & Algorithms,Software and Applications 
+SCE17-0162 => Image Analysis & Processing,Graph Theory,Theory & Algorithms,Software and Applications 
+SCE17-0164 => Smartphone Systems and Applications,Web-based Applications,Mobile Applications 
+SCE17-0166 => Computer Architecture,Software and Applications,Knowledge Representation/ Ontology 
+SCE17-0167 => Information Retrieval/ Processing,Web-based Applications,Natural Language Processing/ Text Mining,Software and Applications 
+SCE17-0170 => Software and Applications,Mobile Applications 
+SCE17-0171 => Software and Applications,Mobile Applications 
+SCE17-0176 => Software and Applications,Mobile Applications 
+SCE17-0180 => Data Mining,Database Systems,Bioinformatics,Artificial Intelligence,Web-based Applications 
+SCE17-0203 => Wireless and Mobile Networks,Sensor Networks,Smartphone Systems and Applications 
+SCE17-0204 => Wireless and Mobile Networks,Sensor Networks,Smartphone Systems and Applications 
+SCE17-0207 => Data Mining,Data Analytics,Graph Theory 
+SCE17-0264 => Smartphone Systems and Applications,Web-based Applications 
+SCE17-0265 => Smartphone Systems and Applications,Web-based Applications 
+SCE17-0266 => Smartphone Systems and Applications,Human Computer Interaction,Social Networks 
+SCE17-0268 => Artificial Intelligence,Knowledge Representation/ Ontology,Theory & Algorithms 
+SCE17-0274 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0277 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0278 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0280 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0292 => Mobile Applications,Image Analysis & Processing,Human Computer Interaction,Software and Applications 
+SCE17-0293 => Software and Applications,Human Computer Interaction,Data Structure and Algorithms,e-Learning 
+SCE17-0302 => e-Learning,Virtual Reality,Human Computer Interaction 
+SCE17-0316 => Biomedical Systems,Data Analytics,Graph Theory,Bioinformatics,Machine Learning 
+SCE17-0325 => Computer Animation/ Games,Human Computer Interaction 
+SCE17-0332 => Database Systems,Mobile Applications,Human Computer Interaction 
+SCE17-0333 => Serious Games,Human Computer Interaction,Artificial Intelligence 
+SCE17-0335 => Gamification,Human Computer Interaction,Serious Games 
+SCE17-0336 => Serious Games,Virtual Reality,Human Computer Interaction 
+SCE17-0370 => Cloud Computing,Smartphone Systems and Applications,Machine Learning 
+SCE17-0371 => Cloud Computing,Mobile Applications 
+SCE17-0372 => Cloud Computing,Machine Learning 
+SCE17-0373 => Distributed Computing Systems,Data Structure and Algorithms,Cloud Computing,System Security 
+SCE17-0376 => Cyber Security,Data Analytics,Web-based Applications,Mobile Applications 
+SCE17-0380 => Web-based Applications,Multimedia Systems,Software and Applications 
+SCE17-0381 => Web-based Applications,Human Computer Interaction 
+SCE17-0385 => Smartphone Systems and Applications,Human Computer Interaction,Artificial Intelligence 
+SCE17-0386 => Mobile Applications,Robotics,Video/Audio/Speech Processing 
+SCE17-0387 => Mobile Applications,Smartphone Systems and Applications,Software and Applications,Wireless and Mobile Networks,System Security 
+SCE17-0388 => Data Security,Mobile Applications,Software and Applications 
+SCE17-0389 => Programming Languages & Systems,Software and Applications,Web-based Applications 
+SCE17-0394 => Data Analytics,Sensor Networks 
+SCE17-0408 => Real-Time / Embedded Systems,Theory & Algorithms 
+SCE17-0421 => Web-based Applications,Database Systems,Software and Applications 
+SCE17-0432 => Artificial Intelligence,Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0441 => Machine Learning,Data Mining 
+SCE17-0444 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0445 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0469 => Artificial Intelligence,Biomedical Systems,Data Mining 
+
+Random Staff : wangping        ; Workload (Initial|After) : (21|21) ; Added wangping        to No Pref Array List.
+wangping => Artificial Intelligence, Machine Learning, Data analytics, Mobile Applications, Data Mining, 
+SCE17-0066 => Mobile Applications,Database Systems,Human Computer Interaction 
+SCE17-0076 => Information Retrieval/ Processing,Multimedia Systems,Data Mining 
+SCE17-0084 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining 
+SCE17-0085 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining 
+SCE17-0086 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining,Web-based Applications 
+SCE17-0109 => Artificial Intelligence,Natural Language Processing/ Text Mining,Data Mining,Data Analytics 
+SCE17-0112 => Mobile Applications,Computer Animation/ Games,Wireless and Mobile Networks,Smartphone Systems and Applications,Visual Computing 
+SCE17-0141 => Data Analytics,Machine Learning 
+SCE17-0143 => Artificial Intelligence 
+SCE17-0144 => Machine Learning 
+SCE17-0145 => Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0164 => Smartphone Systems and Applications,Web-based Applications,Mobile Applications 
+SCE17-0170 => Software and Applications,Mobile Applications 
+SCE17-0171 => Software and Applications,Mobile Applications 
+SCE17-0176 => Software and Applications,Mobile Applications 
+SCE17-0180 => Data Mining,Database Systems,Bioinformatics,Artificial Intelligence,Web-based Applications 
+SCE17-0200 => Artificial Intelligence 
+SCE17-0207 => Data Mining,Data Analytics,Graph Theory 
+SCE17-0268 => Artificial Intelligence,Knowledge Representation/ Ontology,Theory & Algorithms 
+SCE17-0274 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0277 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0278 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0280 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0292 => Mobile Applications,Image Analysis & Processing,Human Computer Interaction,Software and Applications 
+SCE17-0311 => Artificial Intelligence 
+SCE17-0316 => Biomedical Systems,Data Analytics,Graph Theory,Bioinformatics,Machine Learning 
+SCE17-0332 => Database Systems,Mobile Applications,Human Computer Interaction 
+SCE17-0333 => Serious Games,Human Computer Interaction,Artificial Intelligence 
+SCE17-0367 => Artificial Intelligence 
+SCE17-0370 => Cloud Computing,Smartphone Systems and Applications,Machine Learning 
+SCE17-0371 => Cloud Computing,Mobile Applications 
+SCE17-0372 => Cloud Computing,Machine Learning 
+SCE17-0376 => Cyber Security,Data Analytics,Web-based Applications,Mobile Applications 
+SCE17-0385 => Smartphone Systems and Applications,Human Computer Interaction,Artificial Intelligence 
+SCE17-0386 => Mobile Applications,Robotics,Video/Audio/Speech Processing 
+SCE17-0387 => Mobile Applications,Smartphone Systems and Applications,Software and Applications,Wireless and Mobile Networks,System Security 
+SCE17-0388 => Data Security,Mobile Applications,Software and Applications 
+SCE17-0432 => Artificial Intelligence,Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0441 => Machine Learning,Data Mining 
+SCE17-0442 => Data Analytics,Artificial Intelligence 
+SCE17-0443 => Artificial Intelligence 
+SCE17-0444 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0445 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0454 => Artificial Intelligence,Computer Animation/ Games 
+SCE17-0461 => Artificial Intelligence,Image Analysis & Processing,Robotics 
+SCE17-0465 => Artificial Intelligence,Data Analytics 
+SCE17-0469 => Artificial Intelligence,Biomedical Systems,Data Mining 
+
+Random Staff : assourin        ; Workload (Initial|After) : (08|11) ; Added assourin        to No Pref Array List.
+assourin => Computer Graphics, Human Computer Interaction, Virtual reality, 
+SCE17-0066 => Mobile Applications,Database Systems,Human Computer Interaction 
+SCE17-0082 => Multimedia Systems,Human Computer Interaction,Information Retrieval/ Processing,Web-based Applications 
+SCE17-0101 => Computer Animation/ Games,Software and Applications,Human Computer Interaction 
+
+Random Staff : asjfcai         ; Workload (Initial|After) : (09|12) ; Added asjfcai         to No Pref Array List.
+asjfcai => Artificial Intelligence, Machine Learning, 
+SCE17-0109 => Artificial Intelligence,Natural Language Processing/ Text Mining,Data Mining,Data Analytics 
+SCE17-0141 => Data Analytics,Machine Learning 
+SCE17-0143 => Artificial Intelligence 
+
+Random Staff : junluo          ; Workload (Initial|After) : (02|05) ; Added junluo          to No Pref Array List.
+junluo => Smartphone systems and applications, Web-based Applications, Human Computer Interaction, Mobile Applications, Cyber Security, Sensor Networks, 
+SCE17-0065 => Web-based Applications,Database Systems 
+SCE17-0068 => Web-based Applications,Database Systems,Data Security,Smartphone Systems and Applications,Software and Applications 
+SCE17-0086 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining,Web-based Applications 
+
+Random Staff : boan            ; Workload (Initial|After) : (02|05) ; Added boan            to No Pref Array List.
+boan => Artificial Intelligence, 
+SCE17-0180 => Data Mining,Database Systems,Bioinformatics,Artificial Intelligence,Web-based Applications 
+SCE17-0200 => Artificial Intelligence 
+SCE17-0268 => Artificial Intelligence,Knowledge Representation/ Ontology,Theory & Algorithms 
+
+Random Staff : sinnopan        ; Workload (Initial|After) : (06|09) ; Added sinnopan        to No Pref Array List.
+sinnopan => Artificial Intelligence, Machine Learning, 
+SCE17-0144 => Machine Learning 
+SCE17-0145 => Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0311 => Artificial Intelligence 
+
+Random Staff : assyhuang       ; Workload (Initial|After) : (08|11) ; Added assyhuang       to No Pref Array List.
+assyhuang => Artificial Intelligence, Data Structure and Algorithms, Software and Applications, 
+SCE17-0067 => Software and Applications,Data Analytics 
+SCE17-0097 => Programming Languages & Systems,Software and Applications 
+SCE17-0102 => Computer Animation/ Games,Software and Applications,Human Computer Interaction 
+
+Random Staff : ebslee          ; Workload (Initial|After) : (17|20) ; Added ebslee          to No Pref Array List.
+ebslee => Artificial Intelligence, Data analytics, Data Mining, Machine Learning, 
+SCE17-0076 => Information Retrieval/ Processing,Multimedia Systems,Data Mining 
+SCE17-0084 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining 
+SCE17-0085 => Data Mining,Data Analytics,Natural Language Processing/ Text Mining 
+
+Random Staff : tanrui          ; Workload (Initial|After) : (14|17) ; Added tanrui          to No Pref Array List.
+tanrui => Data analytics, Gamification, Mobile Applications, Sensor Networks, Machine Learning, Software and Applications, Low-power computing, Cyber Security, Web-based Applications, Human Computer Interaction, Wireless and Mobile Networks, Microprocessor-based systems, Smartphone systems and applications, 
+SCE17-0001 => Wireless and Mobile Networks,Computer Networks,Theory & Algorithms 
+SCE17-0002 => Wireless and Mobile Networks,Computer Networks 
+SCE17-0105 => Human Computer Interaction,Real-Time / Embedded Systems,Software and Applications 
+
+Random Staff : aseschng        ; Workload (Initial|After) : (19|21) ; Workload Full
+aseschng => Artificial Intelligence, Data analytics, Data Mining, Machine Learning, 
+SCE17-0207 => Data Mining,Data Analytics,Graph Theory 
+SCE17-0316 => Biomedical Systems,Data Analytics,Graph Theory,Bioinformatics,Machine Learning 
+SCE17-0333 => Serious Games,Human Computer Interaction,Artificial Intelligence 
+SCE17-0367 => Artificial Intelligence 
+SCE17-0370 => Cloud Computing,Smartphone Systems and Applications,Machine Learning 
+SCE17-0372 => Cloud Computing,Machine Learning 
+SCE17-0385 => Smartphone Systems and Applications,Human Computer Interaction,Artificial Intelligence 
+SCE17-0432 => Artificial Intelligence,Machine Learning,Natural Language Processing/ Text Mining 
+SCE17-0441 => Machine Learning,Data Mining 
+SCE17-0442 => Data Analytics,Artificial Intelligence 
+SCE17-0443 => Artificial Intelligence 
+SCE17-0444 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0445 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0454 => Artificial Intelligence,Computer Animation/ Games 
+SCE17-0461 => Artificial Intelligence,Image Analysis & Processing,Robotics 
+SCE17-0465 => Artificial Intelligence,Data Analytics 
+SCE17-0469 => Artificial Intelligence,Biomedical Systems,Data Mining 
+
+Random Staff : lkshar          ; Workload (Initial|After) : (04|07) ; Added lkshar          to No Pref Array List.
+lkshar => Cyber Security, System Security, Data Mining, Program Analysis and Optimization, Data analytics, Web-based Applications, Mobile Applications, 
+SCE17-0112 => Mobile Applications,Computer Animation/ Games,Wireless and Mobile Networks,Smartphone Systems and Applications,Visual Computing 
+SCE17-0164 => Smartphone Systems and Applications,Web-based Applications,Mobile Applications 
+SCE17-0167 => Information Retrieval/ Processing,Web-based Applications,Natural Language Processing/ Text Mining,Software and Applications 
+
+Random Staff : vchaturvedi     ; Workload (Initial|After) : (14|17) ; Added vchaturvedi     to No Pref Array List.
+vchaturvedi => Cloud Computing, Computer Architecture, Parallel Computing, Real-Time / Embedded Systems, Operating Systems, 
+SCE17-0150 => Computer Architecture,Logic and Formal Methods,e-Learning 
+SCE17-0166 => Computer Architecture,Software and Applications,Knowledge Representation/ Ontology 
+SCE17-0274 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+
+Random Staff : arijit.khan     ; Workload (Initial|After) : (15|18) ; Added arijit.khan     to No Pref Array List.
+arijit.khan => Artificial Intelligence, Data analytics, Data Mining, Machine Learning, Database Systems, Social networks, Bioinformatics, Data Structure and Algorithms, 
+SCE17-0293 => Software and Applications,Human Computer Interaction,Data Structure and Algorithms,e-Learning 
+SCE17-0332 => Database Systems,Mobile Applications,Human Computer Interaction 
+SCE17-0333 => Serious Games,Human Computer Interaction,Artificial Intelligence 
+
+Random Staff : asckyeo         ; Workload (Initial|After) : (15|18) ; Added asckyeo         to No Pref Array List.
+asckyeo => Artificial Intelligence, Data analytics, 
+SCE17-0367 => Artificial Intelligence 
+SCE17-0385 => Smartphone Systems and Applications,Human Computer Interaction,Artificial Intelligence 
+SCE17-0432 => Artificial Intelligence,Machine Learning,Natural Language Processing/ Text Mining 
+
+Random Staff : hanwangzhang    ; Workload (Initial|After) : (12|15) ; Added hanwangzhang    to No Pref Array List.
+hanwangzhang => Artificial Intelligence, Machine Learning, 
+SCE17-0370 => Cloud Computing,Smartphone Systems and Applications,Machine Learning 
+SCE17-0372 => Cloud Computing,Machine Learning 
+SCE17-0441 => Machine Learning,Data Mining 
+
+Random Staff : shang-wei.lin   ; Workload (Initial|After) : (18|21) ; Workload Full
+shang-wei.lin => Cyber Security, Data analytics, Software and Applications, Logic and Formal Methods, Mobile Applications, Machine Learning, 
+SCE17-0161 => Image Analysis & Processing,Graph Theory,Theory & Algorithms,Software and Applications 
+SCE17-0162 => Image Analysis & Processing,Graph Theory,Theory & Algorithms,Software and Applications 
+SCE17-0165 => Information Retrieval/ Processing,Image Analysis & Processing,Software and Applications,e-Learning 
+
+Random Staff : liu             ; Workload (Initial|After) : (18|21) ; Workload Full
+liu => Computer Architecture, High-Performance Computing, Microprocessor-based systems, Mobile Applications, 
+SCE17-0170 => Software and Applications,Mobile Applications 
+SCE17-0171 => Software and Applications,Mobile Applications 
+SCE17-0176 => Software and Applications,Mobile Applications 
+
+Random Staff : axsun           ; Workload (Initial|After) : (20|21) ; Workload Full
+axsun => Artificial Intelligence, Data analytics, Data Mining, 
+SCE17-0442 => Data Analytics,Artificial Intelligence 
+SCE17-0443 => Artificial Intelligence 
+SCE17-0444 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0445 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0454 => Artificial Intelligence,Computer Animation/ Games 
+SCE17-0461 => Artificial Intelligence,Image Analysis & Processing,Robotics 
+SCE17-0465 => Artificial Intelligence,Data Analytics 
+SCE17-0469 => Artificial Intelligence,Biomedical Systems,Data Mining 
+
+Random Staff : sinhasharad     ; Workload (Initial|After) : (12|15) ; Added sinhasharad     to No Pref Array List.
+sinhasharad => Biomedical systems, Microprocessor-based systems, Cloud Computing, High-Performance Computing, Computer Architecture, Digital Systems, Real-Time / Embedded Systems, Operating Systems, 
+SCE17-0276 => Software and Applications,Wireless and Mobile Networks,Smartphone Systems and Applications,Real-Time / Embedded Systems 
+SCE17-0277 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0278 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+
+Random Staff : assourav        ; Workload (Initial|After) : (14|17) ; Added assourav        to No Pref Array List.
+assourav => Database Systems, Data analytics, Mobile Applications, Web-based Applications, Software and Applications, Human Computer Interaction, Data Mining, Data Structure and Algorithms, Bioinformatics, Medical informatics, Graph Theory, Sensor Networks, Social networks, Visual Computing, Biomedical systems, Machine Learning, 
+SCE17-0203 => Wireless and Mobile Networks,Sensor Networks,Smartphone Systems and Applications 
+SCE17-0204 => Wireless and Mobile Networks,Sensor Networks,Smartphone Systems and Applications 
+SCE17-0264 => Smartphone Systems and Applications,Web-based Applications 
+
+Random Staff : kwokyan.lam     ; Workload (Initial|After) : (12|15) ; Added kwokyan.lam     to No Pref Array List.
+kwokyan.lam => Cloud Computing, Cyber Security, Web-based Applications, Mobile Applications, Distributed Computing Systems, Data analytics, Data Security, Operating Systems, System Security, Data Mining, Program Analysis and Optimization, 
+SCE17-0265 => Smartphone Systems and Applications,Web-based Applications 
+SCE17-0280 => Mobile Applications,Data Analytics,Image Analysis & Processing,Cloud Computing,Human Computer Interaction 
+SCE17-0292 => Mobile Applications,Image Analysis & Processing,Human Computer Interaction,Software and Applications 
+
+Random Staff : asjmzheng       ; Workload (Initial|After) : (21|21) ; Added asjmzheng       to No Pref Array List.
+asjmzheng => Artificial Intelligence, Computer Animation/ games, Human Computer Interaction, Machine Learning, Robotics, Mixed reality, Virtual reality, Mobile Applications, Software and Applications, Computer Graphics, Data analytics, Gamification, Serious games, Image Analysis & Processing, Data Structure and Algorithms, Visual Computing, Smartphone systems and applications, Wireless and Mobile Networks, Web-based Applications, Cyber Security, 
+SCE17-0139 => Image Analysis & Processing 
+SCE17-0160 => Serious Games,Gamification,e-Learning 
+SCE17-0266 => Smartphone Systems and Applications,Human Computer Interaction,Social Networks 
+SCE17-0281 => Software and Applications,Wireless and Mobile Networks,Smartphone Systems and Applications,Real-Time / Embedded Systems 
+SCE17-0302 => e-Learning,Virtual Reality,Human Computer Interaction 
+SCE17-0325 => Computer Animation/ Games,Human Computer Interaction 
+SCE17-0335 => Gamification,Human Computer Interaction,Serious Games 
+SCE17-0336 => Serious Games,Virtual Reality,Human Computer Interaction 
+SCE17-0371 => Cloud Computing,Mobile Applications 
+SCE17-0373 => Distributed Computing Systems,Data Structure and Algorithms,Cloud Computing,System Security 
+SCE17-0376 => Cyber Security,Data Analytics,Web-based Applications,Mobile Applications 
+SCE17-0380 => Web-based Applications,Multimedia Systems,Software and Applications 
+SCE17-0381 => Web-based Applications,Human Computer Interaction 
+SCE17-0386 => Mobile Applications,Robotics,Video/Audio/Speech Processing 
+SCE17-0387 => Mobile Applications,Smartphone Systems and Applications,Software and Applications,Wireless and Mobile Networks,System Security 
+SCE17-0388 => Data Security,Mobile Applications,Software and Applications 
+SCE17-0389 => Programming Languages & Systems,Software and Applications,Web-based Applications 
+SCE17-0418 => Robotics,Real-Time / Embedded Systems,Smartphone Systems and Applications 
+SCE17-0421 => Web-based Applications,Database Systems,Software and Applications 
+SCE17-0443 => Artificial Intelligence 
+SCE17-0444 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0445 => e-Commerce,Data Analytics,Data Mining,Web-based Applications,Social Networks 
+SCE17-0454 => Artificial Intelligence,Computer Animation/ Games 
+SCE17-0461 => Artificial Intelligence,Image Analysis & Processing,Robotics 
+SCE17-0465 => Artificial Intelligence,Data Analytics 
+SCE17-0469 => Artificial Intelligence,Biomedical Systems,Data Mining 
+********************** End of Area Pref Allocation ********************** 
+Staff Allocated              : 30   
+Number of Staff (Overload|Underload)         : (0011|0068) 
+Number of Staff (ProjPref|AreaPref|NoPref)   : (0000|0000|0065) --- from underload staff only
+
+********************** Start of No Pref Allocation ********************** 
+-------------------- Round 1, ProjectList :34--------------------
+001.Random Staff : zinovi          ; Workload (Initial|After) : (01|02) ; Random Project : SCE17-0461 (ASSIGNED)
+002.Random Staff : cambria         ; Workload (Initial|After) : (02|03) ; Random Project : SCE17-0139 (ASSIGNED)
+003.Random Staff : anupam          ; Workload (Initial|After) : (04|05) ; Random Project : SCE17-0388 (ASSIGNED)
+004.Random Staff : asmadhukumar    ; Workload (Initial|After) : (07|08) ; Random Project : SCE17-0380 (ASSIGNED)
+005.Random Staff : asflin          ; Workload (Initial|After) : (07|08) ; Random Project : SCE17-0302 (ASSIGNED)
+006.Random Staff : asdouglas       ; Workload (Initial|After) : (07|08) ; Random Project : SCE17-0418 (ASSIGNED)
+007.Random Staff : mkmqian         ; Workload (Initial|After) : (08|09) ; Random Project : SCE17-0465 (ASSIGNED)
+008.Random Staff : srjoty          ; Workload (Initial|After) : (08|09) ; Random Project : SCE17-0389 (ASSIGNED)
+009.Random Staff : msabry          ; Workload (Initial|After) : (08|09) ; Random Project : SCE17-0381 (ASSIGNED)
+010.Random Staff : xbresson        ; Workload (Initial|After) : (10|11) ; Random Project : SCE17-0444 (ASSIGNED)
+011.Random Staff : dniyato         ; Workload (Initial|After) : (12|13) ; Random Project : SCE17-0202 (ASSIGNED)
+012.Random Staff : gaocong         ; Workload (Initial|After) : (12|13) ; Random Project : SCE17-0335 (ASSIGNED)
+013.Random Staff : astjcham        ; Workload (Initial|After) : (12|13) ; Random Project : SCE17-0375 (ASSIGNED)
+014.Random Staff : arvinde         ; Workload (Initial|After) : (12|13) ; Random Project : SCE17-0443 (ASSIGNED)
+015.Random Staff : khengleong      ; Workload (Initial|After) : (13|14) ; Random Project : SCE17-0394 (ASSIGNED)
+016.Random Staff : zhangj          ; Workload (Initial|After) : (13|14) ; Random Project : SCE17-0147 (ASSIGNED)
+017.Random Staff : anwitaman       ; Workload (Initial|After) : (15|16) ; Random Project : SCE17-0096 (ASSIGNED)
+018.Random Staff : ascymiao        ; Workload (Initial|After) : (15|16) ; Random Project : SCE17-0408 (ASSIGNED)
+019.Random Staff : ypke            ; Workload (Initial|After) : (16|17) ; Random Project : SCE17-0266 (ASSIGNED)
+020.Random Staff : asckkwoh        ; Workload (Initial|After) : (17|18) ; Random Project : SCE17-0387 (ASSIGNED)
+021.Random Staff : asjagath        ; Workload (Initial|After) : (18|19) ; Random Project : SCE17-0445 (ASSIGNED)
+022.Random Staff : aswbgoh         ; Workload (Initial|After) : (19|20) ; Random Project : SCE17-0454 (ASSIGNED)
+023.Random Staff : limo            ; Workload (Initial|After) : (19|20) ; Random Project : SCE17-0281 (ASSIGNED)
+024.Random Staff : ashcquek        ; Workload (Initial|After) : (20|21) ; Random Project : SCE17-0376 (ASSIGNED)
+025.Random Staff : lana            ; Workload (Initial|After) : (20|21) ; Random Project : SCE17-0336 (ASSIGNED)
+026.Random Staff : assklam         ; Workload (Initial|After) : (21|21) ; Random Project : SCE17-0421 (NOT ASSIGNED)
+027.Random Staff : sinhasharad     ; Workload (Initial|After) : (15|16) ; Random Project : SCE17-0469 (ASSIGNED)
+028.Random Staff : ashsseah        ; Workload (Initial|After) : (18|18) ; Random Project : SCE17-0325 (NOT ASSIGNED)
+029.Random Staff : shang-wei.lin   ; Workload (Initial|After) : (21|21) ; Random Project : SCE17-0159 (NOT ASSIGNED)
+030.Random Staff : assourav        ; Workload (Initial|After) : (17|18) ; Random Project : SCE17-0211 (ASSIGNED)
+031.Random Staff : aseschng        ; Workload (Initial|After) : (21|21) ; Random Project : SCE17-0373 (NOT ASSIGNED)
+032.Random Staff : yhe             ; Workload (Initial|After) : (14|15) ; Random Project : SCE17-0421 (ASSIGNED)
+033.Random Staff : ebslee          ; Workload (Initial|After) : (20|21) ; Random Project : SCE17-0386 (ASSIGNED)
+034.Random Staff : hloh            ; Workload (Initial|After) : (20|21) ; Random Project : SCE17-0159 (ASSIGNED)
+035.Random Staff : gslin           ; Workload (Initial|After) : (21|21) ; Random Project : SCE17-0160 (NOT ASSIGNED)
+036.Random Staff : ctguan          ; Workload (Initial|After) : (17|18) ; Random Project : SCE17-0325 (ASSIGNED)
+037.Random Staff : asdrajan        ; Workload (Initial|After) : (07|08) ; Random Project : SCE17-0373 (ASSIGNED)
+038.Random Staff : ssundaram       ; Workload (Initial|After) : (09|10) ; Random Project : SCE17-0160 (ASSIGNED)
+039.Random Staff : wslin           ; Workload (Initial|After) : (02|03) ; Random Project : SCE17-0371 (ASSIGNED)
+********************** End of No Pref Allocation ********************** 
+Staff Allocated              : 34   
+Number of Staff (Overload|Underload)         : (0011|0068) 
+Number of Staff (ProjPref|AreaPref|NoPref)   : (0000|0000|0031) --- from underload staff only
+
+********************** Summary ********************** 
+Total Examinable Staffs      : 0079 
+Total Projects               : 0387 
+Total Examinable Projects    : 0284 
+Total Buffer Projects        : 0000 
+Total Workload               : 1548 = (0387 + 0000) * 4
+Target Workload              : 0020 = 1548 / 0079
+Number of Staff (Overload|Underload)         : (0011|0068) 
+Number of Staff (ProjPref|AreaPref|NoPref)   : (0000|0000|0031) --- from underload staff only
+
+********************** Result ********************** 
+Total Staff Assigned         : 0046/0079
+Total Staff Not Assigned     : 0031
+Total Projects Assigned      : 0284/0284 
+Total Projects UnAssigned    : 0000
