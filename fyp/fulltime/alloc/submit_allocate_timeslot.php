@@ -275,24 +275,46 @@ function indexStaff  ($staffs, $exceptions) {
 	return $staffList;
 }
 function indexProjects ($staffList, $projects, $projectList) {
+
 	global $TABLES, $conn_db_ntu;
+
     $query_createSupervisingCountView 	= "CREATE OR REPLACE VIEW v_supervising_count  as  SELECT COUNT(fa.staff_id) AS supervising_count,fa.staff_id as staff_id FROM ". $TABLES['allocation_result'] ." as r LEFT JOIN " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id GROUP BY fa.staff_id ORDER BY supervising_count DESC";
     $conn_db_ntu->query($query_createSupervisingCountView);
     
 	//sort projects by supervising count (>=4) so as to minimise supervisor movement
-    $query_sortProjectBySupervisingCount = "SELECT r.project_id, r.examiner_id, fa.staff_id, vc.supervising_count FROM " .$TABLES['allocation_result'] ." as r LEFT JOIN " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id LEFT JOIN v_supervising_count as vc on fa.staff_id = vc.staff_id WHERE vc.supervising_count >= 4 ORDER BY vc.supervising_count DESC, fa.staff_id, r.examiner_id , r.project_id";
-	$projectsSortedBySupervisingCount		= $conn_db_ntu->query( $query_sortProjectBySupervisingCount )->fetchAll();
+//    $query_sortProjectBySupervisingCount = "SELECT r.project_id, r.examiner_id, fa.staff_id, vc.supervising_count FROM " .$TABLES['allocation_result'] ." as r LEFT JOIN " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id LEFT JOIN v_supervising_count as vc on fa.staff_id = vc.staff_id WHERE vc.supervising_count >= 4 ORDER BY vc.supervising_count DESC, fa.staff_id, r.examiner_id , r.project_id";
+//	$projectsSortedBySupervisingCount		= $conn_db_ntu->query( $query_sortProjectBySupervisingCount )->fetchAll();
 	
 	$query_createExaminerCountView 	= "CREATE OR REPLACE VIEW v_examiner_count as SELECT COUNT(r.examiner_id) as examiner_count, r.examiner_id as examiner_id FROM ". $TABLES['allocation_result'] ." as r LEFT JOIN " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id GROUP BY r.examiner_id ORDER BY examiner_count DESC";
     $conn_db_ntu->query($query_createExaminerCountView);
 	
 	//sort projects by examiner count (supervising count <4 ) so as to minimise examiner movement
-	$query_sortProjectByExaminerCount = "SELECT r.project_id, r.examiner_id, fa.staff_id,vec.examiner_count  FROM " .$TABLES['allocation_result'] ." as r LEFT JOIN " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id LEFT JOIN v_supervising_count as vc on fa.staff_id = vc.staff_id  LEFT JOIN v_examiner_count as vec on vec.examiner_id = r.examiner_id  WHERE vc.supervising_count < 4 ORDER BY vec.examiner_count DESC, r.examiner_id ,fa.staff_id, r.project_id";
-	$projectsSortedByExaminerCount		= $conn_db_ntu->query( $query_sortProjectByExaminerCount )->fetchAll();
+//	$query_sortProjectByExaminerCount = "SELECT r.project_id, r.examiner_id, fa.staff_id,vec.examiner_count  FROM " .$TABLES['allocation_result'] ." as r LEFT JOIN " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id LEFT JOIN v_supervising_count as vc on fa.staff_id = vc.staff_id  LEFT JOIN v_examiner_count as vec on vec.examiner_id = r.examiner_id  WHERE vc.supervising_count < 4 ORDER BY vec.examiner_count DESC, r.examiner_id ,fa.staff_id, r.project_id";
+//	$projectsSortedByExaminerCount		= $conn_db_ntu->query( $query_sortProjectByExaminerCount )->fetchAll();
+
+	$query_createProjectsInvolvementCountView = "create or replace view projects_involvement_count as 
+                                                                                    SELECT * FROM v_supervising_count as sc 
+                                                                                    left join v_examiner_count as ec 
+                                                                                    on sc.staff_id=ec.examiner_id 
+                                                                                    UNION 
+                                                                                    SELECT * FROM v_supervising_count as sc 
+                                                                                    right join v_examiner_count as ec 
+                                                                                    on sc.staff_id=ec.examiner_id";
+    $conn_db_ntu->query($query_createProjectsInvolvementCountView);
+
+    $query_createCountView = "create or replace view `count` as
+                                                select coalesce(staff_id, examiner_id) as staff_id, coalesce(supervising_count+examiner_count,supervising_count,examiner_count) as total_count
+                                                from projects_involvement_count
+                                                order by total_count desc";
+    $conn_db_ntu->query($query_createCountView);
+
+    $query_sortProjectsByInvolvementCount = "select r.project_id, r.examiner_id, fa.staff_id, c.total_count from " .$TABLES['allocation_result'] ." as r left join " . $TABLES['fyp_assign']. " as fa on r.project_id = fa.project_id right join count as c on fa.staff_id = c.staff_id or c.staff_id = r.examiner_id";
+    $projectsSortedByCount	 = $conn_db_ntu->query( $query_sortProjectsByInvolvementCount )->fetchAll();
+    $projectsSortedByCount = array_unique($projectsSortedByCount, SORT_REGULAR);
+
+//	$projectsCombined = array_merge($projectsSortedBySupervisingCount, $projectsSortedByExaminerCount);
 	
-	$projectsCombined = array_merge($projectsSortedBySupervisingCount, $projectsSortedByExaminerCount);
-	
-	foreach($projectsCombined as $project) { 
+	foreach($projectsSortedByCount as $project) {
 		
 		$projectList[ $project['project_id'] ] = new Project($project['project_id'],$project['staff_id'],$project['examiner_id'],'-' );
 		
