@@ -787,10 +787,15 @@
 										<col width="110" />
 										<col width="220" />
                                        <tr>
-											<td style="padding:5px;">Allocation Date:</td>
+											<td style="padding:5px;">Allocation<br> Open Date:</td>
 											
 											<td><?php generateAllocDate() ?></td>
 										</tr>
+<!--                                        <tr>-->
+<!--                                            <td style="padding:5px;">Allocation<br> Close Date:</td>-->
+<!---->
+<!--                                            <td>pending</td>-->
+<!--                                        </tr>-->
 										<tr>
 											<td colspan="2">                                      
                                                 <ul id= "timeSlotTabs" class="tabs">

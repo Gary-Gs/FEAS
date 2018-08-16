@@ -194,7 +194,13 @@ else
     }
 
     // second round allocation (by remaining vacancies)
-     if (count($projectList)>0) {
+    $attempts = 10;
+     while (count($projectList)>0 && $attempts!=0 ) {
+
+         if (array_values($projectList)[0]->getID() === "SCE17-0373") {
+             $test = 1;
+         }
+
         //find day index of vacancy day
          $vacantDay = null;
          for ($i=0; $i<$NO_OF_DAYS && $vacantDay==null;$i++) {
@@ -206,15 +212,17 @@ else
              for ($k=0; $k<$NO_OF_ROOMS && $vacantDay==null;$k++) {
                  $currentSlot[0][$k] = 0;
                  for ($z=0;$z<$MAX_SLOTS && $vacantDay==null;$z++) {
+                     //if slot of the room is empty, locate vacant day
                      if ($overallTimeTable[$i][0][$k][$z] == null) {
                         $vacantDay = $i;
+                        $roomSlot = $k;
                      } else {
                          $currentSlot[0][$k]++;
                          $roomSlot = $k;
                      }
                  }
              }
-             // try every vacant day
+             // try every slots in vacant day
              while ($vacantDay != null && $currentSlot[0][$roomSlot] < $MAX_SLOTS) {
                  $projectList= assignRooms($projectList, $staffList, $overallTimeTable[$vacantDay], $currentSlot, $vacantDay, $NO_OF_ROOMS, $NO_OF_TIMESLOTS);
                  insertValuesIntoDB ($vacantDay, $projectList);
@@ -225,6 +233,7 @@ else
                  $vacantDay = null;
              }
          }
+         $attempts--;
     }
 
     //Check if there are leftover projects
@@ -425,6 +434,10 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 			}
             // if room not full
 			else {
+                // if slot occupied, break
+                if ($timetable[$index][$room][$current_slot]!=null) {
+                    break;
+                }
                 //Check for supervisor/examiner time exceptions
                 $collision = false;
 
