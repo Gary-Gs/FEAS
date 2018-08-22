@@ -194,12 +194,13 @@ else
     }
 
     // second round allocation (by remaining vacancies)
-    $attempts = 10;
+    $attempts = 100;
      while (count($projectList)>0 && $attempts!=0 ) {
 
-         if (array_values($projectList)[0]->getID() === "SCE17-0373") {
-             $test = 1;
-         }
+         // debugging
+//         if (array_values($projectList)[0]->getID() === "SCE17-0373") {
+//             $test = 1;
+//         }
 
         //find day index of vacancy day
          $vacantDay = null;
