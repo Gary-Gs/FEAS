@@ -32,8 +32,11 @@
 		$day 		= $_REQUEST['day_'.$i];
 		$timestart	= $_REQUEST['timestart_'.$i];
 		$timeend 	= $_REQUEST['timeend_'.$i];
-		
-		if(empty($staff) || empty($day) || empty($timestart) || empty($timeend)) {
+		if($timestart >= $timeend)
+		{
+			
+		}
+		else if(empty($staff) || empty($day) || empty($timestart) || empty($timeend)) {
 			//echo "Has Empty Fields";
 		}	
 		else {
