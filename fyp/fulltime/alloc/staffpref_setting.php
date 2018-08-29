@@ -89,8 +89,18 @@
 			<h1>Staff Preference Settings for Full Time Projects</h1>
 			<?php 
 			if (isset($_REQUEST['error'])) {
-				echo "<p class='warn'> Start date cannot be greater than end date!</p>";
+				$error_no = $_REQUEST['error'];
+				if($error_no == 1){
+					echo "<p class='warn'> Please enter a valid date for Start Date!</p>";
+				}
+				if($error_no == 2){
+					echo "<p class='warn'> Please enter a valid date for End Date!</p>";
+				}
+				if($error_no == 3){
+					echo "<p class='warn'> Start date cannot be greater than end date!</p>";
+				}
 			}
+
 			if(isset($_REQUEST['save']))
 				echo "<p class='success'> Staff Preference settings saved.</p>";
 			if(isset($_REQUEST['clear']))
