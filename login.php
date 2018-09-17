@@ -1,14 +1,15 @@
 <?php
    session_start();
+   // users who are able to access all modules
+   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008"];
       
    if (isset ($_SESSION['login'])){
-	   //if ($username == "asfli") {
+	   if (in_array($username, $verifiedUsers)) {
 		header("location: index.php");
-		
-	  // }
-	   //else {
-	//	   header("location: pref/nav.php");
-	// }
+	   }
+	   else {
+		   header("location: pref/nav.php");
+	 }
 	   exit;
    }     
 
@@ -44,7 +45,7 @@
 			$filter="(SAMAccountName=$username)";
        
 			$searchResult=ldap_search($ldap, $dn, $filter);
-			if ($searchResult) {
+			if ($searchResult && ($domain!="Student" || in_array($username, $verifiedUsers))) {
 				$info = ldap_get_entries($ldap, $searchResult);
 		  
 				$displayname = $info[0]["displayname"][0];
@@ -54,18 +55,21 @@
 				$_SESSION['login']  = "valid";
 				$_SESSION['success'] = "You have logged in successfully!";
 				$_SESSION['loginTime'] = time();
-				
-				
-				//if ($username == "asfli") {
+
+
+                if (in_array($username, $verifiedUsers)) {
 					header("location: index.php");
-				//}
-				//else {
-				//	header("location: pref/nav.php");
-				//}
+				}
+				else {
+					header("location: pref/nav.php");
+				}
 				
 				exit;
 				@ldap_close($ldap);
 			}
+            echo '<script language="javascript">';
+            echo 'alert("Access Denied.")';
+            echo '</script>';
 		} 
 		else {
 			 $loginError = "Your username/password is invalid!";	
