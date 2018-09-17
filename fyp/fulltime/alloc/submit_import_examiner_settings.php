@@ -165,6 +165,11 @@ function HandleExcelData_ExaminableFacultyList($error_code, $InputFile_FullPath)
 
 	global $TABLES, $conn_db_ntu; 
 	try{
+
+	    // initialize all staff examinable to be 0
+        $initialize = sprintf("UPDATE %s SET EXAMINE = 0", $TABLES["staff"]);
+        $conn_db_ntu->exec($initialize);
+
 		$Offset						= 2; // Exclude headers
 		$Total_DataInSheet 			= count($EXCEL_AllData) - $Offset;	
 		$Total_DataEmpty			= 0;
