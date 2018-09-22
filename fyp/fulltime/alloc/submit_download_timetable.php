@@ -23,6 +23,7 @@
 	$query_rsTimeslot  	= "SELECT * FROM ".$TABLES['allocation_result_timeslot']." ORDER BY `id` ASC";
 	$query_rsStaff		= "SELECT s.id as staffid, s.name as staffname, s.position as salutation FROM ".$TABLES['staff']." as s";
 	$query_rsProject = "SELECT r.project_id as pno, p.staff_id as staffid, r.examiner_id as examinerid, r.day as day, r.slot as slot, r.room as room FROM ".$TABLES['allocation_result']." as r LEFT JOIN ".$TABLES['fyp_assign']." as p ON r.project_id = p.project_id";
+	$query_rsDates = "SELECT alloc_date FROM ".$TABLES['allocation_settings_general'];
 
 	try
 	{
@@ -32,6 +33,7 @@
 		$rsDay		= $conn_db_ntu->query($query_rsDay)->fetch();
 		$staffs		= $conn_db_ntu->query($query_rsStaff);
 		$projects 	= $conn_db_ntu->query($query_rsProject);
+        $rsDates = $conn_db_ntu->query($query_rsDates)->fetchAll();
 	}
 	catch (PDOException $e)
 	{
@@ -42,6 +44,12 @@
 	try
 	{
 		$startDate 		 	= DateTime::createFromFormat('Y-m-d', $settings['alloc_date']);
+        $exam_dates = array();
+        for ($i=0; $i<count($rsDates);$i++) {
+            $date = strtotime($rsDates[$i]['alloc_date']);
+            $newFormat = date('d/m/Y',$date);
+            $exam_dates[$i] = $newFormat;
+        }
 	}
 	catch(Exception $e)
 	{
@@ -157,15 +165,17 @@
 	
 	function getDay($day)
 	{
-		global $startDate;
-		
-		if ($day === null || $day == -1) return "-";
-		
-		$calculatedDate = clone $startDate;
-		$day_interval	= new DateInterval('P'.($day-1).'D');	//Offset -1 because day 1 falls on startDate
-		$calculatedDate->add($day_interval);
-		
-		return $calculatedDate->format('d/m/Y');
+//		global $startDate;
+//
+//		if ($day === null || $day == -1) return "-";
+//
+//		$calculatedDate = clone $startDate;
+//		$day_interval	= new DateInterval('P'.($day-1).'D');	//Offset -1 because day 1 falls on startDate
+//		$calculatedDate->add($day_interval);
+//
+//		return $calculatedDate->format('d/m/Y');
+        global $exam_dates;
+        return $exam_dates[$day-1];
 	}
 
 	//Default Styles

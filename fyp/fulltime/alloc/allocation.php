@@ -17,7 +17,7 @@ $query_rsTimeslot 	= "SELECT * FROM ".$TABLES['allocation_result_timeslot']." OR
 $query_rsDay 		= "SELECT count(*) as number_of_days FROM ".$TABLES['allocation_settings_general'] . " WHERE opt_out = 0";
 //$query_rsRoom 	= "SELECT * FROM ".$TABLES['allocation_result_room']." ORDER BY `id` ASC";
 $query_rsStaff	 	= "SELECT s.id as staffid, s.name as staffname, s.position as salutation FROM ".$TABLES['staff']." as s";
-
+$query_rsDates = "SELECT alloc_date FROM ".$TABLES['allocation_settings_general'];
 
 
 $query_rsAllocation = "SELECT t1.project_id, t2.staff_id, t1.examiner_id, t1.day, t1.slot, t1.room, t1.clash FROM ".$TABLES['allocation_result']." as t1 JOIN ".$TABLES['fyp_assign']." as t2 ON t1.project_id = t2.project_id ";
@@ -31,6 +31,7 @@ try
 
 	$staffs			= $conn_db_ntu->query($query_rsStaff);
 	$rsAllocation	= $conn_db_ntu->query($query_rsAllocation);
+	$rsDates = $conn_db_ntu->query($query_rsDates)->fetchAll();
 
 }
 catch (PDOException $e)
@@ -42,12 +43,19 @@ catch (PDOException $e)
 try
 {
 	$startDate 		 	= DateTime::createFromFormat('Y-m-d', $settings['alloc_date']);
+    $exam_dates = array();
+    for ($i=0; $i<count($rsDates);$i++) {
+        $date = strtotime($rsDates[$i]['alloc_date']);
+        $newFormat = date('d/m/Y',$date);
+        $exam_dates[$i] = $newFormat;
+    }
 }
 catch(Exception $e)
 {
 		//Default Values
 	$startDate 			= new DateTime();
 }
+
 
 	//Timeslots
 $NO_OF_DAYS = $rsDay['number_of_days'];
@@ -103,15 +111,17 @@ foreach ($rsTimeslot as $timeslot)
 	
 	function getActualDate($day)
 	{
-		global $startDate;
-		
-		if ($day === null || $day == -1) return "-";
-		
-		$calculatedDate = clone $startDate;
-		$day_interval	= new DateInterval('P'.($day-1).'D');	//Offset -1 because day 1 falls on startDate
-		$calculatedDate->add($day_interval);
-		
-		return $calculatedDate->format('d/m/Y');
+//		global $startDate;
+//
+//		if ($day === null || $day == -1) return "-";
+//
+//		$calculatedDate = clone $startDate;
+//		$day_interval	= new DateInterval('P'.($day-1).'D');	//Offset -1 because day 1 falls on startDate
+//		$calculatedDate->add($day_interval);
+//
+//		return $calculatedDate->format('d/m/Y');
+        global $exam_dates;
+        return $exam_dates[$day-1];
 	}
 
 	
