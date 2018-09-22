@@ -45,7 +45,7 @@
 			$filter="(SAMAccountName=$username)";
        
 			$searchResult=ldap_search($ldap, $dn, $filter);
-			if ($searchResult && ($domain!="Student" || in_array($username, $verifiedUsers))) {
+			if ($searchResult && ($domain!="Student" || in_array(strtolower($username), $verifiedUsers))) {
 				$info = ldap_get_entries($ldap, $searchResult);
 		  
 				$displayname = $info[0]["displayname"][0];
