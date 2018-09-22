@@ -418,75 +418,71 @@ function assignRooms ($projectList,$staffList, $timetable, $slotused, $dayIndex,
 	//Check if timeslot available	
 	$collisionCount=0;
 	$index=0;
-	for($i = 0; $i < count($projectList); $i++) {
-        // break out of project list loop when room/slots for the day is full
-        if ($timetable[$index][$NO_OF_ROOMS-1][$MAX_SLOTS-1] != null) {
-            break;
-        }
+    for($att = 0; $att <100 ; $att++) {
+        for ($i = 0; $i < count($projectList); $i++) {
+            // break out of project list loop when room/slots for the day is full
+            if ($timetable[$index][$NO_OF_ROOMS - 1][$MAX_SLOTS - 1] != null) {
+                break;
+            }
 
-		$current_project = array_values($projectList)[$i];
+            $current_project = array_values($projectList)[$i];
 
-		for($room = 0; $room < $NO_OF_ROOMS; $room++){
-			$current_slot = $slotused[$index][$room];
-            // if room full
-			if ( $current_slot >= $NO_OF_TIMESLOTS[$dayIndex] )
-			{
-                continue;
-			}
-            // if room not full
-			else {
-                // if slot occupied, break
-                if ($timetable[$index][$room][$current_slot]!=null) {
-                    break;
-                }
-                //Check for supervisor/examiner time exceptions
-                $collision = false;
-
-                $current_supervisor = $current_project->getStaff();
-                $current_examiner = $current_project->getExaminer();
-
-                $supervisor_available = $staffList[$current_supervisor]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$current_slot]->getStartTime(), $timeslots_table[$dayIndex][$current_slot]->getEndTime());
-
-                $examiner_available = $staffList[$current_examiner]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$current_slot]->getStartTime(), $timeslots_table[$dayIndex][$current_slot]->getEndTime());
-
-                // constraint checking
-                for($r = 0; !$collision && $r < $NO_OF_ROOMS; $r++)
-                {
-                    if ($timetable[$index][$r][$current_slot] == null) {
+            for ($room = 0; $room < $NO_OF_ROOMS; $room++) {
+                $current_slot = $slotused[$index][$room];
+                // if room full
+                if ($current_slot >= $NO_OF_TIMESLOTS[$dayIndex]) {
+                    continue;
+                } // if room not full
+                else {
+                    // if slot occupied, break
+                    if ($timetable[$index][$room][$current_slot] != null) {
                         break;
                     }
-                    if ($timetable[$index][$r][$current_slot] != null)
-                    {
-                        $adjacent_supervisor = $timetable[$index][$r][$current_slot]->getStaff();
-                        $adjacent_examiner = $timetable[$index][$r][$current_slot]->getExaminer();
-                        if ($current_supervisor == $adjacent_supervisor ||
-                            $current_supervisor == $adjacent_examiner ||
-                            $current_examiner == $adjacent_supervisor ||
-                            $current_examiner == $adjacent_examiner)
-                        {
-                            $collision = true;
+                    //Check for supervisor/examiner time exceptions
+                    $collision = false;
+
+                    $current_supervisor = $current_project->getStaff();
+                    $current_examiner = $current_project->getExaminer();
+
+                    $supervisor_available = $staffList[$current_supervisor]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$current_slot]->getStartTime(), $timeslots_table[$dayIndex][$current_slot]->getEndTime());
+
+                    $examiner_available = $staffList[$current_examiner]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$current_slot]->getStartTime(), $timeslots_table[$dayIndex][$current_slot]->getEndTime());
+
+                    // constraint checking
+                    for ($r = 0; !$collision && $r < $NO_OF_ROOMS; $r++) {
+                        if ($timetable[$index][$r][$current_slot] == null) {
+                            break;
+                        }
+                        if ($timetable[$index][$r][$current_slot] != null) {
+                            $adjacent_supervisor = $timetable[$index][$r][$current_slot]->getStaff();
+                            $adjacent_examiner = $timetable[$index][$r][$current_slot]->getExaminer();
+                            if ($current_supervisor == $adjacent_supervisor ||
+                                $current_supervisor == $adjacent_examiner ||
+                                $current_examiner == $adjacent_supervisor ||
+                                $current_examiner == $adjacent_examiner) {
+                                $collision = true;
+                            }
                         }
                     }
-                }
-								
-                //Collision Detected. Abort current allocation cycle. (Try Next Slot)
-                if (!$supervisor_available || !$examiner_available || $collision)
-                {
-                    //echo "<br>";
-                    //echo $collision  ? 'true' : 'false';
-                    //echo "<br/> collision = ". $collision;
-                    //echo "<br/> ";
-                    $collisionCount++;
-                    break;
-                }
 
-                //Assign current project to current slot
-                if (!$current_project->isAssignedTimeslot()) {
-                    $timetable[$index][$room][$current_slot] = $current_project;
-                    $current_project->assignTimeslot($index, $room, $current_slot);
-                    $slotused[$index][$room]++;
-                    break;
-                 }
+                    //Collision Detected. Abort current allocation cycle. (Try Next Slot)
+                    if (!$supervisor_available || !$examiner_available || $collision) {
+                        //echo "<br>";
+                        //echo $collision  ? 'true' : 'false';
+                        //echo "<br/> collision = ". $collision;
+                        //echo "<br/> ";
+                        $collisionCount++;
+                        break;
+                    }
+
+                    //Assign current project to current slot
+                    if (!$current_project->isAssignedTimeslot()) {
+                        $timetable[$index][$room][$current_slot] = $current_project;
+                        $current_project->assignTimeslot($index, $room, $current_slot);
+                        $slotused[$index][$room]++;
+                        break;
+                    }
+                }
             }
         }
     }
