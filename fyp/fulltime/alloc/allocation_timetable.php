@@ -178,7 +178,7 @@
 	{
 //		global $startDate;
 //
-//		if ($day === null || $day == -1) return "-";
+		if ($day === null || $day == -1) return "-";
 //
 //		$calculatedDate = clone $startDate;
 //		$day_interval	= new DateInterval('P'.($day-1).'D');	//Offset -1 because day 1 falls on startDate
