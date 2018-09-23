@@ -91,8 +91,8 @@
 	$NO_OF_DAYS 		= $limits['days'];
 	$NO_OF_TIMESLOTS 	= $maxslots;
 	$overallTimeTable = array();
+	$dayTimetable = array();
 	for($dayIndex = 0; $dayIndex < $NO_OF_DAYS; $dayIndex++){
-		   
 			$actualDay = $dayIndex+1;
 			$optOut = $settings[$dayIndex]["opt_out"] ;
 			if ($optOut == 0) {
@@ -102,10 +102,10 @@
 		    
 				for($room = 0; $room < $NO_OF_ROOMS; $room++) {
 						for($timeslot = 0; $timeslot < $NO_OF_TIMESLOTS; $timeslot++) {
-							$timetable[$day][$room][$timeslot] = [];
-							
+							$timetable[$dayIndex][$room][$timeslot] = [];
 						}
 				}
+                $dayTimetable[$dayIndex] = $timetable[$dayIndex];
 			}
 	}			
 	if ($projects->rowCount() == 0 || $staffs->rowCount() == 0){
@@ -140,9 +140,9 @@
 				$day  = $projectList [ $project['pno'] ]->getAssigned_Day()-1;
 				$room = $projectList [ $project['pno'] ]->getAssigned_Room()-1;
 				$slot = $projectList [ $project['pno'] ]->getAssigned_Time()-1;
-				
-				$timetable[$day][$room][$slot][] = $projectList [ $project['pno'] ];
-				$overallTimeTable[$day] = $timetable;
+
+                $dayTimetable[$day][$room][$slot][] = $projectList [ $project['pno'] ];
+				$overallTimeTable[$day] = $dayTimetable;
 				
 			}
 			else
