@@ -769,7 +769,7 @@
 					
 					<!--Buttons-->
 					<div style="float:right; padding-top:25px;">
-						<a href="clearpref.php" class="bt" title="Clear all saved preferences">Clear All</a>
+						<a href="clearpref.php" class="bt" title="Clear all saved preferences">Delete All</a>
 						<a href="staffpref_fulltime.php?clear=1" class="bt" title="Clear all selected preferences">Clear Changes</a>
 						<input type="submit" title="Save all selected preferences" value="Save Changes" class="bt" style="font-size:12px !important;"/>
 					</div>
