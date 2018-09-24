@@ -105,6 +105,9 @@ $conn_db_ntu = null;
 						case 4:
 						echo "<p class='error'> Cannot load excel file. Please contact system admin!</p>";
 						break;
+						case 5:
+						echo "<p class='error'> Incorrect Data Format! Please upload the correct excel!</p>";
+						break;
 					}
 			   }
 				if (isset ($_REQUEST['import_project'])){
@@ -152,6 +155,10 @@ $conn_db_ntu = null;
 				</form>
 				<script type="text/javascript">
 					$("#FORM_FileToUpload_ProjectList").submit(function( event ) {
+						// start of xm edits 
+						//this for displaying to show that the data format for excel uploaded is wrong, somehow it worked but dont understand why
+			            window.location.href = ("project.php?error_code=5");
+			            // end of xm edits 
 						uploadFile();
 						event.preventDefault();
 					});
@@ -190,6 +197,7 @@ $conn_db_ntu = null;
 
 			                    			if(percentComplete == 100){
 			                    				_('status').innerHTML = "File uploaded. Waiting for server to respond!";
+			                    				_('status').setAttribute("class", "success");
 			                    			}
 			                    		}
 			                    	}, false );
@@ -197,13 +205,20 @@ $conn_db_ntu = null;
 			                    },
 			                    success: function (data) {
 			                    	console.log(data);
-			                    	console.log("File uploaded. Server Responded!");
-			                    	_('status').innerHTML = "File uploaded. Server Responded!";
+			                    	/* original codes */
+			                    	//console.log("File uploaded. Server Responded!");
+			                    	//_('status').innerHTML = "File uploaded. Server Responded!";
+			                    	/* editted by xm */
+			                    	console.log("Incorrect data format! Please upload the correct excel!");
+			                    	_('status').innerHTML = "Incorrect data format! Please upload the correct excel!";
+			                    	_('status').setAttribute("class", "error");
+			                    	/* end of edits */
 			                    	_("progressbardiv").style.display  = "none";
 			                    	_("loadingdiv").style.display  = "none";
 			                    	$("#progressbar").text(0 + "%");
 			                    	$("#progressbar").css('width', 0 + "%");
 			                    	window.location.href = ("project.php?" + data);
+
 			                    },
 			                    error: function(data){
 			                    	console.log("File upload failed!");
