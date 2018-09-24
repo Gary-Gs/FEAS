@@ -183,13 +183,18 @@ else
     $overallTimeTable = array();
 
     // first round allocation (sequential)
-    for($dayIndex =0;$dayIndex<$NO_OF_DAYS;$dayIndex++) {
+    for($dayIndex =0;($projectList!=0) && $dayIndex<$NO_OF_DAYS;$dayIndex++) {
         $optOut = $settings[$dayIndex]["opt_out"];
         if ($optOut ==0) {
         $projectList = allocateTimeSlotsByDay($dayIndex, $staffList,$projectList,$MAX_SLOTS, $NO_OF_TIMESLOTS);
-
         insertValuesIntoDB ($dayIndex, $projectList);
         $projectList = removeAssignedProjects ($projectList);
+        $skipping = skipDecision($dayIndex, $projectList);
+            if ($skipping) {
+                $projectList = assignSkipping ($projectList, $staffList, $overallTimeTable, $dayIndex);
+                insertValuesIntoDB ($dayIndex, $projectList);
+                $projectList = removeAssignedProjects ($projectList);
+            }
         }
     }
 
@@ -253,6 +258,79 @@ else
     //echo count($projectList);
 }	
 //End of Allocation
+function skipDecision ($dayIndex, $projectList) {
+    if (count($projectList)==0) {
+        return false;
+    }
+    global $overallTimeTable;
+    $count = 0;
+    // for all rooms
+    for ($i=0; $i<count($overallTimeTable[$dayIndex][0]); $i++) {
+        // for all time slots
+        for ($t = 0; $t < count($overallTimeTable[$dayIndex][0][$i]); $t++) {
+            if ($overallTimeTable[$dayIndex][0][$i][$t]==null) {
+                $count ++;
+            }
+        }
+    }
+    if ($count>count($projectList)) {
+        return true;
+    }
+    return false;
+}
+
+function assignSkipping ($projectList, $staffList, $overallTimeTable, $dayIndex) {
+    global $timeslots_table;
+    // assigning remaining project by skipping time slot/room
+    for ($r=0; $r<count($projectList);$r++) {
+        $nextProject = false;
+        // for all rooms
+        for ($i=0;!$nextProject && $i<count($overallTimeTable[$dayIndex][0]); $i++) {
+            // for all time slots
+            for ($t=0; !$nextProject && $t<count($overallTimeTable[$dayIndex][0][$i]);$t++) {
+                $current_slot = $overallTimeTable[$dayIndex][0][$i][$t];
+                // if room not occupied, proceed
+                if ($current_slot == null) {
+                    $current_project = array_values($projectList)[$r];
+                    $collision = false;
+                    //Check for supervisor/examiner time exceptions
+                    $current_supervisor = $current_project->getStaff();
+                    $current_examiner = $current_project->getExaminer();
+                    $supervisor_available = $staffList[$current_supervisor]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$t]->getStartTime(), $timeslots_table[$dayIndex][$t]->getEndTime());
+                    $examiner_available = $staffList[$current_examiner]->isAvailable($dayIndex, $timeslots_table[$dayIndex][$t]->getStartTime(), $timeslots_table[$dayIndex][$t]->getEndTime());
+                    // constraint checking
+                    for ($c = 0; !$collision && $c < count($overallTimeTable[$dayIndex][0]); $c++) {
+                        if ($overallTimeTable[$dayIndex][0][$c][$t] == null) {
+                            break;
+                        }
+                        if ($overallTimeTable[$dayIndex][0][$c][$t] != null) {
+                            $adjacent_supervisor = $overallTimeTable[$dayIndex][0][$c][$t]->getStaff();
+                            $adjacent_examiner = $overallTimeTable[$dayIndex][0][$c][$t]->getExaminer();
+                            if ($current_supervisor == $adjacent_supervisor ||
+                                $current_supervisor == $adjacent_examiner ||
+                                $current_examiner == $adjacent_supervisor ||
+                                $current_examiner == $adjacent_examiner) {
+                                $collision = true;
+                            }
+                        }
+                    }
+                    //Collision Detected. Abort current allocation cycle. (Try Next Slot)
+                    if (!$supervisor_available || !$examiner_available || $collision) {
+                        continue;
+                    }
+                    //Assign current project to current slot
+                    if (!$current_project->isAssignedTimeslot()) {
+                        $current_project->assignTimeslot(0, $i, $t);
+                        $overallTimeTable[$dayIndex][0][$i][$t] = $current_project;
+                        $nextProject = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return $projectList;
+}
 	
 function removeAssignedProjects ($projectList)  {
 	
