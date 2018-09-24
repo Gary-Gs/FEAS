@@ -284,7 +284,19 @@
 		$(document).ready(function() {
 			var update_sp = false;
 			var update_ap = false;
-			
+
+			var modified = false;
+            // enable warning when leaving the page
+            $(window).on('beforeunload', function(){
+                if (modified === true) {
+                    return "";
+                }
+            });
+            $(document).on('click', '.leave', function () {
+                // disable unload warning
+                $(window).off('beforeunload');
+            });
+
 			//Tabbed Tables
 			$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
 				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
@@ -360,6 +372,7 @@
 			//Project Table
 			function UpdateProjTable(value, reduce_shift)
 			{
+                modified = true;
 				update_sp = false;
 				
 				var table = $('#selected_proj_table').DataTable();
@@ -431,6 +444,7 @@
 
 				if (!exists)
 				{
+                    modified = true;
 					AddSelectedProject(project_id, supervisor, title);
 				}
 				else
@@ -451,6 +465,7 @@
 			//Area Table
 			function UpdateAreaTable(value, reduce_shift)
 			{
+                modified = true;
 				update_ap = false;
 				
 				var table = $('#selected_area_table').DataTable();
@@ -519,6 +534,7 @@
 
 				if (!exists)
 				{
+                    modified = true;
 					AddSelectedArea(area_id, title);
 				}
 				else
@@ -769,9 +785,9 @@
 					
 					<!--Buttons-->
 					<div style="float:right; padding-top:25px;">
-						<a href="clearpref.php" class="bt" title="Clear all saved preferences">Delete All</a>
-						<a href="staffpref_fulltime.php?clear=1" class="bt" title="Clear all selected preferences">Clear Changes</a>
-						<input type="submit" title="Save all selected preferences" value="Save Changes" class="bt" style="font-size:12px !important;"/>
+						<a href="clearpref.php" class="bt leave" title="Clear all saved preferences">Delete All</a>
+						<a href="staffpref_fulltime.php?clear=1" class="bt leave" title="Clear all selected preferences">Clear Changes</a>
+						<input type="submit" title="Save all selected preferences" value="Save Changes" class="bt leave" style="font-size:12px !important;"/>
 					</div>
 				</form>	
 			</div>	
