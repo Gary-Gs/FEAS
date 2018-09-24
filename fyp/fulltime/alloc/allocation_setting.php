@@ -428,16 +428,10 @@ function enoughSlots() {
 			roomCount_Day1 = <?php echo $roomCount_day1; ?>;
 			roomCount_Day2 = <?php echo $roomCount_day2; ?>;
 			roomCount_Day3 = <?php echo $roomCount_day3; ?>;
+			// $("#alloc_days1").datepicker({dateFormat: "yy-mm-dd",});
+			// $("#alloc_days2").datepicker({dateFormat: "yy-mm-dd",});
+			// $("#alloc_days3").datepicker({dateFormat: "yy-mm-dd",});
 
-			$("#alloc_days1").datepicker({
-											 dateFormat: "yy-mm-dd",
-										 });
-			$("#alloc_days2").datepicker({
-											 dateFormat: "yy-mm-dd",
-										 });
-			$("#alloc_days3").datepicker({
-											 dateFormat: "yy-mm-dd",
-										 });
 			var no_of_days = <?php echo $NO_OF_DAYS; ?>;
 			generateTabs(no_of_days);
 		});
@@ -537,6 +531,7 @@ function enoughSlots() {
 				// for the tabs side - assign current
 				$("#tab" + day).addClass('current');
 				$("#tab-" + day).addClass('current');
+				// $("#alloc_days" + day).datepicker({dateFormat: "yy-mm-dd",});
 
 				// for the room side - assign current
 				$(this).addClass('current');
@@ -612,33 +607,33 @@ function enoughSlots() {
 		if (!enoughSlots()) {
 			echo "<p class = 'warn'> Your current settings do not provide sufficient rooms/slots for timetable allocation!</p>";
 		}
-//		if (isset($_REQUEST['error'])) {
-//			$error_exp = explode('|', $_REQUEST['error']);
-//			echo sizeof($error_exp);
-//			for ($i = 0; $i < $error_exp)
-//			switch (error) {
-//				case 0:
-//					echo "<p class = 'warn'> Invalid date format for Day 1.</p>";
-//					break;
-//				case 1:
-//					echo "<p class = 'warn'> Invalid date format for Day 2.</p>";
-//					break;
-//				case 2:
-//					echo "<p class = 'warn'> Invalid date format for Day 3.</p>";
-//					break;
-//				case 3:
-//					echo "<p class = 'warn'> Day 1 must be before Day 2.</p>";
-//					break;
-//				case 4:
-//					echo "<p class = 'warn'> Day 1 must be before Day 3.</p>";
-//					break;
-//				case 5:
-//					echo "<p class = 'warn'> Day 2 must be before Day 3.</p>";
-//					break;
-//				default:
-//					break;
-//			}
-//		}
+		//		if (isset($_REQUEST['error'])) {
+		//			$error_exp = explode('|', $_REQUEST['error']);
+		//			echo sizeof($error_exp);
+		//			for ($i = 0; $i < $error_exp)
+		//			switch (error) {
+		//				case 0:
+		//					echo "<p class = 'warn'> Invalid date format for Day 1.</p>";
+		//					break;
+		//				case 1:
+		//					echo "<p class = 'warn'> Invalid date format for Day 2.</p>";
+		//					break;
+		//				case 2:
+		//					echo "<p class = 'warn'> Invalid date format for Day 3.</p>";
+		//					break;
+		//				case 3:
+		//					echo "<p class = 'warn'> Day 1 must be before Day 2.</p>";
+		//					break;
+		//				case 4:
+		//					echo "<p class = 'warn'> Day 1 must be before Day 3.</p>";
+		//					break;
+		//				case 5:
+		//					echo "<p class = 'warn'> Day 2 must be before Day 3.</p>";
+		//					break;
+		//				default:
+		//					break;
+		//			}
+		//		}
 		if (isset($_REQUEST['save'])) {
 			echo "<p class = 'success'> Allocation settings saved.</p>";
 		}
@@ -802,4 +797,18 @@ unset($rooms);
 			alert("Start Time must be before End Time.");
 		}
 	}
+
+	$("#tsSettingsBody").on("click", "#alloc_days1", function () {
+		$("#alloc_days1").datepicker({dateFormat: "yy-mm-dd"});
+		$("#alloc_days1").datepicker("show");
+	});
+	$("#tsSettingsBody").on("click", "#alloc_days2", function () {
+		$("#alloc_days2").datepicker({dateFormat: "yy-mm-dd"});
+		$("#alloc_days2").datepicker("show");
+	});
+	$("#tsSettingsBody").on("click", "#alloc_days3", function () {
+		$("#alloc_days3").datepicker({dateFormat: "yy-mm-dd"});
+		$("#alloc_days3").datepicker("show");
+	});
+
 </script>
