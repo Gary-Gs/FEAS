@@ -289,7 +289,7 @@
             // enable warning when leaving the page
             $(window).on('beforeunload', function(){
                 if (modified === true) {
-                    return "";
+                    return "Changes you made may not be saved.";
                 }
             });
             $(document).on('click', '.leave', function () {
