@@ -182,7 +182,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
     $Total_ExaminableProjects   = sizeof($examinableProjectList);
     $Total_Examinable_Staffs    = sizeof($staffList); 
     $Total_BufferProjects       = $_POST["Total_BufferProjects"];
-    $Total_Workload             = ($Total_BufferProjects + $Total_Projects) * $constant;
+  //  $Total_Workload             = ($Total_BufferProjects + $Total_Projects) * $constant;
+    $Total_Workload             = ($Total_BufferProjects + $Total_ExaminableProjects) * $constant;
     $Target_Workload01          = ($Total_Examinable_Staffs > 0) ? ceil($Total_Workload / $Total_Examinable_Staffs) : 1;
     $WorkingStaffList           = $staffList;
     $WorkingProjectList         = $examinableProjectList; 
