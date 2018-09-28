@@ -52,8 +52,7 @@
 	$query_UpdateWorkload  = sprintf("INSERT INTO %s (`id`, `workload`, `examine`) VALUES %s ON DUPLICATE KEY UPDATE `workload`=VALUES(`workload`), `examine`=VALUES(`examine`)",
 							$TABLES['staff'],
 							implode(",", $values));
-							
-	
+	$conn_db_ntu->exec($query_UpdateWorkload);
 	$conn_db_ntu = null;
 	unset($rsStaff);
 	unset($values);
