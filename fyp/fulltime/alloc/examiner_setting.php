@@ -125,11 +125,11 @@ $conn_db_ntu = null;
 							</tr>
 							<tr>
 								<td colspan="5">
-									Please select the <b><u>Examinable Staff List</u></b> and <b><u>Workload Staff List</u></b>:
+									Please select the <b><u>Examinable Staff List</u></b> and <b><u>Exemption Staff List</u></b>:
 								</td>
 							</tr>
 							<tr>
-								<td colspan="5">File Name format: <b>examinable_staff_list</b> & <b>workload_staff_list</b></td>
+								<td colspan="5">File Name format: <b>examinable_staff_list</b> & <b>exemption_staff_list</b></td>
 							</tr>
 							<tr>
 								<td colspan="2">
@@ -182,7 +182,7 @@ $conn_db_ntu = null;
 									if(	Filename.toLowerCase() == "examinable_staff_list" ){
 										li.innerHTML += " (Valid)";
 										li.setAttribute("style", "list-style-type: none; color: green;");
-									} else if( Filename.toLowerCase() == "workload_staff_list" ){
+									} else if( Filename.toLowerCase() == "exemption_staff_list" ){
 										li.innerHTML += " (Valid)";
 										li.setAttribute("style", "list-style-type: none; color: green;");
 									} else{
@@ -191,7 +191,7 @@ $conn_db_ntu = null;
 									}
 									FileToUpload_FileList.append(li);
 								}
-								if( (FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list")) && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list"))){
+								if( (FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("exemption_staff_list")) && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("exemption_staff_list"))){
 									IsValidFileUpload=true;
 								} else{
 									IsValidFileUpload=false;
@@ -318,7 +318,7 @@ $conn_db_ntu = null;
 							<tr class="heading">
 								<td>Staff Name</td>
 								<td>Staff ID</td>
-								<td>Workload</td>
+								<td>Exemption</td>
 								<td>Can Examine</td>
 							</tr>
 
