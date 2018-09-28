@@ -46,7 +46,7 @@ if(isset($_FILES["FileToUpload_ExaminerSettings"])){
 }
 
 // Assign faculty workload into DB first
-$FilesInDir = glob("$target_dir". "workload_staff_list.*");
+$FilesInDir = glob("$target_dir". "exemption_staff_list.*");
 if (count($FilesInDir) == 1){
 	$error_code = HandleExcelData_WorkloadList($error_code, $FilesInDir[0]);
 	if($error_code == 0 ){ // no error
