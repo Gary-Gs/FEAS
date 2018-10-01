@@ -24,6 +24,9 @@
 	$query_rsStaff		= "SELECT s.id as staffid, s.name as staffname, s.position as salutation FROM ".$TABLES['staff']." as s";
 	$query_rsProject = "SELECT r.project_id as pno, p.staff_id as staffid, r.examiner_id as examinerid, r.day as day, r.slot as slot, r.room as room FROM ".$TABLES['allocation_result']." as r LEFT JOIN ".$TABLES['fyp_assign']." as p ON r.project_id = p.project_id";
 	$query_rsDates = "SELECT alloc_date FROM ".$TABLES['allocation_settings_general'];
+	$query_examining_staff = "select * from staff where examine=1";
+	$query_supervising_load = "select * from staff, v_supervising_count where staff.id=v_supervising_count.staff_id and staff.examine=1";
+	$query_examining_load = "select * from staff, v_examiner_count where staff.id=v_examiner_count.examiner_id and staff.examine=1";
 
 	try
 	{
@@ -34,6 +37,9 @@
 		$staffs		= $conn_db_ntu->query($query_rsStaff);
 		$projects 	= $conn_db_ntu->query($query_rsProject);
         $rsDates = $conn_db_ntu->query($query_rsDates)->fetchAll();
+        $supervising_load = $conn_db_ntu->query($query_supervising_load)->fetchAll();
+        $examining_load = $conn_db_ntu->query($query_examining_load)->fetchAll();
+        $examining_staff = $conn_db_ntu->query($query_examining_staff)->fetchAll();
 	}
 	catch (PDOException $e)
 	{
@@ -309,7 +315,51 @@
 
 	//Autosize Sheet 2
 	autosize_currentSheet();
-	
+
+	// Sheet 3 - staff load
+	$objPHPExcel->createSheet();
+	$objPHPExcel->setActiveSheetIndex(2);
+	$objPHPExcel->getActiveSheet()->setTitle('Staff Load');
+	$headers = ['Staff ID', 'Email', 'Staff Name', 'Workload', 'Exemption', 'Supervising Projects', "Examining Projects"];
+	$objPHPExcel->getActiveSheet()->fromArray($headers, NULL, 'A1');
+	$objPHPExcel->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
+	$rowCount = 2;
+	foreach ($examining_staff as $staff) {
+        $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCount, $staff['id']);
+        $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCount, $staff['email']);
+        $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCount, $staff['name']);
+        $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCount, $staff['workload']);
+        $objPHPExcel->getActiveSheet()->SetCellValue('E'.$rowCount, $staff['exemption']);
+        foreach($supervising_load as $supervising) {
+        	if ($supervising['staff_id'] == $staff['id']) {
+        		if ($supervising['supervising_count']==null || $supervising['supervising_count']=="") {
+                    $objPHPExcel->getActiveSheet()->SetCellValue('F'.$rowCount, "0");
+				} else {
+                    $objPHPExcel->getActiveSheet()->SetCellValue('F'.$rowCount, $supervising['supervising_count']);
+				}
+
+			}
+		}
+        foreach($examining_load as $examining) {
+            if ($examining['examiner_id'] == $staff['id']) {
+            	if ($examining['examiner_count']==null  || $examining['examiner_count']=="") {
+                    $objPHPExcel->getActiveSheet()->SetCellValue('G'.$rowCount, "0");
+				} else {
+                    $objPHPExcel->getActiveSheet()->SetCellValue('G'.$rowCount, $examining['examiner_count']);
+				}
+            }
+        }
+        if (($rowCount%2) == 0)	//Even Rows
+            cellColor('A'.$rowCount.':G'.$rowCount, 'FFFF99');
+        else
+            cellColor('A'.$rowCount.':G'.$rowCount, 'CCFFCC');
+
+        $rowCount++;
+    }
+
+	//Autosize Sheet 3
+	autosize_currentSheet();
+
 	//Switch back to active sheet
 	$objPHPExcel->setActiveSheetIndex(0);
 	
