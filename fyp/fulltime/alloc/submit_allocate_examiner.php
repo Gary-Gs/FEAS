@@ -200,7 +200,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
     $indexcount = 0;
     foreach ($WorkingStaffList as $WorkingStaff) {
         $indexcount ++;
-        if($WorkingStaff->getWorkload() <= $Target_Workload01){
+        if($WorkingStaff->getWorkload() < $Target_Workload01){
             // Staffs that are underload
             // Staff with Proj preference
             if(count($WorkingStaff->assignment_project) > 0 ){
@@ -270,7 +270,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
                 // 1. Check if the selected project pref is assigned ?  
                 // 2. Check if the selected project pref superviser is himself/herself ?
                 // 3. Check if the random staff is still assignable
-        		if (!$WorkingProjectList[$SelectedProject]->isAssignedStaff() && $WorkingProjectList[$SelectedProject]->getStaff() != $RandomStaffObj->getID() && $RandomStaffObj->getWorkload() <= $Target_Workload01) {
+        		if (!$WorkingProjectList[$SelectedProject]->isAssignedStaff() && $WorkingProjectList[$SelectedProject]->getStaff() != $RandomStaffObj->getID() && $RandomStaffObj->getWorkload() < $Target_Workload01) {
         			$WorkingProjectList[$SelectedProject]->assignStaff($RandomStaffObj->getID(), "Workload Assignment"); 
         			$Workload_New = $RandomStaffObj->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
                     $RandomStaffObj->setWorkload($Workload_New);    // Set new workload to the current staff
@@ -315,7 +315,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
         	}
         }else{
         	$Total_Examinable_StaffsAssigned++;
-            if($RandomStaffObj->getWorkload() <= $Target_Workload01){ // staff is still assignable
+            if($RandomStaffObj->getWorkload() < $Target_Workload01){ // staff is still assignable
                 // Add to no pref list 
             	$AL_StaffWithPref_NoSelection[$RandomStaffObj->getID()] = $RandomStaffObj;
             	$String01  = $String01 . sprintf("%s : %-15s ; Workload (Initial|After) : (%02d|%02d) ;","Random Staff", 
@@ -379,7 +379,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
         			// 1. Check if the area pref of the selected project is assigned ?  
                 	// 2. Check if the area pref of the selected project superviser is himself/herself ?
                 	// 3. Check if the random staff is still assignable
-    		    	if (!$ThisProject->isAssignedStaff() && $ThisProject->getStaff() != $RandomStaffObj->getID() && $RandomStaffObj->getWorkload() <= $Target_Workload01){
+    		    	if (!$ThisProject->isAssignedStaff() && $ThisProject->getStaff() != $RandomStaffObj->getID() && $RandomStaffObj->getWorkload() < $Target_Workload01){
     		    		$ThisProject->assignStaff($RandomStaffObj->getID(), "Workload Assignment"); 
     		    		$Workload_New = $RandomStaffObj->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
                         $RandomStaffObj->setWorkload($Workload_New);        // Set new workload to the current staff
@@ -411,7 +411,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 	        }
 	        else{
 	        	$Total_Examinable_StaffsAssigned++;
-	            if($RandomStaffObj->getWorkload() <= $Target_Workload01){ // random staff is still assignable = move random staff to no pref selection
+	            if($RandomStaffObj->getWorkload() < $Target_Workload01){ // random staff is still assignable = move random staff to no pref selection
 	                // Add to no pref list 
 	            	$AL_StaffWithPref_NoSelection[$RandomStaffObj->getID()] = $RandomStaffObj;
 	            	$String01  = $String01 . sprintf("\n%s : %-15s ; Workload (Initial|After) : (%02d|%02d) ;","Random Staff", 
@@ -460,7 +460,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
                     break; // no more projects to assign
                 }
 
-                if($ThisStaff->getWorkload() <= $Target_Workload01 && $RandomProjectObj->getStaff() != $ThisStaff->getID()){
+                if($ThisStaff->getWorkload() < $Target_Workload01 && $RandomProjectObj->getStaff() != $ThisStaff->getID()){
                 	$RandomProjectObj->assignStaff($ThisStaff->getID(), "Workload Assignment"); 
                 	$Workload_New = $ThisStaff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
                     $ThisStaff->setWorkload($Workload_New);                 // Set new workload to the current staff
