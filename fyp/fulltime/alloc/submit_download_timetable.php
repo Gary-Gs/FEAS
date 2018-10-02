@@ -320,9 +320,9 @@
 	$objPHPExcel->createSheet();
 	$objPHPExcel->setActiveSheetIndex(2);
 	$objPHPExcel->getActiveSheet()->setTitle('Staff Load');
-	$headers = ['Staff ID', 'Email', 'Staff Name', 'Workload', 'Exemption', 'Supervising Projects', "Examining Projects"];
+	$headers = ['Staff ID', 'Email', 'Staff Name', 'Workload', 'Exemption', 'Supervising Projects', "Examining Projects", "Total Load After Assignment"];
 	$objPHPExcel->getActiveSheet()->fromArray($headers, NULL, 'A1');
-	$objPHPExcel->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('A1:H1')->getFont()->setBold(true);
 	$rowCount = 2;
 	foreach ($examining_staff as $staff) {
         $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCount, $staff['id']);
@@ -349,10 +349,13 @@
 				}
             }
         }
+		$totalLoad = $objPHPExcel->getActiveSheet()->getCell('D'.$rowCount)->getValue() + $objPHPExcel->getActiveSheet()->getCell('G'.$rowCount)->getValue();
+        $objPHPExcel->getActiveSheet()->SetCellValue('H'.$rowCount, $totalLoad);
+
         if (($rowCount%2) == 0)	//Even Rows
-            cellColor('A'.$rowCount.':G'.$rowCount, 'FFFF99');
+            cellColor('A'.$rowCount.':H'.$rowCount, 'FFFF99');
         else
-            cellColor('A'.$rowCount.':G'.$rowCount, 'CCFFCC');
+            cellColor('A'.$rowCount.':H'.$rowCount, 'CCFFCC');
 
         $rowCount++;
     }
