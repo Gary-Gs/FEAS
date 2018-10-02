@@ -98,25 +98,25 @@
 			if (isset ($loginError)) {
 				    echo "<p class='warn'>[Login] ". $loginError ."</p>";	
 			}?>
-			<h1>Login Page for FYP Examiner Allocation System</h1>
+			<h1>Welcome to FYP Examiner Allocation System</h1>
 			<br/>
 			<br/>
 			
 	 <form class="form-horizontal" role="form" method="POST" action="login.php">
-	   <label for="userName" class="control-label">UserName:</label>
+	   <label for="userName" class="control-label" style="width:80px;display:inline-block">UserName:</label>
 	 <input id="userName" type="text" class="form-control" name="username" value="" required>
 	 <br/><br/>
-	 <label for="password" class="control-label">Password:</label>
+	 <label for="password" class="control-label" style="width:80px;display:inline-block">Password:</label>
 	 <input id="passWord" type="password" name="pwd"  class="form-control" required autocomplete="off" > 
 	 <br/><br/>
-	 <label for="domain" class="control-label">Domain:</label>
+	 <label for="domain" class="control-label" style="width:80px;display:inline-block">Domain:</label>
 	  <select name="domain">
 		<option value="Student">Student</option>
-		<option value="Staff">Staff</option>
+		<option selected="selected" value="Staff">Staff</option>
   
 	  </select> 
 		
-		<br/><br/>
+		<br/><br/><br>
 	  <button type="submit" class="bt">Login</button>
 	  <br/><br/>
 	
