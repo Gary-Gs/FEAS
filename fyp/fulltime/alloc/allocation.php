@@ -304,12 +304,12 @@ foreach ($rsTimeslot as $timeslot)
 							data: {"AlgorithmType" : $( "#AlgorithmType" ).val(),"Total_BufferProjects":$( "#Total_BufferProjects" ).val()},
 							type: 'POST',
 							success: function (data) {
-								console.log(data);
 								console.log("Ajax post success! ");
-								window.location.href = ("allocation.php?" + data);
+								window.location.href = ("allocation.php?" + "allocate_examiner=1");
 							},
 							error: function(data){
 								console.log("Ajax post failed!");
+                                window.location.href = ("allocation.php?" + "allocate_examiner=0");
 							}
 						});
 					});
