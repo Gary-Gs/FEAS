@@ -27,6 +27,8 @@
 	$query_examining_staff = "select * from staff where examine=1";
 	$query_supervising_load = "select * from staff, v_supervising_count where staff.id=v_supervising_count.staff_id and staff.examine=1";
 	$query_examining_load = "select * from staff, v_examiner_count where staff.id=v_examiner_count.examiner_id and staff.examine=1";
+	$query_preferredProjects = "select staff_id, count(prefer) as prefer from fea_staff_pref where prefer like '%SC%' and archive=0 group by staff_id";
+	$query_notPreferred = "select r.examiner_id as id , count(r.project_id) as not_preferred from fea_result as r where concat(r.examiner_id,\" \", r.project_id) not in ( (select concat(p.staff_id,\" \", p.prefer) as result from fea_staff_pref as p where prefer like '%SC%' and archive=0)) group by id";
 
 	try
 	{
@@ -40,6 +42,8 @@
         $supervising_load = $conn_db_ntu->query($query_supervising_load)->fetchAll();
         $examining_load = $conn_db_ntu->query($query_examining_load)->fetchAll();
         $examining_staff = $conn_db_ntu->query($query_examining_staff)->fetchAll();
+        $preferredProjects = $conn_db_ntu->query($query_preferredProjects)->fetchAll();
+        $notPreferred = $conn_db_ntu->query($query_notPreferred)->fetchAll();
 	}
 	catch (PDOException $e)
 	{
@@ -320,9 +324,9 @@
 	$objPHPExcel->createSheet();
 	$objPHPExcel->setActiveSheetIndex(2);
 	$objPHPExcel->getActiveSheet()->setTitle('Staff Load');
-	$headers = ['Staff ID', 'Email', 'Staff Name', 'Workload', 'Exemption', 'Supervising Projects', "Examining Projects", "Total Load After Assignment"];
+	$headers = ['Staff ID', 'Email', 'Staff Name', 'Workload', 'Exemption', 'Supervising Projects', "Examining Projects", "Total Load After Assignment", "Preferred Project No.", "No. Projects Not in Proj Pref List"];
 	$objPHPExcel->getActiveSheet()->fromArray($headers, NULL, 'A1');
-	$objPHPExcel->getActiveSheet()->getStyle('A1:H1')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('A1:J1')->getFont()->setBold(true);
 	$rowCount = 2;
 	foreach ($examining_staff as $staff) {
         $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCount, $staff['id']);
@@ -352,10 +356,22 @@
 		$totalLoad = $objPHPExcel->getActiveSheet()->getCell('D'.$rowCount)->getValue() + $objPHPExcel->getActiveSheet()->getCell('G'.$rowCount)->getValue();
         $objPHPExcel->getActiveSheet()->SetCellValue('H'.$rowCount, $totalLoad);
 
+        foreach($preferredProjects as $preferred) {
+        	if ($preferred['staff_id'] == $staff['id']) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('I'.$rowCount, $preferred['prefer']);
+			}
+		}
+
+		foreach ($notPreferred as $notPrefer) {
+            if ($notPrefer['id'] == $staff['id']) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('J'.$rowCount, $notPrefer['not_preferred']);
+            }
+		}
+
         if (($rowCount%2) == 0)	//Even Rows
-            cellColor('A'.$rowCount.':H'.$rowCount, 'FFFF99');
+            cellColor('A'.$rowCount.':J'.$rowCount, 'FFFF99');
         else
-            cellColor('A'.$rowCount.':H'.$rowCount, 'CCFFCC');
+            cellColor('A'.$rowCount.':J'.$rowCount, 'CCFFCC');
 
         $rowCount++;
     }
