@@ -56,9 +56,9 @@ $query_rsProjPref           = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE
 //$query_rsAreaPref           = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE prefer not LIKE 'SCE%' ORDER BY choice ASC";
 $query_rsAreaPref 	= "SELECT * FROM ".$TABLES['staff_pref']." as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key  AND  archive =0 ORDER BY choice ASC";
 
-$query_rsExaminableProject  = "SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM " . $TABLES['fea_projects'] . " as p3 LEFT JOIN " . $TABLES['fyp_assign'] . " as p2 ON p3.project_id=p2.project_id  LEFT JOIN " . $TABLES['fyp'] . " as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 and p3.examine_year = " . $examYearValue . " and p3.examine_sem = " . $examSemValue;
+$query_rsExaminableProject  = "select t1.pno, t1.staffid, t1.exam_year, t1.exam_sem, t1.ptitle, t1.parea1, t1.parea2, t1.parea3, t1.parea4, t1.parea5, count(t2.projects) as chosen from (SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM `fea_projects` as p3 LEFT JOIN `fyp_assign` as p2 ON p3.project_id=p2.project_id LEFT JOIN `fyp` as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue.") as t1 left join (select prefer as projects from `fea_staff_pref` where archive = 0) as t2 on t1.pno=t2.projects group by t1.pno order by chosen asc";
 
-$query_rsTotalProject       = "SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM " . $TABLES['fea_projects'] . " as p3 LEFT JOIN " . $TABLES['fyp_assign'] . " as p2 ON p3.project_id=p2.project_id  LEFT JOIN " . $TABLES['fyp'] . " as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 "; 
+$query_rsTotalProject       = "SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM " . $TABLES['fea_projects'] . " as p3 LEFT JOIN " . $TABLES['fyp_assign'] . " as p2 ON p3.project_id=p2.project_id  LEFT JOIN " . $TABLES['fyp'] . " as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 ";
 
 // Need to get the last 2 sems project list
 if($examSemValue == 1 ){
@@ -309,7 +309,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
                     }
                     // no preference
                     if (array_key_exists($staff->getID(), $AL_StaffWithPref_NoSelection)) {
-                        $randomProject = array_rand($WorkingProjectList);
+                        $randomProject = reset($WorkingProjectList)->getID();
                         if (!$WorkingProjectList[$randomProject]->isAssignedStaff() && $WorkingProjectList[$randomProject]->getStaff() != $staff->getID() && $staff->getWorkload() < $Target_Workload01) {
                             $WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
                             $Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
