@@ -90,6 +90,11 @@ $conn_db_ntu = null;
 			}
 
 			else {
+
+                if (isset ($_REQUEST['import_project'])){
+                    echo "<p class='success'> Project List uploaded successfully.</p>";
+                }
+
 				if (isset ($_REQUEST['error_code'])) {
 					$error_code = $_REQUEST['error_code'];
 					switch ($error_code) {
@@ -110,9 +115,7 @@ $conn_db_ntu = null;
 						break;
 					}
 			   }
-				if (isset ($_REQUEST['import_project'])){
-					echo "<p class='success'> Project List uploaded successfully.</p>";	
-				}
+
 			
 			?>
 			<div id="topcon">

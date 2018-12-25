@@ -139,6 +139,7 @@ $conn_db_ntu = null;
 									<ul id="FileToUpload_FileList"></ul>
 								</td>
 							</tr>
+
 							<tr>
 								<td colspan="5">
 									<div id="progressbardiv"  class="progress" style="display: none;">
@@ -294,6 +295,23 @@ $conn_db_ntu = null;
 						<table style="width: 100%;">
 							<col width="20%" />
 							<col width="20%" />
+                            <tr>
+                                <td >
+                                    <b>Sem</b>
+
+                                    <select id="filter_Sem" name="filter_Sem" onchange="this.form.submit()">
+                                        <option value="">SELECT</option>
+                                        <?php
+                                        for($index = 1; $index<3; $index++){
+                                            if(isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == $index){
+                                                echo "<option selected value='".$index."'>".$index."</option>";
+                                            }else{
+                                                echo "<option value='".$index."'>".$index."</option>";
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                            </tr>
 							<tr>
 								<td colspan="2" style="text-align: left;">
 									<?php echo "Total staff(s) that can examine : " . $RowCount . "/" .count($rsStaff) ?>
