@@ -1,0 +1,8 @@
+html{
+	min-height: auto;
+	position: relative;
+}
+body{
+	min-height: auto;
+	height: auto;
+}

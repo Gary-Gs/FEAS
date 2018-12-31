@@ -4,12 +4,8 @@ require_once('./entity.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 
-
 <?php
 $csrf = new CSRFProtection();
-
-
-
 	
 $query_rsSettings 	= "SELECT * FROM ".$TABLES['allocation_settings_general']." as g";
 $query_rsTimeslot 	= "SELECT * FROM ".$TABLES['allocation_result_timeslot']." ORDER BY `id` ASC";
@@ -179,109 +175,148 @@ foreach ($rsTimeslot as $timeslot)
 </head>
 <!-- InstanceEndEditable -->
 <body>
-	<div id="loadingdiv" class="loadingdiv">
+	<?php require_once('../../../php_css/header.php'); ?> 
+
+	<div class="float-right">
+			<?php if (isset($_SESSION['success'])) {
+				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+				unset ($_SESSION['success']);
+				}
+					if (isset($_SESSION['displayname'])){
+						$displayname = trim($_SESSION['displayname'], '#');
+						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
+						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
+
+						} 
+			?>
+					
+	</div>
+
+    <div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif"/>
 		<p>Allocating timeslots...</p>
-	</div>
-	<div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
+	</div> 
 
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-			<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
+	<div class="row">
+		<div class="container-fluid">
+			<?php require_once('../../nav.php'); ?> 
 
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-			<h1>Examiner Allocation System for Full Time Projects</h1>
-			<br/>
-			<?php 
-
-
-			if(isset($_REQUEST['error_timeslot']))
-			{
-				$error_code = $_REQUEST['error_timeslot'];
-				
-				switch($error_code)
-				{
-					case 0: break;
-					case 1: echo "<p class='error'>[Timeslot Allocation] Failed: Please allocate examiner first before proceeding!</p>";
-					break;
-					case 2: echo "<p class='error'>[Timeslot Allocation] Failed: Problem loading timetable settings.</p>";
-					break;
-					default: echo "<p class='error'>[Timeslot Allocation] Failed: Unknown Error has occurred. </p>";
-					break;
-				}
-			}
-			if(isset($_REQUEST['error_examiner']))
-			{
-				$error_code = $_REQUEST['error_examiner'];
-				
-				switch($error_code)
-				{
-					case 0:
-					break;
-					case 1: echo "<p class='error'>[Examiner Allocation] Failed: Please upload the examiner and examinable project list before proceeding!</p>";
-					break;
-					default: echo "<p class='error'>[Examiner Allocation] Unknown Error has occurred.</p>";
-					break;
-				}
-			}
-			else
-			{
-				
-				if(isset($_REQUEST['allocate_examiner'])) {
-					echo "<p class='success'>[Examiner Allocation] Complete.</p>";
-				}
-				
-				if(isset($_REQUEST['allocate_timeslot']))
-				{
-					$allocate_code = $_REQUEST['allocate_timeslot'];
-					if ($allocate_code == 1) {
-						echo "<p class='success'>[Timeslot Allocation] Complete.</p>";
+			 <!-- Page Content Holder -->
+            <div class="container col-md-10 col-sm-10 col-lg-10">
+            	<h3>Examiner Allocation System for Full Time Projects</h3>
+            	<?php 
+					if(isset($_REQUEST['error_timeslot']))
+					{
+						$error_code = $_REQUEST['error_timeslot'];
+						
+						switch($error_code)
+						{
+							case 0: break;
+							case 1: echo "<p class='error'>[Timeslot Allocation] Failed: Please allocate examiner first before proceeding!</p>";
+							break;
+							case 2: echo "<p class='error'>[Timeslot Allocation] Failed: Problem loading timetable settings.</p>";
+							break;
+							default: echo "<p class='error'>[Timeslot Allocation] Failed: Unknown Error has occurred. </p>";
+							break;
+						}
 					}
-					else {
-						echo "<p class='warn'>[Timeslot Allocation] Allocation may be incomplete.</p>";
+					if(isset($_REQUEST['error_examiner']))
+					{
+						$error_code = $_REQUEST['error_examiner'];
+						
+						switch($error_code)
+						{
+							case 0:
+							break;
+							case 1: echo "<p class='error'>[Examiner Allocation] Failed: Please upload the examiner and examinable project list before proceeding!</p>";
+							break;
+							default: echo "<p class='error'>[Examiner Allocation] Unknown Error has occurred.</p>";
+							break;
+						}
 					}
-				}
+					else
+					{
+						
+						if(isset($_REQUEST['allocate_examiner'])) {
+							echo "<p class='success'>[Examiner Allocation] Complete.</p>";
+						}
+						
+						if(isset($_REQUEST['allocate_timeslot']))
+						{
+							$allocate_code = $_REQUEST['allocate_timeslot'];
+							if ($allocate_code == 1) {
+								echo "<p class='success'>[Timeslot Allocation] Complete.</p>";
+							}
+							else {
+								echo "<p class='warn'>[Timeslot Allocation] Allocation may be incomplete.</p>";
+							}
+						}
 
-				
-				if(isset($_REQUEST['call'])) {
-					echo "<p class='warn'>[System] All Allocations cleared.</p>";
-				}
-				
-			}
-			?>
-
-			<div id="topcon">
+						
+						if(isset($_REQUEST['call'])) {
+							echo "<p class='warn'>[System] All Allocations cleared.</p>";
+						}
+						
+					}
+				?>
 				<div style="float:right; padding-bottom:15px;">
 					Number of Project Buffer:
 					<input type="text" id="Total_BufferProjects" name="Total_BufferProjects" value="0" placeholder="0"></input>
-					<a href="allocation_timetable.php" class="bt" style="width:105px;" title="View Timetable">View Timetable</a>
-					<a href="submit_download_timetable.php" class="bt" style="width:125px;" title="Download Timetable">Download Timetable</a>
+					<a href="allocation_timetable.php" class="btn bg-dark text-white" style="width:105px; font-size:12px;" title="View Timetable">View Timetable</a>
+					<a href="submit_download_timetable.php" class="btn bg-dark text-white" style="font-size:12px;" title="Download Timetable">Download Timetable</a>
 				</div>
 				<div style="float:right; padding-bottom:15px;">
 
-					<button  id="BTN_AllocationExaminer" class="bt" style="width:105px;" title="Allocate Examiner">Allocate Examiner</button>
+					<button  id="BTN_AllocationExaminer" class="btn bg-dark text-white" style="font-size:12px;" title="Allocate Examiner">Allocate Examiner</button>
 					
-					<button id="allocateTimeSlotBtn"  class="bt" style="width:105px;" title="Allocate Timeslot">Allocate Timeslot</button>
+					<button id="allocateTimeSlotBtn" class="btn bg-dark text-white" style="font-size:12px;" title="Allocate Timeslot">Allocate Timeslot</button>
 
-					<button id="BTN_AllocationClear"  class="bt" style="width:105px;" title="Clear Allocation">Clear Allocation</button>
+					<button id="BTN_AllocationClear" class="btn bg-dark text-white" style="font-size:12px;" title="Clear Allocation">Clear Allocation</button>
 					<!-- For testing purposes -->
 					<!-- <button id="BTN_AddStaffPref"  class="bt" style="width:105px;" title="Clear and Add Staff Pref">Add Staff Pref</button> -->
 				</div>
+
 				<div style="float:right; padding-bottom:15px;">
 					<?php
 					echo isset($_SESSION["total_projects"]) ? "Total Projects: " . $_SESSION["total_projects"] : "" ;
 					?>
 				</div>
-				<script type="text/javascript">
+            	
+		            <table border="1" cellpadding="0" cellspacing="0" width="100%">
+							<col width="12%" />
+							<col width="22%" />
+							<col width="22%" />
+							<col width="4%"/>
+							<col width="15%"/>
+							<col width="15%" />
+							<col width="10%" />
+
+							<tr class="bg-dark text-white text-center">
+								<td>Project ID</td>
+								<td>Supervisor</td>
+								<td>Examiner</td>
+								<td>Day</td>
+								<td>Date</td>
+								<td>Timeslot</td>
+								<td>Room</td>
+							</tr>
+							
+							<?php foreach ($rsAllocation as $row_rsAllocation) { ?>
+							<tr <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_tr"';?> >
+								<td><a href="allocation_edit.php?project=<?php echo $row_rsAllocation['project_id']; ?>" <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo $row_rsAllocation['project_id']; ?></td>
+									<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getStaff($row_rsAllocation['staff_id']); ?></td>
+									<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getStaff($row_rsAllocation['examiner_id']); ?></td>
+									<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo ($row_rsAllocation['day'] == "" || $row_rsAllocation['day'] == -1) ? '-' : $row_rsAllocation['day']; ?></td>
+
+									<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getActualDate($row_rsAllocation['day']);  ?></td>
+									<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getTimeSlot($row_rsAllocation['day'], $row_rsAllocation['slot']); ?></td>
+									<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getRoom($row_rsAllocation['room'], $row_rsAllocation['day']); ?></td>			
+									<?php } ?>
+					</table>
+					<br/>
+			</div>
+
+            <script type="text/javascript">
 					// For Testing Purpose
 					// $("#BTN_AddStaffPref").on("click",function(){
 					// 	$.ajax({
@@ -304,12 +339,12 @@ foreach ($rsTimeslot as $timeslot)
 							data: {"AlgorithmType" : $( "#AlgorithmType" ).val(),"Total_BufferProjects":$( "#Total_BufferProjects" ).val()},
 							type: 'POST',
 							success: function (data) {
+								console.log(data);
 								console.log("Ajax post success! ");
-								window.location.href = ("allocation.php?" + "allocate_examiner=1");
+								window.location.href = ("allocation.php?" + data);
 							},
 							error: function(data){
 								console.log("Ajax post failed!");
-                                window.location.href = ("allocation.php?" + "allocate_examiner=0");
 							}
 						});
 					});
@@ -356,54 +391,23 @@ foreach ($rsTimeslot as $timeslot)
 					});
 				</script>
 
-				<table border="1" cellpadding="0" cellspacing="0" width="100%">
-					<col width="12%" />
-					<col width="22%" />
-					<col width="22%" />
-					<col width="4%"/>
-					<col width="15%"/>
-					<col width="15%" />
-					<col width="10%" />
+            <!-- closing navigation div in nav.php -->
+         	</div>
 
-					<tr class="heading">
-						<td>Project ID</td>
-						<td>Supervisor</td>
-						<td>Examiner</td>
-						<td>Day</td>
-						<td>Date</td>
-						<td>Timeslot</td>
-						<td>Room</td>
-					</tr>
-					
-					<?php foreach ($rsAllocation as $row_rsAllocation) { ?>
-					<tr <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_tr"';?> >
-						<td><a href="allocation_edit.php?project=<?php echo $row_rsAllocation['project_id']; ?>" <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo $row_rsAllocation['project_id']; ?></td>
-							<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getStaff($row_rsAllocation['staff_id']); ?></td>
-							<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getStaff($row_rsAllocation['examiner_id']); ?></td>
-							<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo ($row_rsAllocation['day'] == "" || $row_rsAllocation['day'] == -1) ? '-' : $row_rsAllocation['day']; ?></td>
+		</div>
+		
+	</div>
 
-							<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getActualDate($row_rsAllocation['day']);  ?></td>
-							<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getTimeSlot($row_rsAllocation['day'], $row_rsAllocation['slot']); ?></td>
-							<td <?php if ($row_rsAllocation['clash']=="1") echo 'class="clash_td"';?> ><?php echo getRoom($row_rsAllocation['room'], $row_rsAllocation['day']); ?></td>			
-							<?php } ?>
-						</table>
-					</div>
-
-				</div>
-				<!-- InstanceEndEditable --> 
-
-				<?php require_once('../../../footer.php'); ?>
-			</div>
+	
+	<?php require_once('../../../footer.php'); ?>
 			
-
-		</body>
-		<!-- InstanceEnd -->
-		</html>
-
-		<?php
-		unset($rsTimeslot);
-		unset($rsRoom);
-		unset($staffList);
-		unset($rsAllocation);
-		$conn_db_ntu = null;
-		?>
+</body>
+<!-- InstanceEnd -->
+</html>
+<?php
+unset($rsTimeslot);
+unset($rsRoom);
+unset($staffList);
+unset($rsAllocation);
+$conn_db_ntu = null;
+?>

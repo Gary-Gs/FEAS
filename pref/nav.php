@@ -49,71 +49,48 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Staff Preference</title>
-     <?php require_once('../head.php'); ?>	
 	
-	<style>
-	.container-fluid{
-		background-color: #e1e1e1;
-		max-width:390px;
-		margin-right: auto;
-		margin-left: auto; 
-		float: center;
-		text-align:left;
-	}
-	
-	a {
-		font-size : 20px; 
-		text-decoration:none;
-	}
-	
-	span{
-		border-bottom: 2px solid;
-	}
-	</style>
 </head>
 
-<body>
-	<div id="bar"></div>
-	<div id="wrapper">
-		
+<body style="background: url('../images/background2.png'); background-size: 100% 100%;">
+	<?php require_once('../php_css/header.php');?>
 	
-			<div id="logout">
-				<a href="../../logout.php"><img src="../../images/logout.jpg" /></a>
-			</div>
-		<div id="header"></div>
-	
-			<div>
-			
-				<h1 style = "font-size: 30px; padding-top: 10px;">Welcome to Staff Preference Module</h1>
-				<br>
-				<h2 style = "font-size: 22px;">Please choose the following:</h2>
-				<br>
-				<div class = "container-fluid">
-				<dt>
-					<?php if($today <= $pref_end_ft && $today >= $pref_start_ft) { ?>
-					<a href = "/pref/fulltime/staffpref_fulltime.php"><span>Full Time (System open period: 
-					<?php 
-					$startFTDT = date( 'd M Y', $pref_start_ft_temp );
-					$endFTDT = date( 'd M Y', $pref_end_ft_temp );
-					echo $startFTDT; 
-					echo " - ".$endFTDT." )"; ?></span></a>
-					<?php } else { ?>
-					<a href = "/pref/staffpref_unavailable.php"><span>Full Time <?php echo "( System Not Available ) "; }?></span></a>
-				</dt>
+	<div class="float-right">
+			<?php if (isset($_SESSION['success'])) {
+				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+				unset ($_SESSION['success']);
+				}
+					if (isset($_SESSION['displayname'])){
+						$displayname = trim($_SESSION['displayname'], '#');
+						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
+						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
+
+						} 
+			?>	
+	</div>
+	<br/><br/>
+	<div class="container" style="min-height: 750px;">
+			<div class="container col-sm-8 col-md-8">
+				<div class="text-center">
+					<h3>Welcome to Staff Preference Module</h3>
+				    <h4>Please choose the following:</h4>
+					<dt>
+						<?php if($today <= $pref_end_ft && $today >= $pref_start_ft) { ?>
+						<a href = "/pref/fulltime/staffpref_fulltime.php"><span>Full Time (System open period: 
+						<?php 
+						$startFTDT = date( 'd M Y', $pref_start_ft_temp );
+						$endFTDT = date( 'd M Y', $pref_end_ft_temp );
+						echo $startFTDT; 
+						echo " - ".$endFTDT." )"; ?></span></a>
+						<?php } else { ?>
+						<a href = "/pref/staffpref_unavailable.php"><span>Full Time <?php echo "( System Not Available ) "; }?></span></a>
+					</dt>
+					
 				</div>
-				<br>
-				<!--<div class = 'container-fluid'>
-				<dt>
-					<?php if($today <= $pref_end_pt && $today > $pref_start_pt) { ?>
-					<a href = "/pref/parttime/staffpref_parttime.php"><span>Part Time (System open period: <?php
-					$startPTDT = date( 'd M Y', $pref_start_pt_temp );
-					$endPTDT = date( 'd M Y', $pref_end_pt_temp );
-					echo $startPTDT; 
-					echo " - ".$endPTDT." )"; ?></span></a>
-					<?php } else { ?>
-					<a href = "/pref/staffpref_unavailable.php"><span>Part Time <?php echo "( System Not Available ) "; }?></span></a>
-				</dt>
-				</div>-->
+					
+			</div>
+	</div>
 	
+	<?php require_once('../footer.php'); ?>
 </body>
 </html>

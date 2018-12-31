@@ -1,14 +1,10 @@
 <?php require_once('../../Connections/db_ntu.php');
 	 require_once('../../CSRFProtection.php');
 	 require_once('../../Utility.php');?>
-	  
 <?php
 	$csrf = new CSRFProtection();
 	$_REQUEST['csrf'] = $csrf->cfmRequest();
-		
-	
 ?>
-
 <?php
 		 if (isset ($_REQUEST['csrf'])) {
            header("location:staffpref_fulltime.php?csrf=1");

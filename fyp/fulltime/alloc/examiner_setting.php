@@ -58,10 +58,8 @@ $conn_db_ntu = null;
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Faculty Settings</title>
-	<?php require_once('../../../head.php'); ?>
+	
 	<script type="text/javascript">
-		
-		
 		function checkExamine(val)
 		{
 			$('.chk').prop('checked', val);
@@ -70,41 +68,48 @@ $conn_db_ntu = null;
 </head>
 
 <body>
+	<?php require_once('../../../php_css/header.php');?>
+	
+	<div class="float-right">
+			<?php if (isset($_SESSION['success'])) {
+				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+				unset ($_SESSION['success']);
+				}
+					if (isset($_SESSION['displayname'])){
+						$displayname = trim($_SESSION['displayname'], '#');
+						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
+						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
+
+						} 
+			?>
+					
+	</div>
+
 	<div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif" />
 		<p>Waiting for server to respond!</p>
 	</div>
-	<div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-			<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
-		
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-			<h1>Faculty Settings for Full Time Projects</h1>
-			<?php 
-			
-			if(isset($_REQUEST['save'])) echo "<p class='success'> Faculty settings saved.</p>";
-			if(isset($_REQUEST['examiner_setting'])) {
-				echo "<p class='success'> Faculty settings uploaded successfully.</p>";
-			}
-			if(isset($_REQUEST['clear'])) echo "<p class='warn'> Faculty changes cleared.</p>";
-			
-			
-			
-			if (isset ($_REQUEST['csrf']) || isset ($_REQUEST['validate'])) echo "<p class='warn'> CSRF validation failed. </p>";
-			else  {
-				?>
-				<div id="topcon">
+
+	<div class="row">
+		<div class="container-fluid">
+			<?php require_once('../../nav.php'); ?>
+				<div class="container col-md-10 col-sm-10">
+					<!-- for going back to top --> 
+            		<div id="backtop"></div>
+					<h3>Faculty Settings for Full Time Projects</h3>
+					<?php 
+						if(isset($_REQUEST['save'])) echo "<p class='success'> Faculty settings saved.</p>";
+						if(isset($_REQUEST['examiner_setting'])) {
+							echo "<p class='success'> Faculty settings uploaded successfully.</p>";
+						}
+						if(isset($_REQUEST['clear'])) echo "<p class='warn'> Faculty changes cleared.</p>";
+						
+						
+						
+						if (isset ($_REQUEST['csrf']) || isset ($_REQUEST['validate'])) echo "<p class='warn'> CSRF validation failed. </p>";
+						else  {
+					?>
+				
 					<?php require_once('../../../upload_head.php'); ?>
 					<form id="FORM_FileToUpload_ExaminerSettings" class="form-inline" enctype="multipart/form-data" role="form">
 						<table style="text-align: left; width: 100%;"> 
@@ -113,11 +118,10 @@ $conn_db_ntu = null;
 							<col width="20%" />
 							<col width="20%" />
 							<col width="20%" />
-							<tr >
-								<td colspan="4">
-									<label  style="color:Orange;">Please ensure you have the latest staff list uploaded. You can do it 
-										<a href="../gen/faculty.php">here</a>
-									</label>
+							<tr>
+								<td style="text-align: left; color:Orange;" colspan="4" >
+									Please ensure you have the latest staff list uploaded. You can do it <u><a href="../gen/faculty.php"> here</a></u>
+									
 								</td>
 								<td style="text-align: right;">
 									<input type="submit" value="Import" name="submit" class="btn btn-xs btn-success">
@@ -139,7 +143,6 @@ $conn_db_ntu = null;
 									<ul id="FileToUpload_FileList"></ul>
 								</td>
 							</tr>
-
 							<tr>
 								<td colspan="5">
 									<div id="progressbardiv"  class="progress" style="display: none;">
@@ -295,7 +298,6 @@ $conn_db_ntu = null;
 						<table style="width: 100%;">
 							<col width="20%" />
 							<col width="20%" />
-                            <tr>
                                 <td >
                                     <b>Sem</b>
 
@@ -311,7 +313,7 @@ $conn_db_ntu = null;
                                         }
                                         ?>
                                     </select>
-                            </tr>
+                            </tr> 
 							<tr>
 								<td colspan="2" style="text-align: left;">
 									<?php echo "Total staff(s) that can examine : " . $RowCount . "/" .count($rsStaff) ?>
@@ -327,20 +329,20 @@ $conn_db_ntu = null;
 					<br/>
 					<form action="submit_savewl.php" method="post">
 						<?php $csrf->echoInputField();?>
-						<table border="1" cellpadding="0" cellspacing="0" width="700">
-							<col width="200" />
-							<col width="120" />
-							<col width="180" />
-							<col width="180" />
+						<table border="1" cellpadding="0" cellspacing="0" width="100%">
+							<col width="25%" />
+							<col width="25%" />
+							<col width="25%" />
+							<col width="25%" />
 
-							<tr class="heading">
+							<tr class="bg-dark text-white text-center">
 								<td>Staff Name</td>
 								<td>Staff ID</td>
 								<td>Workload</td>
 								<td>Can Examine</td>
 							</tr>
 
-							<tr>
+							<tr class="text-center">
 								<td></td>
 								<td></td>
 								<td></td>
@@ -350,7 +352,7 @@ $conn_db_ntu = null;
 							<?php
 							foreach ($rsStaff as $row_rsStaff) { 
 								$staffid = str_replace('.', '', $row_rsStaff['id']);
-								echo "<tr>";
+								echo "<tr class='text-center'>";
 								echo "<input type='hidden' id='index_". $staffid ."' name='index_". $staffid ."' value='".$row_rsStaff['id']."'/>";
 								echo "<td>" . $row_rsStaff['name'] . "</td>";
 								echo "<td>" . $row_rsStaff['id'] . "</td>";
@@ -368,16 +370,37 @@ $conn_db_ntu = null;
 						</table>
 
 						<div style="float:right; padding-top:25px;">
-							<input type="submit" title="Save all changes" value="Save Changes" class="bt" style="font-size:12px !important;"/>
+							<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white text-center" style="font-size:12px !important;"/>
+							<br/><br/>
 						</div>
 					</form>
-				</div>
+				
 				<?php }?>
-		</div>
 
-		<!-- InstanceEndEditable --> 
-		<?php require_once('../../../footer.php'); ?>
+				
+
+			</div>
+			<br/><br/>
+			<div class="container-fluid">
+	            	<div class="float-panel">
+	            		<br/><br/><br/>
+	            		<a href="#backtop"><img src="../../../images/totop.png" width="50%" height="50%" /></a><br/>
+	            		<a href="#tobottom"><img src="../../../images/tobottom.png" width="50%" height="50%" /></a>
+	            	</div>
+           	</div>
+
+			<!-- closing navigation div in nav.php -->
+	         </div>
+
+		</div>
+		
 	</div>
+
+	<!-- for going back to bottom --> 
+	<div id="tobottom"></div>
+	
+	<?php require_once('../../../footer.php'); ?>
+
 </body>
 </html>
 

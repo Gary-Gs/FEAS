@@ -51,76 +51,93 @@ catch (PDOException $e)
 }
 $conn_db_ntu = null;
 ?>
-<!DOCTYPE html >
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 	<title>Full Time Project List</title>
-	<?php require_once('../../../head.php'); ?>	
+	<style>
+            @media only screen and (max-width: 800px) {
+            .floatWrapper {float:none!important;}       
+            .float-panel {position:static!important;}
+            .main-content {padding:20px;margin-right:0px;}
+        }
+    </style>
+    <?php require_once('../../../php_css/header.php'); ?> 
 </head>
 
-<body >
-	<div id="loadingdiv" class="loadingdiv">
+<body>
+	
+
+	<div class="float-right">
+			<?php if (isset($_SESSION['success'])) {
+				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+				unset ($_SESSION['success']);
+				}
+					if (isset($_SESSION['displayname'])){
+						$displayname = trim($_SESSION['displayname'], '#');
+						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
+						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
+
+						} 
+			?>
+					
+	</div>
+
+    <div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif"/>
 		<p>Uploading projects...</p>
-	</div>
-	<div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-			<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
-		
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-			<h1>Full Time Project List</h1>
-			<?php  
-			
-			
+	</div> 
+	
+<div class="row">
 
-			if (isset ($_REQUEST['csrf']) ||isset ($_REQUEST['validate'])) {
-				echo "<p class='warn'> CSRF validation failed.</p>";	
-			}
+		<div class="container-fluid">
+			 <?php require_once('../../nav.php'); ?> 
 
-			else {
+			 <!-- Page Content Holder -->
+            <div class="container col-md-10 col-sm-10">
+            	<!-- for going back to top --> 
+            	<div id="backtop"></div>
+            	<h3>Full Time Project List</h3>
 
-                if (isset ($_REQUEST['import_project'])){
-                    echo "<p class='success'> Project List uploaded successfully.</p>";
-                }
-
-				if (isset ($_REQUEST['error_code'])) {
-					$error_code = $_REQUEST['error_code'];
-					switch ($error_code) {
-						case 1:
-						echo "<p class='warn'> Uploaded file has no file name!</p>";
-						break;
-						case 2:
-						echo "<p class='warn'> Uploaded file has an invalid format type. Only excel files (.xlsx .xls .csv) are allowed!</p>";
-						break;
-						case 3:
-						echo "<p class='warn'> Uploaded file is open. Close it and upload again!</p>";
-						break;
-						case 4:
-						echo "<p class='error'> Cannot load excel file. Please contact system admin!</p>";
-						break;
-						case 5:
-						echo "<p class='error'> Incorrect Data Format! Please upload the correct excel!</p>";
-						break;
+            	<?php 
+            		if (isset ($_REQUEST['csrf']) ||isset ($_REQUEST['validate'])) {
+						echo "<p class='warn'> CSRF validation failed.</p>";	
 					}
-			   }
 
-			
-			?>
-			<div id="topcon">
-				<?php require_once('../../../upload_head.php'); ?>
-				<form id="FORM_FileToUpload_ProjectList" enctype="multipart/form-data">
+					else {
+						if (isset ($_REQUEST['error_code'])) {
+							$error_code = $_REQUEST['error_code'];
+							switch ($error_code) {
+							case 1:
+							echo "<p class='warn'> Uploaded file has no file name!</p>";
+							break;
+							case 2:
+							echo "<p class='warn'> Uploaded file has an invalid format type. Only excel files (.xlsx .xls .csv) are allowed!</p>";
+							break;
+							case 3:
+							echo "<p class='warn'> Uploaded file is open. Close it and upload again!</p>";
+							break;
+							case 4:
+							echo "<p class='error'> Cannot load excel file. Please contact system admin!</p>";
+							break;
+							case 5:
+							echo "<p class='error'> Incorrect Data Format! Please upload the correct excel!</p>";
+							break;
+							}
+
+						}
+					}
+
+					if (isset ($_REQUEST['import_project'])){
+					echo "<p class='success'> Project List uploaded successfully.</p>";	
+					}
+            	?>
+
+            		<?php require_once('../../../upload_head.php'); ?>
+
+
+            		<form id="FORM_FileToUpload_ProjectList" enctype="multipart/form-data">
 					<table style="text-align: left; width: 100%;">
 						<col width="20%">
 						<col width="20%">
@@ -156,6 +173,146 @@ $conn_db_ntu = null;
 					</table>
 					<?php $csrf->echoInputField();?>
 				</form>
+				<br/>
+				<form name="searchbox" action="project.php" method="post" >
+					<table id="Table_Filter_ProjectList" width="100%" >
+						<colgroup>
+							<col width="20%" >
+							<col width="20%" >
+							<col width="20%" >
+							<col width="20%" >
+							<col width="20%" >
+						</colgroup>
+						<tr>
+							<td >
+								<b> Year</b>
+							</td>
+							<td colspan="3">
+								<select id="filter_ProjectYear" name="filter_ProjectYear" onchange="this.form.submit()">
+									<option value="">SELECT</option>
+									<?php
+									$CurrentYear = sprintf("%02d", substr(date("Y"), -2));
+									$LastestYear = sprintf("%02d", substr(date("Y"), -2));
+									$EarlistYear = $CurrentYear - 10;
+
+										 // Loops over each int[year] from current year, back to the $earliest_year [1950]
+									foreach ( range( $LastestYear, $EarlistYear ) as $i ) {
+										$i = sprintf("%02d", substr($i, -2)) . (sprintf("%02d", (substr($i, -2)+1)));
+
+										if(isset($_REQUEST["filter_ProjectYear"]) && $_REQUEST["filter_ProjectYear"] == $i){
+											echo "<option selected value='".$i."'>".$i."</option>";
+										}else{
+											echo "<option value='".$i."'>".$i."</option>";
+										}
+									}
+									?>
+								</select>
+							</td>
+							<td style="float: right;">
+								<?php 
+								if( $Total_RowCount > 1){
+									echo $Total_RowCount . " records";
+								}else{
+									echo $Total_RowCount . " record";
+								}
+								?>
+							</td>
+						</tr>
+						<tr>
+							<td >
+								<b> Sem</b>
+							</td>
+							<td>
+								<select id="filter_ProjectSem" name="filter_ProjectSem" onchange="this.form.submit()">
+									<option value="">SELECT</option>
+									<?php
+									for($index = 1; $index<3; $index++){
+										if(isset($_REQUEST["filter_ProjectSem"]) && $_REQUEST["filter_ProjectSem"] == $index){
+											echo "<option selected value='".$index."'>".$index."</option>";
+										}else{
+											echo "<option value='".$index."'>".$index."</option>";
+										}
+									}
+									?>
+								</select>
+							</td>
+							<td colspan="3"></td>
+						</tr>
+						<tr>
+							<td >
+								<b>Supervisor</b>
+							</td>
+							<td colspan="2">
+								<select id="filter_Supervisor" name="filter_Supervisor" onchange="this.form.submit()">
+									<option value="" selected>SELECT</option>
+									<?php
+									foreach ($AL_Staff as $key => $value) {
+									    if(isset($_REQUEST["filter_Supervisor"])) {
+                                            $StaffID_Filter = $_REQUEST["filter_Supervisor"];
+                                        } else {
+                                            $StaffID_Filter = null;
+                                        }
+										$StaffID = $key;
+										$StaffName = $value;
+										if($StaffID_Filter == $StaffID){
+											echo "<option value=" . $StaffID . " selected>";
+											echo $StaffName;
+											echo "</option>";	
+										}else{
+											echo "<option value=" . $StaffID . ">";
+											echo $StaffName;
+											echo "</option>";
+										}
+									}
+									?>
+								</select>
+							</td>
+							<td colspan="2" style="text-align:right;">
+								<input type="search" name="search" value="<?php echo isset($_POST['search']) ?  $_POST['search'] : '' ?>" />
+								<input type="submit" value="Search" title="Search for a project" class="bt"/>
+							</td>
+						</tr>
+					</table>
+					<?php $csrf->echoInputField();?>
+				</form>
+
+				<br/>
+				<table id="tables" width="100%" border="1">
+					<col width="13%" />
+					<col width="6%" />
+					<col width="5%" />
+					<col width="32%" />
+					<col width="30%" />
+					<col width="6%" />
+					<col width="6%" />
+
+					<tr class="bg-dark text-white text-center">
+						<td>Project ID</td>
+						<td>Year</td>
+						<td>Sem</td>
+						<td>Project Title</td>
+						<td>Supervisor</td>
+						<td>Exam Year</td>
+						<td>Exam Sem</td>
+					</tr>
+					<?php
+					foreach ($DBData_rsProject as $key => $value) {
+						echo "<tr>";
+						echo "<td class='text-center'>" . $value['project_id'] . "</td>";
+						echo "<td class='text-center'>" . $value['year'] . "</td>";
+						echo "<td class='text-center'>" . $value['sem'] . "</td>";
+						echo "<td class='text-center'>" . $value['title'] . "</td>";
+						echo "<td class='text-center'>" . $value['Supervisor'] . "</td>";
+						echo "<td class='text-center'>" . $value['examine_year'] . "</td>";
+						echo "<td class='text-center'>" . $value['examine_sem'] . "</td>";
+						echo "</tr>";
+					}
+					?>
+				</table>
+
+				<br/>
+			</div>
+			
 				<script type="text/javascript">
 					$("#FORM_FileToUpload_ProjectList").submit(function( event ) {
 						// start of xm edits 
@@ -232,149 +389,30 @@ $conn_db_ntu = null;
 						}
 					}
 				</script>
-				<br/>
-				<form name="searchbox" action="project.php" method="post" >
-					<table id="Table_Filter_ProjectList" width="100%" >
-						<colgroup>
-							<col width="20%" >
-							<col width="20%" >
-							<col width="20%" >
-							<col width="20%" >
-							<col width="20%" >
-						</colgroup>
-						<tr>
-							<td >
-								<b> Year</b>
-							</td>
-							<td>
-								<select id="filter_ProjectYear" name="filter_ProjectYear" onchange="this.form.submit()">
-									<option value="">SELECT</option>
-									<?php
-									$CurrentYear = sprintf("%02d", substr(date("Y"), -2));
-									$LastestYear = sprintf("%02d", substr(date("Y"), -2));
-									$EarlistYear = $CurrentYear - 10;
+            
+    
+            <div class="container-fluid">
+            	<div class="float-panel">
+            		<br/><br/><br/>
+            		<a href="#backtop"><img src="../../../images/backtotop.png" width="60%" height="60%" /></a>
+            	</div>
 
-										 // Loops over each int[year] from current year, back to the $earliest_year [1950]
-									foreach ( range( $LastestYear, $EarlistYear ) as $i ) {
-										$i = sprintf("%02d", substr($i, -2)) . (sprintf("%02d", (substr($i, -2)+1)));
+            </div>
+            
+            <!-- page content closing div -->
+            </div>
+			 <!-- closing navigation div in nav.php -->
+         </div>
+         
+    </div>
 
-										if(isset($_REQUEST["filter_ProjectYear"]) && $_REQUEST["filter_ProjectYear"] == $i){
-											echo "<option selected value='".$i."'>".$i."</option>";
-										}else{
-											echo "<option value='".$i."'>".$i."</option>";
-										}
-									}
-									?>
-								</select>
-							</td>
-							<td colspan="3" >
-								<?php 
-								if( $Total_RowCount > 1){
-									echo $Total_RowCount . " records";
-								}else{
-									echo $Total_RowCount . " record";
-								}
-								?>
-							</td>
-						</tr>
-						<tr>
-							<td >
-								<b> Sem</b>
-							</td>
-							<td>
-								<select id="filter_ProjectSem" name="filter_ProjectSem" onchange="this.form.submit()">
-									<option value="">SELECT</option>
-									<?php
-									for($index = 1; $index<3; $index++){
-										if(isset($_REQUEST["filter_ProjectSem"]) && $_REQUEST["filter_ProjectSem"] == $index){
-											echo "<option selected value='".$index."'>".$index."</option>";
-										}else{
-											echo "<option value='".$index."'>".$index."</option>";
-										}
-									}
-									?>
-								</select>
-							</td>
-							<td colspan="3"></td>
-						</tr>
-						<tr>
-							<td >
-								<b>Supervisor</b>
-							</td>
-							<td colspan="2">
-								<select id="filter_Supervisor" name="filter_Supervisor" onchange="this.form.submit()">
-									<option value="" selected>SELECT</option>
-									<?php
-									foreach ($AL_Staff as $key => $value) {
-									    if(isset($_REQUEST["filter_Supervisor"])) {
-                                            $StaffID_Filter = $_REQUEST["filter_Supervisor"];
-                                        } else {
-                                            $StaffID_Filter = null;
-                                        }
-										$StaffID = $key;
-										$StaffName = $value;
-										if($StaffID_Filter == $StaffID){
-											echo "<option value=" . $StaffID . " selected>";
-											echo $StaffName;
-											echo "</option>";	
-										}else{
-											echo "<option value=" . $StaffID . ">";
-											echo $StaffName;
-											echo "</option>";
-										}
-									}
-									?>
-								</select>
-							</td>
-							<td colspan="2" style="text-align:right;">
-								<input type="search" name="search" value="<?php echo isset($_POST['search']) ?  $_POST['search'] : '' ?>" />
-								<input type="submit" value="Search" title="Search for a project" class="bt"/>
-							</td>
-						</tr>
-					</table>
-					<?php $csrf->echoInputField();?>
-				</form>
-				<br/>
-				<table width="100%" border="1">
-					<col width="13%" />
-					<col width="6%" />
-					<col width="5%" />
-					<col width="32%" />
-					<col width="30%" />
-					<col width="6%" />
-					<col width="6%" />
+			
+</div>
 
-					<tr class="heading">
-						<td>Project ID</td>
-						<td>Year</td>
-						<td>Sem</td>
-						<td>Project Title</td>
-						<td>Supervisor</td>
-						<td>Exam Year</td>
-						<td>Exam Sem</td>
-					</tr>
-					<?php
-					foreach ($DBData_rsProject as $key => $value) {
-						echo "<tr>";
-						echo "<td>" . $value['project_id'] . "</td>";
-						echo "<td>" . $value['year'] . "</td>";
-						echo "<td>" . $value['sem'] . "</td>";
-						echo "<td>" . $value['title'] . "</td>";
-						echo "<td>" . $value['Supervisor'] . "</td>";
-						echo "<td>" . $value['examine_year'] . "</td>";
-						echo "<td>" . $value['examine_sem'] . "</td>";
-						echo "</tr>";
-					}
-					?>
-				</table>
-			</div>
-			<?php }?>
-			<!-- InstanceEndEditable --> 
-			<?php require_once('../../../footer.php'); ?>
-		</div>
-	</body>
-	<!-- InstanceEnd -->
-	</html>
-	<?php
-	unset($rsProject);
-	?>
+		<?php require_once('../../../footer.php'); ?>
+</body>
+<!-- InstanceEnd -->
+</html>
+<?php
+unset($rsProject);
+?>

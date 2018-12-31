@@ -259,45 +259,49 @@
 </head>
 
 <body>
-    <div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-				<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
+   <?php require_once('../../../php_css/header.php');?>
 
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-		
-			<h1><?php echo ($error_code == 0) ? "$projectID" : "Edit Allocation"; ?></h1>
-			<?php 
-			if (isset ($_REQUEST['validate'])) {
-				    echo "<p class='warn'> CSRF validation failed.</p>";	
-			}
-			else if($error_code != 0)
-			{
-				switch($error_code)
-				{
-					case 1: echo "<p class='error'>[Edit Allocation] Failed: No Project Requested.</p>";
-						break;
-					case 2: echo "<p class='error'>[Edit Allocation] Failed: Invalid Project.</p>";
-						break;
-					default: echo "<p class='error'>[Edit Allocation] Failed: Unknown Error has occurred. </p>";
-						break;
+	<div class="float-right">
+			<?php if (isset($_SESSION['success'])) {
+				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+				unset ($_SESSION['success']);
 				}
-				
-				echo '<p><a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>';
-			}
-			else{ ?>
-				<div id="topcon">
-					<h2><?php echo ($projData['ptitle'] != null) ? $projData['ptitle']: "-"; ?></h2>
+					if (isset($_SESSION['displayname'])){
+						$displayname = trim($_SESSION['displayname'], '#');
+						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
+						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
+
+						} 
+			?>
+					
+	</div>
+
+	<div class="row">
+		<div class="container-fluid">
+			<?php require_once('../../nav.php'); ?>
+			<div class="container col-md-10 col-sm-10">
+				<h3><?php echo ($error_code == 0) ? "$projectID" : "Edit Allocation"; ?></h3>
+				<?php 
+					if (isset ($_REQUEST['validate'])) {
+						    echo "<p class='warn'> CSRF validation failed.</p>";	
+					}
+					else if($error_code != 0)
+					{
+						switch($error_code)
+						{
+							case 1: echo "<p class='error'>[Edit Allocation] Failed: No Project Requested.</p>";
+								break;
+							case 2: echo "<p class='error'>[Edit Allocation] Failed: Invalid Project.</p>";
+								break;
+							default: echo "<p class='error'>[Edit Allocation] Failed: Unknown Error has occurred. </p>";
+								break;
+						}
+						
+						echo '<p><a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>';
+					}
+					else{
+				?>
+				<h4><?php echo ($projData['ptitle'] != null) ? $projData['ptitle']: "-"; ?></h4>
 					<?php
 						if(isset($_REQUEST['save']))
 							echo "<p class='success'> Allocation saved.</p>";
@@ -365,24 +369,25 @@
 				</div>
 				<br/>
 			<?php } ?>
-		</div>	
-		<!-- InstanceEndEditable --> 
+
+			</div>
+
+			<!-- InstanceEndEditable --> 
 		<script type="text/javascript">
-		
-		
-		
 		$('#exam_day').change (function()  {
 					
 					regenerateRoomSelect(this.value);
 					regenerateTimeSelect(this.value);
 		}); 
-		
-	
-	  
-		
 	</script>
-		<?php require_once('../../../footer.php'); 
-				$conn_db_ntu = null;?>
+
+			<!-- closing navigation div in nav.php -->
+	         </div>
+		</div>	
 	</div>
+
+	<?php
+	require_once('../../../footer.php'); 
+	$conn_db_ntu = null;?>
 </body>
 </html>
