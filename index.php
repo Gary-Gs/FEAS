@@ -53,8 +53,8 @@
 								</div>
 								<div class="card-body">
 									<p>
-										&#x02666; Project List<br/>
-										&#x02666; Faculty List
+										- Project List<br/>
+										- Faculty List
 										
 									</p>
 								</div>
@@ -66,9 +66,9 @@
 								</div>
 								<div class="card-body">
 									<p>
-										&#x02666; Staff Pref Settings<br/>
-										&#x02666; Faculty Settings<br/>
-										&#x02666; Timeslot Exception
+										- Staff Pref Settings<br/>
+										- Faculty Settings<br/>
+										- Timeslot Exception
 
 									</p>
 								</div>
@@ -80,9 +80,9 @@
 								</div>
 								<div class="card-body">
 									<p>
-										&#x02666; Allocation Settings<br/>
-										&#x02666; Allocation System<br/>
-										&#x02666; View Allocation Plan
+										- Allocation Settings<br/>
+										- Allocation System<br/>
+										- View Allocation Plan
 										
 									</p>
 								</div>
@@ -105,9 +105,9 @@
 								</div>
 								<div class="card-body">
 									<p>
-										&#x02666; Project Preference Selection<br/>
-										&#x02666; Area Preference Selection<br/>
-										&#x02666; View Supervising Projects
+										- Project Preference Selection<br/>
+										- Area Preference Selection<br/>
+										- View Supervising Projects
 									</p>
 								</div>
 							</div>

@@ -86,6 +86,7 @@
 </head>
 
 <body style="background-image: url('images/The_Arc.jpg'); background-size: 100% 100%;">
+
 	
 	<div id="content">
 	
@@ -110,7 +111,8 @@
 			<br/>
 
 			<label for="password" class="control-label">PASSWORD:</label>
-			<input id="passWord" type="password" name="pwd"  class="form-control" required autocomplete="off" > 
+			<input id="password" type="password" name="pwd" data-toggle="password" class="form-control" required autocomplete="off">
+			<div class="float-right"><input type="checkbox" onclick="myFunction()">Show Password</div>
 			<br/>
 
 			<label for="domain" class="control-label">DOMAIN:</label>
@@ -118,7 +120,8 @@
 				<option value="Student">Student</option>
 				<option value="Staff">Staff</option>
 			</select> 
-			<br/>
+			<div class="float-right"><a href="https://pwd.ntu.edu.sg/">Forgot Password?</a></div>
+			<br/><br/>
 			<button type="submit" class="btn bg-dark text-white" style="width: 100%;">Login</button>
 			<br/><br/>
 			
@@ -128,7 +131,18 @@
 	 <br/><br/>
 	</div>
 </div>
-</body>
+
 <?php require_once('footer.php'); ?>	
+<script type="text/javascript">
+	function myFunction() {
+	  var x = document.getElementById("password");
+	  if (x.type === "password") {
+	    x.type = "text";
+	  } else {
+	    x.type = "password";
+	  }
+	}
+</script>
+</body>
 </html>
 	 
