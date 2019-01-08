@@ -15,11 +15,14 @@
                 echo "<link rel='stylesheet' href='../css/navbarstyle.css'>";
             }
 
-			if(strcmp($_SERVER["REQUEST_URI"] , "project.php")){
-				echo "<link rel='stylesheet' href='../../../css/navbarstyle.css'>";
-				//for floating panel 
-				echo "<script src='../../../scripts/float-panel.js'></script>";
-			}?>
+            if(strcmp($_SERVER["REQUEST_URI"] , "project.php")){
+                echo "<link rel='stylesheet' href='../../../css/navbarstyle.css'>";
+                //for floating panel 
+                echo "<script src='../../../scripts/float-panel.js'></script>";
+            }
+        
+
+        ?>
         
     </head>
     <body>
@@ -27,11 +30,21 @@
         <div class="wrapper" style="min-height: 850px;">
             <!-- Sidebar Holder -->
             <nav id="sidebar">
+                <!-- can add words here
                 <div class="sidebar-header">
-                    <h3>Navigation</h3>
+                    <h3></h3>
                     <strong></strong>
-                </div>
+                </div> -->
+                <br/>
+                    <div class="container-fluid">
 
+                        <div class="navbar-header">
+                            <button type="button" id="sidebarCollapse" class="btn" style="background-color: #4682b4;">
+                                <i class="glyphicon glyphicon-align-left"></i>
+                                <span><!-- can add some words here --></span>
+                            </button>
+                        </div>
+                    </div>
                 <ul class="list-unstyled components">
                     <li class="active">
                         <a href="/fyp/fyp.php">
@@ -83,7 +96,7 @@
         <!-- jQuery CDN -->
          <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script> 
          <!-- Bootstrap Js CDN --> 
-        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <!-- for datepicker --> 
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
