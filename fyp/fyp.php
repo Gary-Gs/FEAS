@@ -23,105 +23,80 @@
 </head>
 
 <body>
-	<?php require_once('../php_css/header.php');?> 
+	<?php require_once('../php_css/headerwnav.php');?> 
 
-	<div class="float-right">
-			<?php if (isset($_SESSION['success'])) {
-				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-				unset ($_SESSION['success']);
-				}
-					if (isset($_SESSION['displayname'])){
-						$displayname = trim($_SESSION['displayname'], '#');
-						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../logout.php' title='Logout'>
-						<img src='../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
-
-						} 
-			?>
-					
-	</div>
 	
-	<div class="row">
-
+	
+	<div style="margin-left: -15px;">
 		<div class="container-fluid">
             <?php require_once('nav.php'); ?> 
+           
+                <!-- Page Content Holder -->
+                <div class="container-fluid">
+                    <br/>
+                   	<p style="color: black;">There are three sub-categories under the 'Full Time' category of the 'Navigation' menu on the left.<br/>
 
-            <!-- Page Content Holder -->
-            <div id="content" class="container-fluid">
+                    <table width="100%">
+                    	<th colspan="2" style="padding: 7px;">
+                    		1. General Category</br>
+                    		Under the 'General' category, there are two links:
+                    	</th>
+                    	<tr>
+                    		<td width="20%">A. Project List</td>
+                    		<td>List all projects available. Staff may use the search bar provided to search for a particular project or use the select box to filter the projects by year and semester. </td>
+                    	</tr>
+                    	<tr>
+                    		<td width="20%">B. Faculty List</td>
+                    		<td>List all staff project preferences and area preferences. Staff may use the search bar provided to search for a particular staff.</td>
+                    	</tr>
 
-                <nav class="navbar navbar-default">
-                    <div class="container-fluid">
+                    </table>
 
-                        <div class="navbar-header">
-                            <button type="button" id="sidebarCollapse" class="btn btn-secondary navbar-btn">
-                                <i class="glyphicon glyphicon-align-left"></i>
-                                <span>Toggle Sidebar</span>
-                            </button>
-                        </div>
-                    </div>
-                </nav>
+                	</br>
 
-               	<p style="color: black;">There are three sub-categories under the 'Full Time' category of the 'Navigation' menu on the left.<br/>
+                    <table width="100%">
+                    	<th colspan="2" style="padding: 7px;">
+                    		2. Pre-Allocation</br>
+                    		Under the 'Pre-Allocation' category, there are three links:<br/>
+                    	</th>
+                    	<tr>
+                    		<td width="20%">A. Staff Pref Settings</td>
+                    		<td>To set the open period for staff to choose their project or area preferences. </td>
+                    	</tr>
+                    	<tr>
+                    		<td width="20%">B. Faculty Settings</td>
+                    		<td>To view and update staff workload to the Faculty table.</td>
+                    	</tr>
+                    	<tr>
+                    		<td width="20%">C. Timeslot Exception</td>
+                    		<td>To edit the timeslots to exclude from the allocation</td>
+                    	</tr>
+                    </table>
 
-                <table width="100%">
-                	<th colspan="2" style="padding: 7px;">
-                		1. General Category</br>
-                		Under the 'General' category, there are two links:
-                	</th>
-                	<tr>
-                		<td width="20%">A. Project List</td>
-                		<td>List all projects available. Staff may use the search bar provided to search for a particular project or use the select box to filter the projects by year and semester. </td>
-                	</tr>
-                	<tr>
-                		<td width="20%">B. Faculty List</td>
-                		<td>List all staff project preferences and area preferences. Staff may use the search bar provided to search for a particular staff.</td>
-                	</tr>
+               		</br>
 
-                </table>
-
-            	</br>
-
-                <table width="100%">
-                	<th colspan="2" style="padding: 7px;">
-                		2. Pre-Allocation</br>
-                		Under the 'Pre-Allocation' category, there are three links:<br/>
-                	</th>
-                	<tr>
-                		<td width="20%">A. Staff Pref Settings</td>
-                		<td>To set the open period for staff to choose their project or area preferences. </td>
-                	</tr>
-                	<tr>
-                		<td width="20%">B. Faculty Settings</td>
-                		<td>To view and update staff workload to the Faculty table.</td>
-                	</tr>
-                	<tr>
-                		<td width="20%">C. Timeslot Exception</td>
-                		<td>To edit the timeslots to exclude from the allocation</td>
-                	</tr>
-                </table>
-
-           		</br>
-
-                <table width="100%">
-                	<th colspan="2" style="padding: 7px;">
-                		3. Allocation</br>
-                		Under the 'Allocation' category, there are three links:<br/>
-                	</th>
-                	<tr>
-                		<td width="20%">A. Allocation Settings</td>
-                		<td>To set the number of days and timings for allocation in the Timeslot Settings and enter actual room names for allocation in the Room Settings.</td>
-                	</tr>
-                	<tr>
-                		<td width="20%">B. Allocation System</td>
-                		<td>To allocate examiners to projects, allocate timeslots for examiners to examine, view and edit timetable, and clear allocation.</td>
-                	</tr>
-                	<tr>
-                		<td width="20%">C. View Allocation Plan</td>
-                		<td>To view examiner allocation timetable plan</td>
-                	</tr>
-                </table>
-            </div>
+                    <table width="100%">
+                    	<th colspan="2" style="padding: 7px;">
+                    		3. Allocation</br>
+                    		Under the 'Allocation' category, there are three links:<br/>
+                    	</th>
+                    	<tr>
+                    		<td width="20%">A. Allocation Settings</td>
+                    		<td>To set the number of days and timings for allocation in the Timeslot Settings and enter actual room names for allocation in the Room Settings.</td>
+                    	</tr>
+                    	<tr>
+                    		<td width="20%">B. Allocation System</td>
+                    		<td>To allocate examiners to projects, allocate timeslots for examiners to examine, view and edit timetable, and clear allocation.</td>
+                    	</tr>
+                    	<tr>
+                    		<td width="20%">C. View Allocation Plan</td>
+                    		<td>To view examiner allocation timetable plan</td>
+                    	</tr>
+                    </table>
+                </div>
+            
             <!-- closing navigation div in nav.php -->
-         </div>
+            </div>
 
 		</div>
 		

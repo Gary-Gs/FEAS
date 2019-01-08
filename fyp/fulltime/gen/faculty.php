@@ -77,35 +77,21 @@ $conn_db_ntu = null;
 
 
 <body>
-	<?php require_once('../../../php_css/header.php'); ?> 
-
-	<div class="float-right">
-			<?php if (isset($_SESSION['success'])) {
-				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-				unset ($_SESSION['success']);
-				}
-					if (isset($_SESSION['displayname'])){
-						$displayname = trim($_SESSION['displayname'], '#');
-						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
-						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
-
-						} 
-			?>
-					
-	</div>
+	<?php require_once('../../../php_css/headerwnav.php'); ?> 
 
     <div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif"/>
 		<p>Uploading staff list...</p>
 	</div> 
 
-	<div class="row">
+	
+	<div style="margin-left: -15px;">
 
 		<div class="container-fluid">
 			 <?php require_once('../../nav.php'); ?> 
 
 			 <!-- Page Content Holder -->
-            <div class="container col-md-10 col-sm-10 col-lg-10">
+            <div class="container-fluid">
             	<!-- for going back to top --> 
             	<div id="backtop"></div>
             	<h3>Faculty List for Full Time Projects</h3>
@@ -355,10 +341,10 @@ $conn_db_ntu = null;
 						}
 					}
 				</script>
-			<div class="container-fluid">
+			<div class="container col-sm-1 col-md-1 col-lg-1">
             	<div class="float-panel">
             		<br/><br/><br/>
-            		<a href="#backtop"><img src="../../../images/backtotop.png" width="50%" height="50%" /></a>
+            		<a href="#backtop"><img src="../../../images/totop.png" width="50%" height="50%" /></a>
             	</div>
             </div>
             <!-- page content closing div -->

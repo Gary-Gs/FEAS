@@ -12,11 +12,10 @@ session_destroy();
 </head>
 
 <body style="background-image: url('images/The_Arc.jpg');">
-<?php require_once('php_css/header.php');?>
+<?php require_once('php_css/headerwologin.php');?>
 
-	<div class="container-fluid text-center" style="background: white; opacity: 0.8; filter: alpha(opacity=80);">
+	<div class="container-fluid text-center" style="background: white; opacity: 0.8; filter: alpha(opacity=80); margin-top: -8px;">
 		
-			<br/>
 			 <?php if(isset($_GET["session_expired"])) {
 			           echo "<h3>Session has timed out! Please login again! </h3>";
 		           }else {?>

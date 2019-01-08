@@ -7,25 +7,8 @@
 </head>
 
 <body style="background: url('images/background2.png'); background-size: 100% 100%;">
+	<?php require_once('php_css/headerwonav.php');?> 
 	
-	<?php require_once('php_css/header.php');?> 
-	<div class="float-right">
-					<?php if (isset($_SESSION['success'])) {
-							 //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-							 unset ($_SESSION['success']);
-							  }
-									if (isset($_SESSION['displayname'])){
-										$displayname = trim($_SESSION['displayname'], '#');
-										 if (strcmp($_SERVER["REQUEST_URI"], "index.php")) {
-											// echo "<p class='credentials' style='color: #A9A9A9;'>Welcome, ".$displayname. " <a href='../../logout.php' title='Logout'><img src='images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>"; 
-											echo "<p class='credentials'>Welcome, ".$displayname. " <a href='logout.php' title='Logout'><img src='images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>"; 
-										}							  
-
-									}
-
-							?>
-	</div>		
-
 	<div class="container-fluid pt-5">
       <div class="row">
 

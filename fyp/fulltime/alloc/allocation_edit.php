@@ -259,27 +259,12 @@
 </head>
 
 <body>
-   <?php require_once('../../../php_css/header.php');?>
+   <?php require_once('../../../php_css/headerwnav.php');?>
 
-	<div class="float-right">
-			<?php if (isset($_SESSION['success'])) {
-				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-				unset ($_SESSION['success']);
-				}
-					if (isset($_SESSION['displayname'])){
-						$displayname = trim($_SESSION['displayname'], '#');
-						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
-						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
-
-						} 
-			?>
-					
-	</div>
-
-	<div class="row">
+	<div style="margin-left: -15px;">
 		<div class="container-fluid">
 			<?php require_once('../../nav.php'); ?>
-			<div class="container col-md-10 col-sm-10">
+			<div class="container-fluid">
 				<h3><?php echo ($error_code == 0) ? "$projectID" : "Edit Allocation"; ?></h3>
 				<?php 
 					if (isset ($_REQUEST['validate'])) {
@@ -312,7 +297,7 @@
 						
 						echo '';
 					?>
-					<p><a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
+					<p><a href="allocation.php" class="btn bg-dark text-white" style="font-size: 12px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
 					<form action="submit_allocate_edit.php" method="post">
 					<?php $csrf->echoInputField();?>
 					<input type="hidden" id="user_id" name="user_id" value="<?php echo $_SESSION['id']; ?>" />
@@ -361,7 +346,7 @@
 						</div>
 						
 						<div style="float:right; padding-top:25px;">
-							<input type="submit" title="Save all changes" value="Save Changes" class="bt" style="font-size:12px !important;"/>
+							<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
 						</div>
 						
 						

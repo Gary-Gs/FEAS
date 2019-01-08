@@ -627,27 +627,24 @@
 </head>
 
 <body style="background-color: #dce7f3;">
-   <div class="row bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-			<div class="col-sm-8 col-md-8">
-				<h4>SCSE | FYP Examiner Allocation System</h4>
-			</div>
-	</div>
-	<div class="float-right">
-					<?php if (isset($_SESSION['success'])) {
-							 //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-							 unset ($_SESSION['success']);
-							  }
-									if (isset($_SESSION['displayname'])){
-										$displayname = trim($_SESSION['displayname'], '#');
-										 if (strcmp($_SERVER["REQUEST_URI"], "index.php")) {
-											// echo "<p class='credentials' style='color: #A9A9A9;'>Welcome, ".$displayname. " <a href='../../logout.php' title='Logout'><img src='images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>"; 
-											echo "<p class='credentials'>Welcome, ".$displayname. " <a href='../../logout.php' title='Logout'><img src='../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>"; 
-										}							  
+	<!-- need to include header manually so that the javascript does not clash --> 
+   <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
+			<h4 style="font-family: 'Poppins', sans-serif;font-size: 1.2em;
+    font-weight: 300; line-height: 1.7em;padding:4px">SCSE | FYP Examiner Allocation System</h4>
+			
+	                <?php if (isset($_SESSION['success'])) {
+	                    //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+	                    unset ($_SESSION['success']);
+	                    }
+	                        if (isset($_SESSION['displayname'])){
+	                            $displayname = trim($_SESSION['displayname'], '#');
+	                            echo "<p class='credentials' style='color: white; float:right; margin-top:-42px'>Welcome, ".$displayname. " <a href='/logout.php' title='Logout'>
+	                            <img src='/images/logout.png' width='25px' height='25px' alt='Logout'/></a></p>";
 
-									}
-
-							?>
-
+	                            } 
+	                ?>         
+	        
+			
 	</div>
 	<br/>
 	<div class="container col-sm-11 col-sm-11">

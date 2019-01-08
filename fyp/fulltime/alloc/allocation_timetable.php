@@ -207,29 +207,14 @@
 </head>
 
 <body>
-	<?php require_once('../../../php_css/header.php'); ?> 
+	<?php require_once('../../../php_css/headerwnav.php'); ?> 
 
-	<div class="float-right">
-			<?php if (isset($_SESSION['success'])) {
-				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-				unset ($_SESSION['success']);
-				}
-					if (isset($_SESSION['displayname'])){
-						$displayname = trim($_SESSION['displayname'], '#');
-						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
-						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
-
-						} 
-			?>
-					
-	</div>
-
-	<div class="row">
+	<div style="margin-left: -15px;">
 		<div class="container-fluid">
 			<?php require_once('../../nav.php'); ?> 
 
 			 <!-- Page Content Holder -->
-            <div class="container col-md-10 col-sm-10 col-lg-10">
+            <div class="container-fluid">
             	<h3>Allocation Timetable Plan for Full Time Projects</h3>
 
             	<div style="float:left;">

@@ -175,34 +175,19 @@ foreach ($rsTimeslot as $timeslot)
 </head>
 <!-- InstanceEndEditable -->
 <body>
-	<?php require_once('../../../php_css/header.php'); ?> 
-
-	<div class="float-right">
-			<?php if (isset($_SESSION['success'])) {
-				//echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-				unset ($_SESSION['success']);
-				}
-					if (isset($_SESSION['displayname'])){
-						$displayname = trim($_SESSION['displayname'], '#');
-						echo "<p class='credentials' style='color: black;'>Welcome, ".$displayname. " <a href='../../../logout.php' title='Logout'>
-						<img src='../../../images/logout1.png' width='25px' height='25px' alt='Logout'/></a></p>";
-
-						} 
-			?>
-					
-	</div>
+	<?php require_once('../../../php_css/headerwnav.php'); ?> 
 
     <div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif"/>
 		<p>Allocating timeslots...</p>
 	</div> 
 
-	<div class="row">
+	<div style="margin-left: -15px;">
 		<div class="container-fluid">
 			<?php require_once('../../nav.php'); ?> 
 
 			 <!-- Page Content Holder -->
-            <div class="container col-md-10 col-sm-10 col-lg-10">
+            <div class="container-fluid">
             	<h3>Examiner Allocation System for Full Time Projects</h3>
             	<?php 
 					if(isset($_REQUEST['error_timeslot']))
@@ -259,23 +244,21 @@ foreach ($rsTimeslot as $timeslot)
 						
 					}
 				?>
+
+				
+
 				<div style="float:right; padding-bottom:15px;">
 					Number of Project Buffer:
 					<input type="text" id="Total_BufferProjects" name="Total_BufferProjects" value="0" placeholder="0"></input>
 					<a href="allocation_timetable.php" class="btn bg-dark text-white" style="width:105px; font-size:12px;" title="View Timetable">View Timetable</a>
 					<a href="submit_download_timetable.php" class="btn bg-dark text-white" style="font-size:12px;" title="Download Timetable">Download Timetable</a>
-				</div>
-				<div style="float:right; padding-bottom:15px;">
-
+					<br/><br/>
 					<button  id="BTN_AllocationExaminer" class="btn bg-dark text-white" style="font-size:12px;" title="Allocate Examiner">Allocate Examiner</button>
-					
 					<button id="allocateTimeSlotBtn" class="btn bg-dark text-white" style="font-size:12px;" title="Allocate Timeslot">Allocate Timeslot</button>
-
 					<button id="BTN_AllocationClear" class="btn bg-dark text-white" style="font-size:12px;" title="Clear Allocation">Clear Allocation</button>
 					<!-- For testing purposes -->
 					<!-- <button id="BTN_AddStaffPref"  class="bt" style="width:105px;" title="Clear and Add Staff Pref">Add Staff Pref</button> -->
 				</div>
-
 				<div style="float:right; padding-bottom:15px;">
 					<?php
 					echo isset($_SESSION["total_projects"]) ? "Total Projects: " . $_SESSION["total_projects"] : "" ;
