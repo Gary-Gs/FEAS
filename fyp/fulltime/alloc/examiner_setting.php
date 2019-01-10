@@ -14,22 +14,31 @@ $search = '';
 $maxRows_rsStaff = 15;
 $pageNum_rsStaff = 0;
 
+
+
+
 if (isset($_GET['pageNum_rsStaff'])) {
 	$pageNum_rsStaff = $_GET['pageNum_rsStaff'];
 }
 $startRow_rsStaff = $pageNum_rsStaff * $maxRows_rsStaff;
 
+
 if(isset($_REQUEST['search'])) {
 	$maxRows_rsStaff = 1000;
 	$search = $_REQUEST['search'];
 	$searchWildcard = '%'.$search.'%';
-	$query_rsStaff = "SELECT id, name, workload , examine  FROM ". $TABLES['staff']." WHERE id LIKE ? OR name LIKE ? ORDER BY name ASC";
+	$query_rsStaff = "SELECT id, name, exemption , examine  FROM ". $TABLES['staff']." WHERE id LIKE ? OR name LIKE ? ORDER BY name ASC";
 	$query_ExaminableStaffCount = "SELECT count(*) FROM ". $TABLES['staff']." WHERE (id LIKE ? OR name LIKE ?)  AND examine = 1";
 } else {
-	$query_rsStaff = "SELECT id, name, workload , examine FROM ". $TABLES['staff']." ORDER BY name ASC";
-	$query_ExaminableStaffCount = "SELECT count(*) FROM ". $TABLES['staff']." WHERE examine = 1";
+    $query_rsStaff = "SELECT id, name, exemption , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
+    $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE examine = 1";
 }
 
+// retrieve sem 2 exemption value
+if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
+    $query_rsStaff = "SELECT id, name, exemptionS2 , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
+    $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE examine = 1";
+}
 
 
 try
@@ -194,22 +203,28 @@ $conn_db_ntu = null;
 								}
 								if( (FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list")) && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list"))){
 									IsValidFileUpload=true;
+
 								} else{
 									IsValidFileUpload=false;
+
 								}
 							}
 						});
 
+
+
 						$( "#FORM_FileToUpload_ExaminerSettings" ).submit(function( event ) {
-							if(IsValidFileUpload){
-								// alert("UPLOAD ME");
-								UploadFile_ExaminerSettings();
+
+						    if(IsValidFileUpload){
+								 //alert("UPLOAD ME");
+                                UploadFile_ExaminerSettings();
 							}else{
 								alert("Please check that you have the correct file and file name format");
 							}
 							
 							event.preventDefault();
 						});
+
 						function _(el){
 							return document.getElementById(el);
 						}
@@ -220,12 +235,16 @@ $conn_db_ntu = null;
 							else {
 								var FileToUpload_ExaminerSettings 	= _("FileToUpload_ExaminerSettings");
 								var csrfToken = _("CSRF_token").value;
+
 								// console.log(FileToUpload_ExaminerSettings.name + ", "+ FileToUpload_ExaminerSettings.size +", "+ FileToUpload_ExaminerSettings.type);
 								var formData = new FormData();
 
 								for (var x = 0; x < FileToUpload_ExaminerSettings.files.length; x++) {
 									formData.append("FileToUpload_ExaminerSettings[]", FileToUpload_ExaminerSettings.files[x]);
 								}
+								formData.append("filter_Sem", $('#filter_Sem :selected').text());
+								formData.append("filter_Year", $('#filter_Year :selected').text());
+								//alert(formData.get("filter_Sem"));
 								formData.append("csrf__",csrfToken );
 								_("loadingdiv").style.display  = "block";
 								$.ajax({
@@ -291,16 +310,41 @@ $conn_db_ntu = null;
 						}
 					</script>
 					<br/>
-					<form name="searchbox" action="examiner_setting.php" method="post">
+					<form name="searchbox" action="#" method="post">
 						<table style="width: 100%;">
+                            <colgroup>
 							<col width="20%" />
 							<col width="20%" />
+                            <col width="20%" />
+                            </colgroup>
+                            <tr>
+                                <td  >
+                                    <b> Year</b>
+                                    <select id="filter_Year" name="filter_Year" onchange="this.form.submit()">
+                                        <?php
+                                        $currentYear = sprintf("%04d", substr(date("Y"), 0));
+                                        $earliestYear = $currentYear - 10;
+
+                                        // Loops over each int[year] from current year, back to the $earliest_year [1950]
+                                        foreach ( range( $currentYear, $earliestYear ) as $i ) {
+
+
+                                            if(isset($_REQUEST["filter_Year"]) && $_REQUEST["filter_Year"] == $i){
+                                                echo "<option selected value='".$i."'>".$i."</option>";
+                                            }else{
+                                                echo "<option value='".$i."'>".$i."</option>";
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                            </tr>
                             <tr>
                                 <td >
                                     <b>Sem</b>
 
                                     <select id="filter_Sem" name="filter_Sem" onchange="this.form.submit()">
-                                        <option value="">SELECT</option>
+                                        <!--<option value="">SELECT</option>-->
                                         <?php
                                         for($index = 1; $index<3; $index++){
                                             if(isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == $index){
@@ -311,6 +355,7 @@ $conn_db_ntu = null;
                                         }
                                         ?>
                                     </select>
+
                             </tr>
 							<tr>
 								<td colspan="2" style="text-align: left;">
@@ -336,7 +381,7 @@ $conn_db_ntu = null;
 							<tr class="heading">
 								<td>Staff Name</td>
 								<td>Staff ID</td>
-								<td>Workload</td>
+								<td>Exemption</td>
 								<td>Can Examine</td>
 							</tr>
 
@@ -355,8 +400,17 @@ $conn_db_ntu = null;
 								echo "<td>" . $row_rsStaff['name'] . "</td>";
 								echo "<td>" . $row_rsStaff['id'] . "</td>";
 								echo "<td>";
-								echo ($row_rsStaff['workload'] == null) ? "<input type='number' id='workload_". $staffid ."' name='workload_".$staffid."' min='0' max='100' value='0' />" :
-								"<input type='number' id='workload_". $staffid ."' name='workload_".$staffid."' min='0' max='100' value='".$row_rsStaff['workload']."' />";
+
+								// display sem 2 staffs' exemptions.
+                            if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
+                                echo ($row_rsStaff['exemptionS2'] == null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' />" :
+                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' />";
+                            }
+                                // display sem 1 staffs' exemptions.
+                            else {
+                                echo ($row_rsStaff['exemption'] == null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' />" :
+                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' />";
+                            }
 								echo "</td>";
 								echo "<td>";
 								echo ($row_rsStaff['examine']) ? "<input type='checkbox' class='chk' id='examine_".$staffid."' name='examine_".$staffid."' checked />" :
