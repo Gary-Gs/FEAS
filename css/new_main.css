@@ -1,0 +1,126 @@
+.loadingdiv {
+	position: fixed; 
+	top:0px; 
+	left: 0px; 
+	width: 100%; 
+	height: 100%; 
+	background-color: rgba(0,0,0,0.5); 
+	z-index: 10; 
+	display:none;
+}
+.loadingdiv p {
+	color:white;
+	font-size:14px;
+	z-index: 20; 
+}
+.loadingdiv img {
+	height: 128px;  
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:20%;
+	z-index: 20; 
+}
+.errorMsg {
+	border-color:#843534;
+	box-shadow: none;
+	color:#cc0000 ;
+	font-size: 12px;
+}   
+input[type=button]:disabled  {
+	border: 1px solid #999999;
+	background-color: #ededed;
+	color: #bbbbbb;
+	cursor:default;
+}
+input[type="text"]:disabled {
+	color:#bbb !important;
+	background:#ededed !important;
+}
+
+.error {
+	background-color: #e1e1e1;
+	font-size: 16px;
+	line-height: 16px;
+	padding-bottom: 2px;
+	padding-left:5px;
+	border-left-width: 5px;
+	border-left-style: solid;
+	border-left-color: #B30000;
+	margin-bottom:5px;
+	margin-top:5px;
+}
+.warn {
+	background-color: #e1e1e1;
+	font-size: 16px;
+	line-height: 16px;
+	padding-bottom: 2px;
+	padding-left:5px;
+	border-left-width: 5px;
+	border-left-style: solid;
+	border-left-color: #FFA41C;
+	margin-bottom:5px;
+	margin-top:5px;
+}
+.success {
+	background-color: #e1e1e1;
+	font-size: 16px;
+	line-height: 16px;
+	padding-bottom: 2px;
+	padding-left:5px;
+	border-left-width: 5px;
+	border-left-style: solid;
+	border-left-color: #007e03;
+	margin-bottom:5px;
+	margin-top:5px;
+}
+
+.progress span {
+	position: absolute;
+	display: flex;
+	width: 74%;
+	justify-content: center;
+	align-items: center;
+	text-align:center;
+}
+
+.ui-dialog {
+	border: 1px solid #222;
+}
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+.ui-dialog-titlebar {
+	background-color:#e1e1e1;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	color:#222;
+	font-size:16px;
+	font-weight:bold;
+	text-align:left;
+	line-height:30px;
+	padding-left:10px;
+}
+.ui-dialog-titlebar-close {
+	visibility:hidden;
+}
+.ui-dialog-content {
+	background-color:#FFF;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	color:#444;
+	font-size:14px;
+	text-align:left;
+	padding:10px;
+}
+.ui-dialog-buttonpane {
+	background-color:#FFF;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	color:#444;
+	font-size:14px;
+	text-align:right;
+	padding:10px;
+}
+
+.ui-datepicker {
+	font-size:0.7em !important;
+	line-height:24px !important;
+}

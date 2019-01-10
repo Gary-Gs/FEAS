@@ -196,7 +196,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Allocation Timetable</title>
-	<?php require_once('../../../head.php'); ?>
+	
 	<style>
 	.clash_td {
 		background: #FFFF00;
@@ -207,34 +207,23 @@
 </head>
 
 <body>
-<div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-				<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
-      
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-			<h1>Examiner Allocation Timetable Plan for Full Time Projects</h1>
-			<br/>
-			<div id="topcon">
-				<div style="float:left;">
-					<a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a>
-					<a href="submit_download_timetable.php" class="bt" style="width:125px;" title="Download Timetable">Download Timetable</a>
+	<?php require_once('../../../php_css/headerwnav.php'); ?> 
+
+	<div style="margin-left: -15px;">
+		<div class="container-fluid">
+			<?php require_once('../../nav.php'); ?> 
+
+			 <!-- Page Content Holder -->
+            <div class="container-fluid">
+            	<h3>Allocation Timetable Plan for Full Time Projects</h3>
+
+            	<div style="float:left;">
+					<a href="allocation.php" class="btn bg-dark text-white text-center" title="< Back to Allocations">&#60;&#60; Back to Allocations</a>
+					<a href="submit_download_timetable.php" class="btn bg-dark text-white text-center" title="Download Timetable">Download Timetable</a>
 					
 				</div>
-			</div>
-			<br/>
-			<br/>
-			<?php
+
+				<?php
 			
 				for($dayIndex = 0; $dayIndex  < $NO_OF_DAYS; $dayIndex ++)  {
 					$actualDay = $dayIndex+1;
@@ -249,7 +238,7 @@
 						echo	'<tr>';
 						
 						//Header
-						echo '<tr class="heading">';
+						echo '<tr class="bg-dark text-white text-center">';
 						echo '<th style="width:100px" ></th>';
 						for($room = 0; $room < $NO_OF_ROOMS; $room++)
 						{
@@ -320,7 +309,7 @@
 				//Unallocated Projects
 				if (count($unallocated_projects) > 0)
 				{
-					echo "<br/><h4> Unallocated Projects </h4>"; 
+					echo "<br/><h3> Unallocated Projects </h3>"; 
 					//echo "Projects Allocated: " . intval($assignedProjects). " / " . count($projectList) . "<br/>";
 					$i = 0;
 					foreach ($unallocated_projects as $project)
@@ -344,29 +333,29 @@
 				echo "Projects Allocated: " . intval($assignedProjects). " / " . count($projectList) . "<br/>";
 				echo "</p>";*/
 			?>
-		</div>
+			<br/>
+            </div>
+
+            <!-- closing navigation div in nav.php -->
+        	</div>
+
+        </div>
+    </div>
 		
-		
-		<?php require_once('../../../footer.php'); ?>
-	</div>
+	<?php require_once('../../../footer.php'); ?>
 </body>
 
 </html>
-
 <?php
-	unset($limits);
-	unset($rooms);
-	unset($timeslots);
-	
-	unset($staffs);
-	unset($projects);
-	
-	unset($staffList);
-	unset($projectList);
-	
-	unset($timetable);
-	
-	unset($rooms_table);
-	unset($timeslots_table);
-	$conn_db_ntu = null;
+unset($limits);
+unset($rooms);
+unset($timeslots);
+unset($staffs);
+unset($projects);
+unset($staffList);
+unset($projectList);
+unset($timetable);
+unset($rooms_table);
+unset($timeslots_table);
+$conn_db_ntu = null;
 ?>

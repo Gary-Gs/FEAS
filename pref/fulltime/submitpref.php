@@ -12,11 +12,11 @@
 	try
 	{
 		//$conn_db_ntu->exec("DELETE FROM ".$TABLES['staff_pref']." WHERE staff_id LIKE $sid");
-	        $stmt = $conn_db_ntu->prepare("DELETE FROM ".$TABLES['staff_pref']." WHERE staff_id = ? and archive = 0");
-        $stmt->bindParam(1, $staffid );
-        $stmt->execute();
-
-    }
+		$stmt = $conn_db_ntu->prepare("DELETE FROM ".$TABLES['staff_pref']." WHERE staff_id = ? and archive = 0");
+		$stmt->bindParam(1, $staffid );
+		$stmt->execute();
+		
+	}
 	catch (PDOException $e)
 	{
 		die($e->getMessage());
@@ -26,22 +26,7 @@
 	$j=1;
 	$cid = "";
 
-	if (isset($_REQUEST['projpref'.$i]) || isset($_REQUEST['areapref'.$i])) {
-        try
-        {
-            $stmt = $conn_db_ntu->prepare("DELETE FROM ".$TABLES['staff_pref']." WHERE staff_id = ? and archive = 1");
-            $stmt->bindParam(1, $staffid );
-            $stmt->execute();
-
-        }
-        catch (PDOException $e)
-        {
-            die($e->getMessage());
-        }
-	}
-
 	while(isset($_REQUEST['projpref'.$i])) {
-
 		echo "<br/>";
 		$projectPref = $_REQUEST['projpref'.$i];
 		
@@ -103,7 +88,6 @@
 	
 	$conn_db_ntu = null;
 ?>
-
 <?php
 	 if (isset ($_REQUEST['validate'])) {
            header("location:staffpref_fulltime.php?validate=1");
@@ -112,4 +96,4 @@
 		header("location:staffpref_fulltime.php?save=1");
        } 
 	   exit;
-	?>
+?>

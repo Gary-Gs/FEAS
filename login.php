@@ -2,8 +2,8 @@
    session_start();
    // users who are able to access all modules
    $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008"];
-      
-   if (isset ($_SESSION['login'])){
+
+   if (isset ($_SESSION['login']) && isset($username)){
 	   if (in_array($username, $verifiedUsers)) {
 		header("location: index.php");
 	   }
@@ -80,50 +80,69 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<?php require_once('head.php'); ?>	
+
 	<title>Login</title>
 
 </head>
 
-<body>
-<div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		<div id="left">
-			
-		</div>
+<body style="background-image: url('images/The_Arc.jpg'); background-size: 100% 100%;">
+
 	
 	<div id="content">
-	<?php 
+	
+	 <?php require_once('php_css/headerwologin.php'); ?> 
+	 
+
+	 <form class="form-horizontal" role="form" method="POST" action="login.php" style="min-height: 84vh;">
+		 <div class="container col-sm-4 col-md-4 rounded" style="background: white; opacity: 0.9; filter: alpha(opacity=90); margin-top:2%;">
+
+		 	<div class="text-center">
+		 		<!-- pt = padding top, pb = padding bottom -->
+		 		<h3 class="pt-4 pb-4 display-5">WELCOME</h3>
+		 	</div>
+
+		 	<?php 
 			if (isset ($loginError)) {
 				    echo "<p class='warn'>[Login] ". $loginError ."</p>";	
 			}?>
-			<h1>Welcome to FYP Examiner Allocation System</h1>
+
+			<label for="userName" class="control-label">USERNAME:</label>
+			<input id="userName" type="text" class="form-control" name="username" value="" required>
 			<br/>
+
+			<label for="password" class="control-label">PASSWORD:</label>
+			<input id="password" type="password" name="pwd" data-toggle="password" class="form-control" required autocomplete="off">
+			<div class="float-right"><input type="checkbox" onclick="myFunction()">Show Password</div>
 			<br/>
+
+			<label for="domain" class="control-label">DOMAIN:</label>
+			<select class="form-control" name="domain">
+				<option value="Student">Student</option>
+				<option value="Staff">Staff</option>
+			</select> 
+			<div class="float-right"><a href="https://pwd.ntu.edu.sg/">Forgot Password?</a></div>
+			<br/><br/>
+			<button type="submit" class="btn bg-dark text-white" style="width: 100%;">Login</button>
+			<br/><br/>
 			
-	 <form class="form-horizontal" role="form" method="POST" action="login.php">
-	   <label for="userName" class="control-label" style="width:80px;display:inline-block">UserName:</label>
-	 <input id="userName" type="text" class="form-control" name="username" value="" required>
-	 <br/><br/>
-	 <label for="password" class="control-label" style="width:80px;display:inline-block">Password:</label>
-	 <input id="passWord" type="password" name="pwd"  class="form-control" required autocomplete="off" > 
-	 <br/><br/>
-	 <label for="domain" class="control-label" style="width:80px;display:inline-block">Domain:</label>
-	  <select name="domain">
-		<option value="Student">Student</option>
-		<option selected="selected" value="Staff">Staff</option>
-  
-	  </select> 
-		
-		<br/><br/><br>
-	  <button type="submit" class="bt">Login</button>
-	  <br/><br/>
-	
+		</div>
 	 </form>
+
 	 <br/><br/>
+	</div>
 </div>
-</div>
+
+<?php require_once('footer.php'); ?>	
+<script type="text/javascript">
+	function myFunction() {
+	  var x = document.getElementById("password");
+	  if (x.type === "password") {
+	    x.type = "text";
+	  } else {
+	    x.type = "password";
+	  }
+	}
+</script>
 </body>
 </html>
 	 

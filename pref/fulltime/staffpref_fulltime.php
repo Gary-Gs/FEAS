@@ -22,9 +22,7 @@
 	$defaultExamYearValue	 	= $today->format('Y');	//Current Year (Default)
 	
 	try {
-	
-		
-			
+				
 			$stmt = $conn_db_ntu->prepare("SELECT * FROM ".$TABLES['staff']." WHERE id = ?");
 			$stmt->bindParam(1, $staffid);
 			$stmt->execute();
@@ -202,19 +200,27 @@
 	
 	<title>Staff Preference</title>
 	<?php require_once('../../head.php'); ?>	
-	
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-	<script src="http://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-	<script src="https://cdn.datatables.net/rowreorder/1.1.0/js/dataTables.rowReorder.min.js"></script>
-	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
-	<link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.1.0/css/rowReorder.dataTables.min.css"/>
-	
-	
 
-	<?php
+	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> 
+	
+	<!-- <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script src="http://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script> -->
+	<script src="https://cdn.datatables.net/rowreorder/1.1.0/js/dataTables.rowReorder.min.js"></script> 
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> 
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/> -->
+	<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
+	<link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.1.0/css/rowReorder.dataTables.min.css"/> -->
+
+		<?php
 		if (!$staffPrefOpened){
 			$unavailableUrl = "../staffpref_unavailable.php";
 			header("location: " . $unavailableUrl);
@@ -281,67 +287,121 @@
 	</style>
 	
 	<script type="text/javascript">
+		/* $(document).ready(function() is a jQuery that detects state of readiness bcuz a page can't be manipulated safely until the document is "ready". 
+		the codes within the function will only run once the page document object model is ready for javascript code to execute */
 		$(document).ready(function() {
 			var update_sp = false;
 			var update_ap = false;
 
 			var modified = false;
             // enable warning when leaving the page
+            /* 1. window object represents an open window in a browser, the browser creates one window object for the HTML document
+            2. on() method attaches one or more handlers for the selected elements and child elements, 
+            syntax: 
+            $(selector).on(event,childSelector,data,function,map)
+            3. onbeforeunload event occurs when the document is about to be unloaded, this event allows you to display a message in a confirmation dialog box to inform the user whether he/she wants to stay or leave the current page*/
             $(window).on('beforeunload', function(){
                 if (modified === true) {
-                    return "Changes you made may not be saved.";
+                    return "";
                 }
             });
+            /* when the user click "leave" , the click will be registered on document when JS loaded and will delegate to the '.leave' element*/
             $(document).on('click', '.leave', function () {
                 // disable unload warning
+                /* remove 'beforeunload' event handler from window elements. syntax: $(selector).off(event,selector,function(eventObj),map)*/
                 $(window).off('beforeunload');
             });
 
 			//Tabbed Tables
-			$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+			/* jQuery selectors 
+			1. syntax: [attribute=value] , $("[href='default.htm']"), All elements with a href attribute value equal to "default.htm"
+			a[data-toggle="tab"] , all elements with href and data-toggle attribute value equal to "tab"
+			2. 'shown.bs.tab' is a bootstrap event.
+			When showing a new tab, the events fire in the following order:
+			1) hide.bs.tab (on the current active tab)
+			2) show.bs.tab (on the to-be-shown tab)
+			3) hidden.bs.tab (on the previous active tab, the same one as for the hide.bs.tab event)
+			4) shown.bs.tab (on the newly-active just-shown tab, the same one as for the show.bs.tab event): this event fires on tab show after a tab has been shown. Use event.target and event.relatedTarget to target the active tab and the previous active tab (if available) respectively.
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			  e.target // newly activated tab
+			  e.relatedTarget // previous active tab
+			})
+			*/
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				/* $.fn.dataTable.tables is using DataTables.Api to get a list of existing DataTables on a page, particularly in situations where the table has scrolling enabled and needs to have its column widths adjusted when it is made visible. 
+				syntax: tables([visible])
+				parameters: 
+				1. visible : a boolean value this options is used to indicate if you want all tables on the page should be returned false or true 
+				e.g to adjust column widths when a table is made visible in a Bootstrap tab
+				$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				    $.fn.dataTable
+				        .tables( { visible: true, api: true } )
+				        .columns.adjust();
+				})*/
 				$.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
 			} );
+
 			
 			//Data Tables
+			/* Integrating Bootstrap and DataTables extensions. DataTables is a table enhancing plug-in for JQuery Javascript library, adding sorting, paging and filtering abilities to plain HTML tables.
+			Syntax: 
+			1. Initializing DataTables in a single line of Javascript, 
+			$('table').dataTable();
+			$('table.pref_table').DataTable : all elements table with class "pref_table"
+			 */
 			$('table.pref_table').DataTable( {
-				scrollY:        400,
-				
+				scrollY:        400, // enable scrolling
 				scrollCollapse: false,
-				paging:         false,
+				paging:         false, //disable paging
 				ordering:		false,
-				filter:			true,
-				info:			false,
+				filter:			true, //enable filtering
+				// when info option is enabled, Datatables will show information about the table including information about filtered data if that action is being performed
+				info:			false, 
+				/* initComplete to know when your table has been fully initialized, data loaded and drawn. it is an option in DataTables */ 
 				  initComplete: function () {
-					
-					
+				  	/* call API functions inside the DataTables callback functions(e.g initComplete), you can use the Javascript special variable "this" to access the API "this.api()" to create an API instance */
+					//add drop down list for supervisor name column					
                     addDropDown(this.api().column(1));
 					
 				  }
             } );
         
 		function addDropDown(column) {
-					
 						
 						var selectBox = $('<select style ="width:90%"><option value="">Select </option></select>')
-						.appendTo( $(column.header()).empty() )
+						/* 1. appending dropdown list to the header cell used for a column.
+						2. empty() removes all child nodes and content from the selected elements*/
+						.appendTo( $(column.header()).empty() ) 
+						/* on change event, this method will be called */
 						.on( 'change', function () {
+						/* $.fn.dataTable.util.escapeRegex is used to escape input so formatted strings with characters that have special meaning in a regular expression will simply perform a character match */
                         var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
+                            $(this).val() // Return the value attribute, syntax: $(selector).val()
                         );
   
+  						/* 1. column.search() - get the currently applied column search 
+  						2. .search(input [, regex [, smart [, caselnsen]]])
+  						parameters: 
+  						1) input: string
+  						2) regex: boolean, treat as a regular expression when set true
+  						3) smart: boolean, perform smart search when set true
+  						4) caseInsen: boolean, do case-insensitive match when set true */
                         column
                             .search( val ? '^'+val+'$' : '', true, false )
-                            .draw();
+                            .draw(); // redraw the table
                     } );
-  
+  				/* column.data() - used to get the data used for the cells in the column matched by the selector from DataTables 
+  				.unique() - to remove duplicate items in the data 
+  				.sort() - to sort the data 
+  				.each(function(value,index)) - iterate over the contents of the API result set */ 
 				column.data().unique().sort().each( function ( d, j ) {
 						selectBox.append( '<option value="'+d+'">'+d+'</option>' )
 					} );
 		}
 			
-		 
+		
 			$('#selected_proj_table').DataTable( {
-				
+
 				scrollY:        400,
 				scrollCollapse: false,
 				paging:         false,
@@ -396,9 +456,17 @@
 				var selected_project_table = $('#selected_proj_table').DataTable();
 				var new_index = selected_project_table.data().length+1;
 				var input_project = '<input type="hidden" id="projpref'+new_index+'" name="projpref'+new_index+'" value="'+project_id+'"/>'+project_id;
+				/* table.row.add(data) - add a new row to the table 
+				parameters: 
+				1. data - this maybe an array, object, javascript object instance or a tr tag element */
 				var new_row = selected_project_table.row.add( [new_index, input_project, supervisor, title] );
 				new_row.draw();
 				//Editor table event binding
+				/*$(selector).bind(event,data,function,map) - attach a click event to element with class editor tbody tr and call for function "selectedHandler"
+				parameter: 
+				1. event - required. specifies one or more events to attach to the elements 
+				2. data - optional. specifies additional data to pass along to the function 
+				3. function - required. specifies the function to run when the event occurs */
 				$('.editor tbody tr').bind("click", selectedHandler );
 			}
 			
@@ -414,26 +482,27 @@
 					echo $js;
 				}
 			?>
-			
+			$('#selected_proj_table').DataTable().on('row-reorder', function ( e, diff, edit ) {
+				update_sp = true;
+			} );
+
 			$('#selected_proj_table').DataTable().on('order', function () {
 				if (update_sp)
 					UpdateProjTable(0, false);
 			} );
 
-			$('#selected_proj_table').DataTable().on('row-reorder', function ( e, diff, edit ) {
-				update_sp = true;
-			} );
-			
 			$('#addProjectBtn').on('click', function(e){
-				
+				//$("#proj_table tbody tr.selected") to get the selected row of table with id = "proj_table"
 				var selected = $("#proj_table tbody tr.selected");
+				//$(selector).html() - returns content
 				if (selected.html() == null) return;
 				
-				var project_id 	= selected.find("td").eq(0).text();
+				var project_id 	= selected.find("td").eq(0).text(); //select the first <td> element
 				var supervisor 	= selected.find("td").eq(1).text();
 				var title 		= selected.find("td").eq(2).text();
 				
 				var exists = false;
+				//loop thru each list in table with id selected_proj_table to see if the project id already exist 
 				var temp = $("#selected_proj_table tbody").find("tr").each( function(){
 					var $this = $(this);
 					if(project_id == $('td:eq(1)', $this).text()){
@@ -462,28 +531,6 @@
 				selected_project_table.row( selected ).remove().draw();
 			});
 			
-			//Area Table
-			function UpdateAreaTable(value, reduce_shift)
-			{
-                modified = true;
-				update_ap = false;
-				
-				var table = $('#selected_area_table').DataTable();
-				table.rows().every( function () {
-					var d = this.data();
-					if (d[0] > value)
-					{
-						if (reduce_shift) d[0]--;
-						var area_id = d[1].match(/<div class="hidden"><input.*\>(.*)<\/input><\/div>(.*)/);
-						d[1] = '<div class="hidden"><input type="hidden" id="areapref'+d[0]+'" name="areapref'+d[0]+'" value="'+area_id[1]+'">'+area_id[1]+'</input></div>'+area_id[2];
-					}
-					table
-						.row( this )
-						.data( d )
-						.draw();
-				} );
-			}
-			
 			function AddSelectedArea(area_id, title)
 			{
 				var selected_project_table = $('#selected_area_table').DataTable();
@@ -506,15 +553,38 @@
 					echo $js;
 				}
 			?>
-			
+			/* row-reorder provides the end user with the ability to click and drag a row in the table and change its position */
+			$('#selected_area_table').DataTable().on('row-reorder', function ( e, diff, edit ) {
+				update_ap = true;
+			} );
+
+			/* when the table is order, the codes within the function will be called */
 			$('#selected_area_table').DataTable().on('order', function () {
 				if (update_ap)
 					UpdateAreaTable(0, false);
 			} );
 
-			$('#selected_area_table').DataTable().on('row-reorder', function ( e, diff, edit ) {
-				update_ap = true;
-			} );
+			//Area Table
+			function UpdateAreaTable(value, reduce_shift)
+			{
+                modified = true;
+				update_ap = false;
+				
+				var table = $('#selected_area_table').DataTable();
+				table.rows().every( function () {
+					var d = this.data();
+					if (d[0] > value)
+					{
+						if (reduce_shift) d[0]--;
+						var area_id = d[1].match(/<div class="hidden"><input.*\>(.*)<\/input><\/div>(.*)/);
+						d[1] = '<div class="hidden"><input type="hidden" id="areapref'+d[0]+'" name="areapref'+d[0]+'" value="'+area_id[1]+'">'+area_id[1]+'</input></div>'+area_id[2];
+					}
+					table
+						.row( this )
+						.data( d )
+						.draw();
+				} );
+			}
 			
 			$('#addAreaBtn').on('click', function(e){
 				var selected = $("#area_table tbody tr.selected");
@@ -556,247 +626,254 @@
 	</script>
 </head>
 
-<body>
-	<div id="bar"></div>
-	<div id="wrapper">
-		
-	
-			<div id="logout">
-				<a href="../../logout.php"><img src="../../images/logout.jpg" /></a>
-			</div>
-		
-		
-		<div id="header"></div>
-		<div id="content">
-			<h1>Staff Preference for Full Time Projects </h1>
+<body style="background-color: #dce7f3;">
+	<!-- need to include header manually so that the javascript does not clash --> 
+   <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
+			<h4 style="font-family: 'Poppins', sans-serif;font-size: 1.2em;
+    font-weight: 300; line-height: 1.7em;padding:4px">SCSE | FYP Examiner Allocation System</h4>
 			
-			<?php if(isset($_REQUEST['save']))
-				echo "<p class='success'> Preferences saved.</p>";
-			if(isset($_REQUEST['call']))
-				echo "<p class='warn'> All preferences cleared.</p>";
-			if(isset($_REQUEST['clear']))
-				echo "<p class='warn'> Preference changes cleared.</p>";
-			if (isset ($_REQUEST['validate']) || isset ($_REQUEST['csrf'])) {
-				    echo "<p class='warn'> CSRF validation failed.</p>";	
-			}
-            else {?>
+	                <?php if (isset($_SESSION['success'])) {
+	                    //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+	                    unset ($_SESSION['success']);
+	                    }
+	                        if (isset($_SESSION['displayname'])){
+	                            $displayname = trim($_SESSION['displayname'], '#');
+	                            echo "<p class='credentials' style='color: white; float:right; margin-top:-42px'>Welcome, ".$displayname. " <a href='/logout.php' title='Logout'>
+	                            <img src='/images/logout.png' width='25px' height='25px' alt='Logout'/></a></p>";
 
-			<h3>Welcome, <?php echo $session_staff['position']; ?> <?php echo $session_staff['name']; ?></h3>
-			<br/>
+	                            } 
+	                ?>         
+	        
 			
-			<div class="ui-widget">
-				<!-- Supervising Projects -->
-				<h4><b>Supervising Projects</b></h4>
-				<p>You are currently supervising the following projects (to be examined in this semester):</p>
-				<table border="1" cellpadding="0" cellspacing="0"  width="100%">
-					<col width="10%" />
-					<col width="10%" />
-					<col width="10%" />
-					<col width="10%" />
-					<col width="10%" />
-					<col width="50%" />
-			
-					<tr>
-						<th class="thCol">Project ID</th>
-						<th class="thCol">Year</th>
-						<th class="thCol">Semester</th>
-						<th class="thCol">Exam Year</th>
-						<th class="thCol">Semester</th>
-						<th class="thCol">Project Title</th>
-						
-					</tr>
-					<?php foreach ($rsSupervisingProject as $row_rsProject) { ?>
-					<tr>	   
-						<td><?php echo $row_rsProject['project_id']; ?></td>
-						<td><?php echo $row_rsProject['year']; ?></td>
-						<td><?php echo $row_rsProject['sem']; ?></td>	
-						<td><?php echo $row_rsProject['examine_year']; ?></td>
-						<td><?php echo $row_rsProject['examine_sem']; ?></td>
-						<td><?php echo $row_rsProject['title']; ?></td>
-						
-					</tr>
-					<?php } ?>
-				</table>
-				<hr/>
-				
-				<h4><b>Preference Selection</b></h4>
-				<p>Please select the projects and areas that you are interested in.</p>
-				<p class="desc" style="padding-left:0px; color:#222; font-size:14px;">
-				Notes: <br/><br/>
-				1. You may choose projects and areas from the list, or begin typing keywords related to the projects to see related list.<br/><br/>
-				2. You may re-arrange your choices under the 'No' column, with the most preferred at No. 1.<br/><br/>
-				3. There is no limit on the number of preferences selected.<br/><br/>
-				4. Please note that if you did not choose any preferences, you will be randomly allocated a project to examine.
-				<br/><br/>
-				</p>
-				
-				<form action="submitpref.php" method="post">
-					<?php $csrf->echoInputField();?>
-					
-					<input name="staffid" id="staffID" type="text" value="<?php echo $staffid; ?>" style="display:none;" />
-		  
-					<!-- TABS -->
-					<ul class="nav nav-tabs" role="tablist">
-						<li class="active">
-							<a href="#tab-table1" data-toggle="tab">Project Preference</a>
-						</li>
-						<li>
-							<a href="#tab-table2" data-toggle="tab">Area Preference</a>
-						</li>
-					</ul>
-					
-					<div class="tab-content">
-						<!--Project Preference-->
-						<div class="tab-pane active" id="tab-table1">
-							<table id="proj_frame" border="1" cellpadding="0" cellspacing="0" width="100%">
-							<col width="48%" />
-							<col width="4%" />
-							<col width="48%" />
-							
-							<tr class="heading">
-							   <td>Available Projects</td>
-							   <td></td>
-							   <td>Selected Projects</td>
-							</tr>
-					
-							<td class="table_cell">
-								<table id="proj_table" class="table table-bordered pref_table" cellspacing="0">
-									<col width="40%" />
-									<col width="45%" />
-									<col width="43%" />
-									
-									<thead>
-										<tr>
-											<th class="thCol">Project ID</th>
-											<th class="thCol">Supervisor</th>
-											<th class="thCol">Title</th>
-										</tr>
-										<tr>
-										<th class="thCol"></th>
-										<th class="thCol"></th>
-										<th class="thCol"></th>
-										
-										</tr>
-									</thead>
-									
-									<tbody>
-										<?php foreach ($projectList as $project) { ?>
-										<tr>
-											<td ><?php echo $project->getID(); ?></td>
-											<td><?php echo getStaff($project->getStaff()); ?></td>
-											<td><?php echo $project->getTitle(); ?></td>
-										</tr>
-										<?php } ?>
-									</tbody>
-								</table>
-							</td>
-							
-							<td>
-								<a id="addProjectBtn" class="bt selbtn" title="Add To Selection" style="width:50%;">&gt;&gt;</a><br/><br/>
-								<a id="removeProjectBtn" class="bt selbtn" title="Remove From Selection" style="width:50%;">&lt;&lt;</a>
-							</td>
-							
-							<td class="table_cell">
-								<table id="selected_proj_table" class="table table-bordered editor" cellspacing="0">
-									<col width="10%"/>
-									<col width="25%"/>
-									<col width="30%"/>
-									<col width="35%"/>
-									
-									<thead>
-										<tr>
-											<th class="thCol">No</th>
-											<th class="thCol">Project ID</th>
-											<th class="thCol">Supervisor</th>
-											<th class="thCol">Title</th>
-										</tr>
-									</thead>
-									
-									<tbody>
-									</tbody>
-								</table>
-							</td>
-							
-							</table>
-						</div>
-						
-						<!--Area Preference-->
-						<div class="tab-pane" id="tab-table2">
-							<table id="area_frame" border="1" cellpadding="0" cellspacing="0" width="100%">
-							<col width="48%" />
-							<col width="4%" />
-							<col width="48%" />
-							
-							<tr class="heading">
-							   <td>Available Areas</td>
-							   <td></td>
-							   <td>Selected Areas</td>
-							</tr>
-					
-							<td class="table_cell">
-								<table id="area_table" class="table table-bordered pref_table" cellspacing="0">
-									<thead>
-										<tr>
-											<th class="thCol hidden">Area ID</th>
-											<th class="thCol">Area</th>
-										</tr>
-										<tr>
-											<th class="thCol hidden"></th>
-											<th class="thCol"></th>
-										</tr>
-									</thead>
-									
-									<tbody>
-										<?php foreach ($areaList as $area) { ?>
-										<tr>
-											<td class="hidden"><?php echo $area->getID(); ?></td>
-											<td><?php echo $area->getTitle(); ?></td>
-										</tr>
-										<?php } ?>
-									</tbody>
-								</table>
-							</td>
-							
-							<td>
-								<a id="addAreaBtn" class="bt selbtn" title="Add To Selection" style="width:50%;">&gt;&gt;</a><br/><br/>
-								<a id="removeAreaBtn" class="bt selbtn" title="Remove From Selection" style="width:50%;">&lt;&lt;</a>
-							</td>
-							
-							<td class="table_cell">
-								<table id="selected_area_table" class="table table-bordered editor" cellspacing="0">
-									<col width="10%" />
-									<col width="90%" />
-									
-									<thead>
-										<tr>
-											<th class="thCol">No</th>
-											<th class="thCol">Area</th>
-										</tr>
-									</thead>
-									
-									<tbody>
-									</tbody>
-								</table>
-							</td>
-							
-							</table>
-						</div>
-					</div>
-					
-					<!--Buttons-->
-					<div style="float:right; padding-top:25px;">
-						<a href="clearpref.php" class="bt leave" title="Clear all saved preferences">Delete All</a>
-						<a href="staffpref_fulltime.php?clear=1" class="bt leave" title="Clear all selected preferences">Clear Changes</a>
-						<input type="submit" title="Save all selected preferences" value="Save Changes" class="bt leave" style="font-size:12px !important;"/>
-					</div>
-				</form>	
-			</div>	
-             <?php }?>
-		</div>
-		
-		<!-- InstanceEndEditable --> 
-		<?php require_once('../../footer.php'); ?>
 	</div>
+	<br/>
+	<div class="container col-sm-11 col-sm-11">
+		<h3>Staff Preference for Full Time Projects</h3>
+		<br/>
+		<?php if(isset($_REQUEST['save']))
+					echo "<p class='success'> Preferences saved.</p>";
+				if(isset($_REQUEST['call']))
+					echo "<p class='warn'> All preferences cleared.</p>";
+				if(isset($_REQUEST['clear']))
+					echo "<p class='warn'> Preference changes cleared.</p>";
+				if (isset ($_REQUEST['validate']) || isset ($_REQUEST['csrf'])) {
+					    echo "<p class='warn'> CSRF validation failed.</p>";	
+				}
+	            else {?>
+					<!-- Supervising Projects -->
+					<h4><u>Supervising Projects</u></h4>
+					<p>You are currently supervising the following projects (to be examined in this semester):</p>
+					<table border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
+						<col width="10%" />
+						<col width="10%" />
+						<col width="10%" />
+						<col width="10%" />
+						<col width="10%" />
+						<col width="50%" />
+				
+						<tr>
+							<td class="bg-dark text-white text-center">Project ID</td>
+							<td class="bg-dark text-white text-center">Year</td>
+							<td class="bg-dark text-white text-center">Semester</td>
+							<td class="bg-dark text-white text-center">Exam Year</td>
+							<td class="bg-dark text-white text-center">Semester</td>
+							<td class="bg-dark text-white text-center">Project Title</td>
+							
+						</tr>
+						<?php foreach ($rsSupervisingProject as $row_rsProject) { ?>
+						<tr>	   
+							<td class="text-center"><?php echo $row_rsProject['project_id']; ?></td>
+							<td class="text-center"><?php echo $row_rsProject['year']; ?></td>
+							<td class="text-center"><?php echo $row_rsProject['sem']; ?></td>	
+							<td class="text-center"><?php echo $row_rsProject['examine_year']; ?></td>
+							<td class="text-center"><?php echo $row_rsProject['examine_sem']; ?></td>
+							<td class="text-center"><?php echo $row_rsProject['title']; ?></td>
+							
+						</tr>
+						<?php } ?>
+					</table>
+					<hr/>
+
+					<h4><u>Preference Selection</u></h4>
+					<p>Please select the projects and areas that you are interested in.</p>
+					<p class="desc" style="padding-left:0px; color:#222; font-size:14px;">
+					Notes: <br/><br/>
+					1. You may choose projects and areas from the list, or begin typing keywords related to the projects to see related list.<br/><br/>
+					2. You may re-arrange your choices under the 'No' column, with the most preferred at No. 1.<br/><br/>
+					3. There is no limit on the number of preferences selected.<br/><br/>
+					4. Please note that if you did not choose any preferences, you will be randomly allocated a project to examine.
+					<br/><br/>
+					</p>
+					
+					<form action="submitpref.php" method="post">
+						<?php $csrf->echoInputField();?>
+						
+						<input name="staffid" id="staffID" type="text" value="<?php echo $staffid; ?>" style="display:none;" />
+			  
+						<!-- TABS -->
+						<ul class="nav nav-tabs" id="myTab" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" href="#tab-table1" role="tab" data-toggle="tab">Project Preference</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#tab-table2" role="tab" data-toggle="tab">Area Preference</a>
+							</li>
+						</ul>
+						
+						<div class="tab-content">
+							<!--Project Preference-->
+							<div class="tab-pane active" id="tab-table1">
+								<table id="proj_frame" border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);"> 
+								<col width="48%" />
+								<col width="4%" />
+								<col width="48%" />
+								
+								<tr class="bg-dark text-white text-center">
+								   <td>Available Projects</td>
+								   <td></td>
+								   <td>Selected Projects</td>
+								</tr>
+						
+								<td class="table_cell">
+									<table id="proj_table" class="table table-bordered pref_table" cellspacing="0"  width="100%">
+										<col width="40%" />
+										<col width="45%" />
+										<col width="43%" />
+										
+										<thead>
+											<tr>
+												<th class="bg-dark text-white text-center">Project ID</th>
+												<th class="bg-dark text-white text-center">Supervisor</th>
+												<th class="bg-dark text-white text-center">Title</th>
+											</tr>
+											<tr>
+											<th class="bg-dark text-white text-center"></th>
+											<th class="bg-dark text-white text-center"></th>
+											<th class="bg-dark text-white text-center"></th>
+											
+											</tr>
+										</thead>
+										
+										<tbody>
+											<?php foreach ($projectList as $project) { ?>
+											<tr>
+												<td ><?php echo $project->getID(); ?></td>
+												<td><?php echo getStaff($project->getStaff()); ?></td>
+												<td><?php echo $project->getTitle(); ?></td>
+											</tr>
+											<?php } ?>
+										</tbody>
+									</table>
+								</td>
+								
+								<td class="text-center">
+									<a id="addProjectBtn" class="bt selbtn" title="Add To Selection" style="width:50%;">&gt;&gt;</a><br/><br/>
+									<a id="removeProjectBtn" class="bt selbtn" title="Remove From Selection" style="width:50%;">&lt;&lt;</a>
+								</td>
+								
+								<td class="table_cell" width="100%">
+									<table id="selected_proj_table" class="table table-bordered editor" cellspacing="0" style="width:100%">
+										<col width="10%"/>
+										<col width="25%"/>
+										<col width="30%"/>
+										<col width="35%"/>
+										
+										<thead>
+											<tr>
+												<th class="bg-dark text-white text-center" width="10%">No</th>
+												<th class="bg-dark text-white text-center" width="25%">Project ID</th>
+												<th class="bg-dark text-white text-center" width="30%">Supervisor</th>
+												<th class="bg-dark text-white text-center" width="35%">Title</th>
+											</tr>
+										</thead>
+										
+										<tbody>
+										</tbody>
+									</table>
+								</td>
+								
+								</table>
+							</div>
+							
+							<!--Area Preference-->
+							<div class="tab-pane" id="tab-table2">
+								<table id="area_frame" border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
+								<col width="48%" />
+								<col width="4%" />
+								<col width="48%" />
+								
+								<tr class="bg-dark text-white text-center">
+								   <td>Available Areas</td>
+								   <td></td>
+								   <td>Selected Areas</td>
+								</tr>
+						
+								<td class="table_cell">
+									<table id="area_table" class="table table-bordered pref_table" cellspacing="0">
+										<thead>
+											<tr>
+												<th class="thCol hidden">Area ID</th>
+												<th class="bg-dark text-white text-center">Area</th>
+											</tr>
+											<tr>
+												<th class="thCol hidden"></th>
+												<th class="bg-dark text-white text-center"></th>
+											</tr>
+										</thead>
+										
+										<tbody>
+											<?php foreach ($areaList as $area) { ?>
+											<tr>
+												<td class="hidden"><?php echo $area->getID(); ?></td>
+												<td><?php echo $area->getTitle(); ?></td>
+											</tr>
+											<?php } ?>
+										</tbody>
+									</table>
+								</td>
+								
+								<td class="text-center">
+									<a id="addAreaBtn" class="bt selbtn" title="Add To Selection" style="width:50%;">&gt;&gt;</a><br/><br/>
+									<a id="removeAreaBtn" class="bt selbtn" title="Remove From Selection" style="width:50%;">&lt;&lt;</a>
+								</td>
+								
+								<td class="table_cell">
+									<table id="selected_area_table" class="table table-bordered editor" cellspacing="0">
+										<col width="10%" />
+										<col width="90%" />
+										
+										<thead>
+											<tr>
+												<th class="bg-dark text-white text-center">No</th>
+												<th class="bg-dark text-white text-center">Area</th>
+											</tr>
+										</thead>
+										
+										<tbody>
+										</tbody>
+									</table>
+								</td>
+								
+								</table>
+							</div>
+						</div>
+						
+						<!--Buttons-->
+						<div style="float:right; padding-top:25px;">
+							<a href="clearpref.php" class="btn bg-dark text-white text-center" title="Clear all saved preferences" style="font-size:12px;">Delete All</a>
+							<a href="staffpref_fulltime.php?clear=1" class="btn bg-dark text-white text-center" title="Clear all selected preferences" style="font-size:12px;">Clear Changes</a>
+							<input type="submit" class="btn bg-dark text-white text-center" title="Save all selected preferences" value="Save Changes" style="font-size:12px !important;"/>
+						</div>
+						<br/><br/><br/>
+					</form>	
+				
+	             <?php }?>
+	</div>		
+
+
+	<!-- InstanceEndEditable --> 
+	<?php require_once('../../footer.php'); ?>
+	 		
 	
 </body>
 </html>

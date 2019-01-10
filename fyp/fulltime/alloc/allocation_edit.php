@@ -259,45 +259,34 @@
 </head>
 
 <body>
-    <div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-				<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
+   <?php require_once('../../../php_css/headerwnav.php');?>
 
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-		
-			<h1><?php echo ($error_code == 0) ? "$projectID" : "Edit Allocation"; ?></h1>
-			<?php 
-			if (isset ($_REQUEST['validate'])) {
-				    echo "<p class='warn'> CSRF validation failed.</p>";	
-			}
-			else if($error_code != 0)
-			{
-				switch($error_code)
-				{
-					case 1: echo "<p class='error'>[Edit Allocation] Failed: No Project Requested.</p>";
-						break;
-					case 2: echo "<p class='error'>[Edit Allocation] Failed: Invalid Project.</p>";
-						break;
-					default: echo "<p class='error'>[Edit Allocation] Failed: Unknown Error has occurred. </p>";
-						break;
-				}
-				
-				echo '<p><a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>';
-			}
-			else{ ?>
-				<div id="topcon">
-					<h2><?php echo ($projData['ptitle'] != null) ? $projData['ptitle']: "-"; ?></h2>
+	<div style="margin-left: -15px;">
+		<div class="container-fluid">
+			<?php require_once('../../nav.php'); ?>
+			<div class="container-fluid">
+				<h3><?php echo ($error_code == 0) ? "$projectID" : "Edit Allocation"; ?></h3>
+				<?php 
+					if (isset ($_REQUEST['validate'])) {
+						    echo "<p class='warn'> CSRF validation failed.</p>";	
+					}
+					else if($error_code != 0)
+					{
+						switch($error_code)
+						{
+							case 1: echo "<p class='error'>[Edit Allocation] Failed: No Project Requested.</p>";
+								break;
+							case 2: echo "<p class='error'>[Edit Allocation] Failed: Invalid Project.</p>";
+								break;
+							default: echo "<p class='error'>[Edit Allocation] Failed: Unknown Error has occurred. </p>";
+								break;
+						}
+						
+						echo '<p><a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>';
+					}
+					else{
+				?>
+				<h4><?php echo ($projData['ptitle'] != null) ? $projData['ptitle']: "-"; ?></h4>
 					<?php
 						if(isset($_REQUEST['save']))
 							echo "<p class='success'> Allocation saved.</p>";
@@ -308,7 +297,7 @@
 						
 						echo '';
 					?>
-					<p><a href="allocation.php" class="bt" style="width:130px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
+					<p><a href="allocation.php" class="btn bg-dark text-white" style="font-size: 12px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
 					<form action="submit_allocate_edit.php" method="post">
 					<?php $csrf->echoInputField();?>
 					<input type="hidden" id="user_id" name="user_id" value="<?php echo $_SESSION['id']; ?>" />
@@ -357,7 +346,7 @@
 						</div>
 						
 						<div style="float:right; padding-top:25px;">
-							<input type="submit" title="Save all changes" value="Save Changes" class="bt" style="font-size:12px !important;"/>
+							<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
 						</div>
 						
 						
@@ -365,24 +354,25 @@
 				</div>
 				<br/>
 			<?php } ?>
-		</div>	
-		<!-- InstanceEndEditable --> 
+
+			</div>
+
+			<!-- InstanceEndEditable --> 
 		<script type="text/javascript">
-		
-		
-		
 		$('#exam_day').change (function()  {
 					
 					regenerateRoomSelect(this.value);
 					regenerateTimeSelect(this.value);
 		}); 
-		
-	
-	  
-		
 	</script>
-		<?php require_once('../../../footer.php'); 
-				$conn_db_ntu = null;?>
+
+			<!-- closing navigation div in nav.php -->
+	         </div>
+		</div>	
 	</div>
+
+	<?php
+	require_once('../../../footer.php'); 
+	$conn_db_ntu = null;?>
 </body>
 </html>

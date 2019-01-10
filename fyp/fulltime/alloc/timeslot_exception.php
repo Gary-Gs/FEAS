@@ -2,9 +2,7 @@
 	  require_once('../../../CSRFProtection.php');
 	  require_once('./entity.php');
 	  require_once('../../../Utility.php');?>
-
 <?php
-	
 	$csrf = new CSRFProtection();
    
 	
@@ -166,7 +164,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>TimeSlot Exceptions</title>
-	<?php require_once('../../../head.php'); ?>
+	
 	<style>
 		.exception_td
 		{
@@ -221,76 +219,64 @@
 </head>
 
 <body>
-    <div id="bar"></div>
-	<div id="wrapper">
-		<div id="header"></div>
-		
-		<div id="left">
-			<div id="nav">
-				<?php require_once('../../nav.php'); ?>
-			</div>
-		</div>
-		
-		<div id="logout">
-				<a href="../../../logout.php"><img src="../../../images/logout.jpg" /></a>
-		</div>
-		
-		<!-- InstanceBeginEditable name="Content" -->
-		<div id="content">
-			<h1>Timeslot Exception for Full Time Projects</h1>
-			<br/>
-			<?php 
-			if(isset($_REQUEST['save']))
-				echo "<p class='success'> Timeslot exception settings saved.</p>";
-			if(isset($_REQUEST['clear']))
-				echo "<p class='warn'> Timeslot exceptions changes cleared.</p>";
-			if(isset($_REQUEST['call']))
-				echo "<p class='warn'> All timeslot exceptions cleared.</p>";
-			if (isset($_REQUEST['validate']) || isset($_REQUEST['csrf'])) {
-				    echo "<p class='warn'> CSRF validation failed.</p>";
-			}
-			else  {?>
-			
-			<div id="topcon">
-				<form action="submit_savete.php" method="post">
-				<?php $csrf->echoInputField();?>
-					<table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
-						<col width="40%" />
-						<col width="20%" />
-						<col width="20%" />
-						<col width="20%" />
+   <?php require_once('../../../php_css/headerwnav.php');?>
 
-						<tr class="heading">
-							<td>Staff Name</td>
-							<td>Day</td>
-							<td>Start Time</td>
-							<td>End Time</td>
-						</tr>
-					
-						<?php initEntries(); ?>
-						
-						<tr>
-							<td class="exception_td"></td>
-							<td class="exception_td"></td>
-							<td class="exception_td"></td>
-							<td class="exception_td"><a onclick="javascript:addException(5);" class="bt" title="Add more exception"/>Add Exception</a></td>
-						</tr>
-					</table>
-					 
-					<div style="float:right; padding-top:25px;">
-						
-						<a href="timeslot_exception.php?clear=1" class="bt" title="Clear all changes">Clear Changes</a>
-						<input type="submit" title="Save all changes" value="Save Changes" class="bt" style="font-size:12px !important;"/>
-					</div>
-				</form>
-			</div>
-			<?php }?>
-			<br/>
-		</div>
-		<!-- InstanceEndEditable --> 
-		
-		<?php require_once('../../../footer.php'); ?>
+	<div style="margin-left: -15px;">
+		<div class="container-fluid">
+			<?php require_once('../../nav.php'); ?>
+				<div class="container-fluid">
+					<h3>Timeslot Exception for Full Time Projects</h3>
+
+					<?php 
+						if(isset($_REQUEST['save']))
+							echo "<p class='success'> Timeslot exception settings saved.</p>";
+						if(isset($_REQUEST['clear']))
+							echo "<p class='warn'> Timeslot exceptions changes cleared.</p>";
+						if(isset($_REQUEST['call']))
+							echo "<p class='warn'> All timeslot exceptions cleared.</p>";
+						if (isset($_REQUEST['validate']) || isset($_REQUEST['csrf'])) {
+							    echo "<p class='warn'> CSRF validation failed.</p>";
+						}
+						else  {
+					?>
+
+					<form action="submit_savete.php" method="post">
+						<?php $csrf->echoInputField();?>
+						<table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
+							<col width="40%" />
+							<col width="20%" />
+							<col width="20%" />
+							<col width="20%" />
+
+							<tr class="bg-dark text-white text-center" >
+								<td>Staff Name</td>
+								<td>Day</td>
+								<td>Start Time</td>
+								<td>End Time</td>
+							</tr>
+							<?php initEntries(); ?>
+							
+							<tr>
+								<td class="exception_td"></td>
+								<td class="exception_td"></td>
+								<td class="exception_td"></td>
+								<td class="exception_td"><a onclick="javascript:addException(5);" class="bt" title="Add more exception"/>Add Exception</a></td>
+							</tr>
+						</table>
+						 
+						<div style="float:right; padding-top:25px;">
+							
+							<a href="timeslot_exception.php?clear=1" class="btn bg-dark text-white" title="Clear all changes" style="font-size:12px">Clear Changes</a>
+							<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
+						</div>
+					</form>
+					<?php } ?>
+				</div>
+			<!-- closing navigation div in nav.php -->
+	        </div>
+	    </div>
 	</div>
+	<?php require_once('../../../footer.php'); ?>
 </body>
 </html>
 

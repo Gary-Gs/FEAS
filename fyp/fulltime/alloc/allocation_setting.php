@@ -428,10 +428,16 @@ function enoughSlots() {
 			roomCount_Day1 = <?php echo $roomCount_day1; ?>;
 			roomCount_Day2 = <?php echo $roomCount_day2; ?>;
 			roomCount_Day3 = <?php echo $roomCount_day3; ?>;
-			// $("#alloc_days1").datepicker({dateFormat: "yy-mm-dd",});
-			// $("#alloc_days2").datepicker({dateFormat: "yy-mm-dd",});
-			// $("#alloc_days3").datepicker({dateFormat: "yy-mm-dd",});
 
+			$("#alloc_days1").datepicker({
+											 dateFormat: "yy-mm-dd",
+										 });
+			$("#alloc_days2").datepicker({
+											 dateFormat: "yy-mm-dd",
+										 });
+			$("#alloc_days3").datepicker({
+											 dateFormat: "yy-mm-dd",
+										 });
 			var no_of_days = <?php echo $NO_OF_DAYS; ?>;
 			generateTabs(no_of_days);
 		});
@@ -531,7 +537,6 @@ function enoughSlots() {
 				// for the tabs side - assign current
 				$("#tab" + day).addClass('current');
 				$("#tab-" + day).addClass('current');
-				// $("#alloc_days" + day).datepicker({dateFormat: "yy-mm-dd",});
 
 				// for the room side - assign current
 				$(this).addClass('current');
@@ -588,227 +593,188 @@ function enoughSlots() {
 		}
 	</script>
 </head>
-<body>
-<div id="bar"></div>
-<div id="wrapper">
-	<div id="header"></div>
-	<div id="left">
-		<div id="nav">
-			<?php require_once('../../nav.php'); ?>
-		</div>
-	</div>
-	<div id="logout">
-		<a href="../../../logout.php"><img src="../../../images/logout.jpg"/></a>
-	</div>
-	<!-- InstanceBeginEditable name = "Content" -->
-	<div id="content">
-		<h1>Allocation Settings for Full Time Projects</h1>
-		<?php
-		if (!enoughSlots()) {
-			echo "<p class = 'warn'> Your current settings do not provide sufficient rooms/slots for timetable allocation!</p>";
-		}
-		//		if (isset($_REQUEST['error'])) {
-		//			$error_exp = explode('|', $_REQUEST['error']);
-		//			echo sizeof($error_exp);
-		//			for ($i = 0; $i < $error_exp)
-		//			switch (error) {
-		//				case 0:
-		//					echo "<p class = 'warn'> Invalid date format for Day 1.</p>";
-		//					break;
-		//				case 1:
-		//					echo "<p class = 'warn'> Invalid date format for Day 2.</p>";
-		//					break;
-		//				case 2:
-		//					echo "<p class = 'warn'> Invalid date format for Day 3.</p>";
-		//					break;
-		//				case 3:
-		//					echo "<p class = 'warn'> Day 1 must be before Day 2.</p>";
-		//					break;
-		//				case 4:
-		//					echo "<p class = 'warn'> Day 1 must be before Day 3.</p>";
-		//					break;
-		//				case 5:
-		//					echo "<p class = 'warn'> Day 2 must be before Day 3.</p>";
-		//					break;
-		//				default:
-		//					break;
-		//			}
-		//		}
-		if (isset($_REQUEST['save'])) {
-			echo "<p class = 'success'> Allocation settings saved.</p>";
-		}
-		if (isset($_REQUEST['clear'])) {
-			echo "<p class = 'warn'> Allocation settings changes cleared.</p>";
-		}
-		if (isset($_REQUEST['reset'])) {
-			echo "<p class = 'warn'> Allocation settings reset to default.</p>";
-		}
-		if (isset ($_REQUEST['validate'])) {
-			echo "<p class = 'warn'> CSRF validation failed.</p>";
-		} else { ?>
-			<div id="topcon">
-				<form action="submit_saveas.php" method="post">
-					<?php $csrf->echoInputField(); ?>
-					<table id="settings_table" border="0" style="margin-top:15px;">
-						<tr>
-							<td valign="top" style="text-align:left;">
-								<div id="exam_settings">
-									<h3 style="padding-bottom:10px;">Exam Settings</h3>
-									<table id="examsettings_table" border="0" width="406" style="text-align:left;">
-										<col width="110"/>
-										<col width="220"/>
-										<tr>
-											<td style="padding:5px;">Exam Year:</td>
-											<td><?php generateYearSelect('exam_year', $examYearValue); ?></td>
-										</tr>
-										<tr>
-											<td style="padding:5px;">Exam Sem:</td>
-											<td><?php generateSemSelect('exam_sem', $examSemValue); ?></td>
-										</tr>
-										<tr>
-											<td style="padding:5px;">Number of Days:</td>
-											<td>
-												<input type="number" id="number_of_days" name="number_of_days" min="1" max="3" value="<?php echo $NO_OF_DAYS; ?>" required/><br/>
-												<span id="dayErrorMsg" class="errorMsg"></span>
-											</td>
-										</tr>
-									</table>
-								</div>
-							</td>
-							<td valign="top" style="text-align:left; padding-left:70px;" rowspan="2">
-								<h3 style="padding-bottom:10px;">Room Settings</h3>
-								<ul id="roomTabs" class="room_tabs"></ul>
-								<div id="roomTableGroup">
-									<?php initRoomTable($NO_OF_DAYS) ?>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td valign="top" style="text-align:left;">
-								<div id="timeslot_settings">
-									<h3 style="padding-bottom:10px;">Timeslot Settings</h3>
-									<table id="timeslot_table" border="0" width="406" style="text-align:left;">
-										<col width="110"/>
-										<col width="220"/>
-										<!--<tr>-->
-										<!--<td style = "padding:5px;">Allocation<br> Open Date:</td>-->
-										<!---->
-										<!--<td>--><?php // generateAllocDate() ?><!--</td>-->
-										<!--</tr>-->
-										<!--<tr>-->
-										<!--<td style = "padding:5px;">Allocation<br> Close Date:</td>-->
-										<!---->
-										<!--<td>pending</td>-->
-										<!--</tr>-->
-										<tr>
-											<td colspan="2">
-												<ul id="timeSlotTabs" class="tabs"></ul>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<table id="tsSettingsBody">
-													<?php generateTSTable($NO_OF_DAYS); ?>
-												</table>
-											</td>
-										</tr>
-									</table>
-									<label><input type="checkbox" name="apply_to_all[]"/> Apply to all</label>
-								</div>
-							</td>
-						</tr>
-					</table>
-					<div style="float:right; padding-top:25px;">
-						<a href="submit_resetas.php" class="bt" title="Reset to default" style="width:130px;">Reset to default</a>
-						<input type="submit" title="Save all changes" value="Save Changes" class="bt" style="font-size:12px !important;"/>
+<body> 
+<?php require_once('../../../php_css/headerwnav.php'); ?> 
+
+	<div style="margin-left: -15px;">
+		<div class="container-fluid">
+			 <?php require_once('../../nav.php'); ?> 
+			 <!-- Page Content Holder -->
+             <div class="container-fluid">
+             	<h3>Allocation Settings for Full Time Projects</h3>
+
+				<?php
+				if (!enoughSlots()) {
+					echo "<p class = 'warn'> Your current settings do not provide sufficient rooms/slots for timetable allocation!</p>";
+				}
+				if (isset($_REQUEST['save'])) {
+					echo "<p class = 'success'> Allocation settings saved.</p>";
+				}
+				if (isset($_REQUEST['clear'])) {
+					echo "<p class = 'warn'> Allocation settings changes cleared.</p>";
+				}
+				if (isset($_REQUEST['reset'])) {
+					echo "<p class = 'warn'> Allocation settings reset to default.</p>";
+				}
+				if (isset ($_REQUEST['validate'])) {
+					echo "<p class = 'warn'> CSRF validation failed.</p>";
+				} else { ?>
+					<div id="topcon">
+						<form action="submit_saveas.php" method="post">
+							<?php $csrf->echoInputField(); ?>
+							<table id="settings_table" border="0" style="margin-top:15px;">
+								<tr>
+									<td valign="top" style="text-align:left;">
+										<div id="exam_settings">
+											<u><h4 style="padding-bottom:10px;">Exam Settings</h4></u>
+											<table id="examsettings_table" border="0" width="406" style="background-color: #ededed; text-align:left;">
+												<col width="110"/>
+												<col width="220"/>
+												<tr>
+													<td style="padding:5px;">Exam Year:</td>
+													<td><?php generateYearSelect('exam_year', $examYearValue); ?></td>
+												</tr>
+												<tr>
+													<td style="padding:5px;">Exam Sem:</td>
+													<td><?php generateSemSelect('exam_sem', $examSemValue); ?></td>
+												</tr>
+												<tr>
+													<td style="padding:5px;">Number of Days:</td>
+													<td>
+														<input type="number" id="number_of_days" name="number_of_days" min="1" max="3" value="<?php echo $NO_OF_DAYS; ?>" required/><br/>
+														<span id="dayErrorMsg" class="errorMsg"></span>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</td>
+									<td valign="top" style="text-align:left; padding-left:70px;" rowspan="2">
+										<u><h4 style="padding-bottom:10px;">Room Settings</h4></u>
+										<ul id="roomTabs" class="room_tabs"></ul>
+										<div id="roomTableGroup">
+											<?php initRoomTable($NO_OF_DAYS) ?>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td valign="top" style="text-align:left;">
+										<div id="timeslot_settings">
+											<u><h4 style="padding-bottom:10px;">Timeslot Settings</h4></u>
+											<table id="timeslot_table" border="0" width="406" style="text-align:left;">
+												<col width="110"/>
+												<col width="220"/>
+												<!--<tr>-->
+												<!--<td style = "padding:5px;">Allocation<br> Open Date:</td>-->
+												<!---->
+												<!--<td>--><?php // generateAllocDate() ?><!--</td>-->
+												<!--</tr>-->
+												<!--<tr>-->
+												<!--<td style = "padding:5px;">Allocation<br> Close Date:</td>-->
+												<!---->
+												<!--<td>pending</td>-->
+												<!--</tr>-->
+												<tr>
+													<td colspan="2">
+														<ul id="timeSlotTabs" class="tabs"></ul>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<table id="tsSettingsBody">
+															<?php generateTSTable($NO_OF_DAYS); ?>
+														</table>
+													</td>
+												</tr>
+											</table>
+											<label><input type="checkbox" name="apply_to_all[]"/> Apply to all</label>
+										</div>
+									</td>
+								</tr>
+							</table>
+							<div style="float:right; padding-top:25px;">
+								<a href="submit_resetas.php" class="btn bg-dark text-white" title="Reset to default" style="width:130px;font-size:12px;">Reset to default</a>
+								<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
+								<br/><br/>
+							</div>
+						</form>
 					</div>
-				</form>
+				<?php } ?>
+
+
+				<script>
+					function addRoom_Day(roomCount, val, elementId, day) { // add rooms
+						var table = document.getElementById(elementId);
+
+						for (var i = 0; i < val; i++) {
+							var row = table.insertRow(table.rows.length),
+								td_index = row.insertCell(0),
+								td_field = row.insertCell(1);
+							roomCount++;
+							td_index.innerHTML = roomCount + ".";
+							td_index.className = 'room_td';
+
+							td_field.innerHTML = "<input style = \"width:200px;\" id = \"room" + day + "_" + roomCount + "\" name = \"room" + day + "_" + roomCount + "\">";
+							td_field.className = 'room_td';
+						}
+						return roomCount;
+					}
+
+					$("#number_of_days").change(function () {
+						$("#dayErrorMsg").html("");
+						if (this.value < 1 || this.value > 3) {
+							$("#dayErrorMsg").html("Please enter a valid number between 1 and 3!");
+						}
+						else {
+							generateTabs(this.value);
+							regenerateRoomTable(this.value);
+							regenerateTimeSlotTable(this.value);
+							// reset room count for each day since the no of days change
+							roomCount_Day1 = <?php echo $roomCount_day1; ?>;
+							roomCount_Day2 = <?php echo $roomCount_day2; ?>;
+							roomCount_Day3 = <?php echo $roomCount_day3; ?>;
+						}
+					});
+
+					$("#roomTableGroup").on("click", "#addRoomBtn1", function () {
+						roomCount_Day1 = addRoom_Day(roomCount_Day1, 5, "room_table1", 1);
+					});
+					$("#roomTableGroup").on("click", "#addRoomBtn2", function () {
+						roomCount_Day2 = addRoom_Day(roomCount_Day2, 5, "room_table2", 2);
+					});
+					$("#roomTableGroup").on("click", "#addRoomBtn3", function () {
+						roomCount_Day3 = addRoom_Day(roomCount_Day3, 5, "room_table3", 3);
+					});
+
+					function checkTime(id, day) {
+						var date_start = new Date("1-1-2018 " + $('#start_time' + day + ' option:selected').val()),
+							date_end = new Date("1-1-2018 " + $('#end_time' + day + ' option:selected').val());
+
+						if (date_start >= date_end) {
+							if (id == "start_time")
+								$("#" + id + +day).val('08:30:00');
+							else
+								$("#" + id + +day).val('17:30:00');
+							alert("Start Time must be before End Time.");
+						}
+					}
+				</script>
+
+             </div>
+
+			<!-- closing navigation div in nav.php -->
 			</div>
-		<?php } ?>
-		<br/>
+
+		</div>
+
 	</div>
-
-	<script>
-		function addRoom_Day(roomCount, val, elementId, day) { // add rooms
-			var table = document.getElementById(elementId);
-
-			for (var i = 0; i < val; i++) {
-				var row = table.insertRow(table.rows.length),
-					td_index = row.insertCell(0),
-					td_field = row.insertCell(1);
-				roomCount++;
-				td_index.innerHTML = roomCount + ".";
-				td_index.className = 'room_td';
-
-				td_field.innerHTML = "<input style = \"width:200px;\" id = \"room" + day + "_" + roomCount + "\" name = \"room" + day + "_" + roomCount + "\">";
-				td_field.className = 'room_td';
-			}
-			return roomCount;
-		}
-
-		$("#number_of_days").change(function () {
-			$("#dayErrorMsg").html("");
-			if (this.value < 1 || this.value > 3) {
-				$("#dayErrorMsg").html("Please enter a valid number between 1 and 3!");
-			}
-			else {
-				generateTabs(this.value);
-				regenerateRoomTable(this.value);
-				regenerateTimeSlotTable(this.value);
-				// reset room count for each day since the no of days change
-				roomCount_Day1 = <?php echo $roomCount_day1; ?>;
-				roomCount_Day2 = <?php echo $roomCount_day2; ?>;
-				roomCount_Day3 = <?php echo $roomCount_day3; ?>;
-			}
-		});
-
-		$("#roomTableGroup").on("click", "#addRoomBtn1", function () {
-			roomCount_Day1 = addRoom_Day(roomCount_Day1, 5, "room_table1", 1);
-		});
-		$("#roomTableGroup").on("click", "#addRoomBtn2", function () {
-			roomCount_Day2 = addRoom_Day(roomCount_Day2, 5, "room_table2", 2);
-		});
-		$("#roomTableGroup").on("click", "#addRoomBtn3", function () {
-			roomCount_Day3 = addRoom_Day(roomCount_Day3, 5, "room_table3", 3);
-		});
-	</script>
+	
 	<!-- InstanceEndEditable -->
 	<?php require_once('../../../footer.php'); ?>
-</div>
+
 </body>
 </html>
-
 <?php
 $conn_db_ntu = null;
 unset($settings);
 unset($rooms);
 ?>
-
-<script>
-	function checkTime(id, day) {
-		var date_start = new Date("1-1-2018 " + $('#start_time' + day + ' option:selected').val()),
-			date_end = new Date("1-1-2018 " + $('#end_time' + day + ' option:selected').val());
-
-		if (date_start >= date_end) {
-			if (id == "start_time")
-				$("#" + id + +day).val('08:30:00');
-			else
-				$("#" + id + +day).val('17:30:00');
-			alert("Start Time must be before End Time.");
-		}
-	}
-
-	$("#tsSettingsBody").on("click", "#alloc_days1", function () {
-		$("#alloc_days1").datepicker({dateFormat: "yy-mm-dd"});
-		$("#alloc_days1").datepicker("show");
-	});
-	$("#tsSettingsBody").on("click", "#alloc_days2", function () {
-		$("#alloc_days2").datepicker({dateFormat: "yy-mm-dd"});
-		$("#alloc_days2").datepicker("show");
-	});
-	$("#tsSettingsBody").on("click", "#alloc_days3", function () {
-		$("#alloc_days3").datepicker({dateFormat: "yy-mm-dd"});
-		$("#alloc_days3").datepicker("show");
-	});
-
-</script>
