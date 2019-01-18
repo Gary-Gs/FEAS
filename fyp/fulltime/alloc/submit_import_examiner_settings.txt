@@ -1,167 +1,83 @@
-********************************** LOADING WORKLOAD_STAFF_LIST **********************************
-001. Staff : asmadhukumar              : A S Madhukumar                      . Workload updated successfully 
-002. Staff : assourin                  : Alexei Sourin                       . Workload updated successfully 
-003. Staff : anupam                    : Anupam Chattopadhyay                . Workload updated successfully 
-004. Staff : anwitaman                 : Anwitaman Datta                     . Workload updated successfully 
-005. Staff : arijit.khan               : Arijit Khan                         . Workload updated successfully 
-006. Staff : arvinde                   : Arvind Easwaran                     . Workload updated successfully 
-007. Staff : boan                      : Bo An                               . Workload updated successfully 
-008. Staff : asjfcai                   : Cai Jianfei                         . Workload updated successfully 
-009. Staff : aswtcai                   : Cai Wentong                         . Workload updated successfully 
-010. Staff : astjcham                  : Cham Tat Jen                        . Workload updated successfully 
-011. Staff : asschan                   : Chan Syin                           . Workload updated successfully 
-012. Staff : asltchia                  : Chia Liang Tien                     . Workload updated successfully 
-013. Staff : aseschng                  : Chng Eng Siong                      . Workload updated successfully 
-014. Staff : gaocong                   : Cong Gao                            . Workload updated successfully 
-015. Staff : asdrajan                  : Deepu Rajan                         . Workload updated successfully 
-016. Staff : asdouglas                 : Douglas Leslie Maskell              . Workload updated successfully 
-017. Staff : dniyato                   : Dusit Niyato                        . Workload updated successfully 
-018. Staff : cambria                   : Erik Cambria                        . Workload updated successfully 
-019. Staff : aswbgoh                   : Goh Wooi Boon                       . Workload updated successfully 
-020. Staff : ctguan                    : Guan Cuntai                         . Workload updated successfully 
-021. Staff : yhe                       : He Ying                             . Workload updated successfully 
-022. Staff : assyhuang                 : Huang Shell Ying                    . Workload updated successfully 
-023. Staff : asschui                   : Hui Siu Cheung                      . Workload updated successfully 
-024. Staff : srjoty                    : Joty Shafiq Rayhan                  . Workload updated successfully 
-025. Staff : ypke                      : Ke Yiping, Kelly                    . Workload updated successfully 
-026. Staff : askajones                 : Kevin Anthony Jones                 . Workload updated successfully 
-027. Staff : adamskong                 : Kong Wai-Kin Adams                  . Workload updated successfully 
-028. Staff : asckkwoh                  : Kwoh Chee Keong                     . Workload updated successfully 
-029. Staff : kwokyan.lam               : Lam Kwok Yan                        . Workload updated successfully 
-030. Staff : assklam                   : Lam Siew Kei                        . Workload updated successfully 
-031. Staff : lana                      : Lana Obraztsova                     . Workload updated successfully 
-032. Staff : asctlau                   :                                     . Workload updated successfully 
-033. Staff : ebslee                    : Lee Bu Sung                         . Workload updated successfully 
-034. Staff : asfli                     : Li Fang                             . Workload updated successfully 
-035. Staff : limo                      : Li Mo                               . Workload updated successfully 
-036. Staff : qhliang                   : Althea Liang Qianhui                . Workload updated successfully 
-037. Staff : asflin                    : Lin Feng                            . Workload updated successfully 
-038. Staff : gslin                     : Lin Guosheng                        . Workload updated successfully 
-039. Staff : shang-wei.lin             : Lin Shang-Wei                       . Workload updated successfully 
-040. Staff : wslin                     : Lin Weisi                           . Workload updated successfully 
-041. Staff : liu                       : Liu Weichen                         . Workload updated successfully 
-042. Staff : yangliu                   : Liu Yang                            . Workload updated successfully 
-043. Staff : shijian.lu                : Lu Shijian                          . Workload updated successfully 
-044. Staff : junluo                    : Luo Jun                             . Workload updated successfully 
-045. Staff : mpratama                  : Mahardhika Pratama                  . Workload updated successfully 
-046. Staff : mkessentini               :                                     . Workload updated successfully 
-047. Staff : ascymiao                  : Miao Chun Yan                       . Workload updated successfully 
-048. Staff : msabry                    : Mohamed M. Sabry                    . Workload updated successfully 
-049. Staff : awkng                     : Ng Wee Keong                        . Workload updated successfully 
-050. Staff : hloh                      : Oh Hong Lye                         . Workload updated successfully 
-051. Staff : asysong                   : Ong Yew Soon                        . Workload updated successfully 
-052. Staff : ofernando                 : Owen Noel Newton Fernando           . Workload updated successfully 
-053. Staff : sinnopan                  : Pan, Sinno Jialin                   . Workload updated successfully 
-054. Staff : mkmqian                   : Qian Kemao                          . Workload updated successfully 
-055. Staff : ashcquek                  : Quek Hiok Chai                      . Workload updated successfully 
-056. Staff : asjagath                  : Rajapakse Jagath Chandana           . Workload updated successfully 
-057. Staff : ashsseah                  : Seah Hock Soon                      . Workload updated successfully 
-058. Staff : zqshen                    : Shen Zhiqi                          . Workload updated successfully 
-059. Staff : sinhasharad               :                                     . Workload updated successfully 
-060. Staff : smitha                    : Smitha K G                          . Workload updated successfully 
-061. Staff : assourav                  : Sourav Saha Bhowmick                . Workload updated successfully 
-062. Staff : sg.sourav                 : Sourav Sen Gupta                    . Workload updated successfully 
-063. Staff : axsun                     : Sun Aixin                           . Workload updated successfully 
-064. Staff : czsun                     : Sun Chengzheng                      . Workload updated successfully 
-065. Staff : ssundaram                 : Suresh Sundaram                     . Workload updated successfully 
-066. Staff : donta                     : Ta Nguyen Binh Duong                . Workload updated successfully 
-067. Staff : asahtan                   : Tan Ah Hwee                         . Workload updated successfully 
-068. Staff : khengleong                : Tan Kheng Leong                     . Workload updated successfully 
-069. Staff : tanrui                    : Tan Rui                             . Workload updated successfully 
-070. Staff : asxytang                  : Tang Xueyan                         . Workload updated successfully 
-071. Staff : vchaturvedi               :                                     . Workload updated successfully 
-072. Staff : aschvun                   : Vun Chan Hua, Nicholas              . Workload updated successfully 
-073. Staff : wangping                  :                                     . Workload updated successfully 
-074. Staff : ygwen                     : Wen Yonggang                        . Workload updated successfully 
-075. Staff : xbresson                  : Xavier Bresson                      . Workload updated successfully 
-076. Staff : asckyeo                   : Yeo Chai Kiat                       . Workload updated successfully 
-077. Staff : hanwangzhang              : Zhang Hanwang                       . Workload updated successfully 
-078. Staff : zhangj                    : Zhang Jie                           . Workload updated successfully 
-079. Staff : asjmzheng                 : Zheng Jianmin                       . Workload updated successfully 
-080. Staff : zhengjie                  :                                     . Workload updated successfully 
-081. Staff : zinovi                    : Zinovi Rabinovich                   . Workload updated successfully 
-Total staff workload updated        : 0081/0081
-Total staff workload created        : 0000
 ********************************** LOADING EXAMINABLE_STAFF_LIST **********************************
-001. Staff : asmadhukumar              : A S Madhukumar                      . Examine updated successfully 
-002. Staff : assourin                  : Alexei Sourin                       . Examine updated successfully 
-003. Staff : anupam                    : Anupam Chattopadhyay                . Examine updated successfully 
-004. Staff : anwitaman                 : Anwitaman Datta                     . Examine updated successfully 
-005. Staff : arijit.khan               : Arijit Khan                         . Examine updated successfully 
-006. Staff : arvinde                   : Arvind Easwaran                     . Examine updated successfully 
-007. Staff : boan                      : Bo An                               . Examine updated successfully 
-008. Staff : asjfcai                   : Cai Jianfei                         . Examine updated successfully 
-009. Staff : aswtcai                   : Cai Wentong                         . Examine updated successfully 
-010. Staff : astjcham                  : Cham Tat Jen                        . Examine updated successfully 
-011. Staff : asltchia                  : Chia Liang Tien                     . Examine updated successfully 
-012. Staff : aseschng                  : Chng Eng Siong                      . Examine updated successfully 
-013. Staff : asdrajan                  : Deepu Rajan                         . Examine updated successfully 
-014. Staff : asdouglas                 : Douglas Leslie Maskell              . Examine updated successfully 
-015. Staff : dniyato                   : Dusit Niyato                        . Examine updated successfully 
-016. Staff : cambria                   : Erik Cambria                        . Examine updated successfully 
-017. Staff : gaocong                   : Cong Gao                            . Examine updated successfully 
-018. Staff : aswbgoh                   : Goh Wooi Boon                       . Examine updated successfully 
-019. Staff : ctguan                    : Guan Cuntai                         . Examine updated successfully 
-020. Staff : yhe                       : He Ying                             . Examine updated successfully 
-021. Staff : assyhuang                 : Huang Shell Ying                    . Examine updated successfully 
-022. Staff : asschui                   : Hui Siu Cheung                      . Examine updated successfully 
-023. Staff : asjagath                  : Rajapakse Jagath Chandana           . Examine updated successfully 
-024. Staff : ypke                      : Ke Yiping, Kelly                    . Examine updated successfully 
-025. Staff : adamskong                 : Kong Wai-Kin Adams                  . Examine updated successfully 
-026. Staff : asckkwoh                  : Kwoh Chee Keong                     . Examine updated successfully 
-027. Staff : kwokyan.lam               : Lam Kwok Yan                        . Examine updated successfully 
-028. Staff : assklam                   : Lam Siew Kei                        . Examine updated successfully 
-029. Staff : ebslee                    : Lee Bu Sung                         . Examine updated successfully 
-030. Staff : asfli                     : Li Fang                             . Examine updated successfully 
-031. Staff : limo                      : Li Mo                               . Examine updated successfully 
-032. Staff : asflin                    : Lin Feng                            . Examine updated successfully 
-033. Staff : shang-wei.lin             : Lin Shang-Wei                       . Examine updated successfully 
-034. Staff : wslin                     : Lin Weisi                           . Examine updated successfully 
-035. Staff : yangliu                   : Liu Yang                            . Examine updated successfully 
-036. Staff : junluo                    : Luo Jun                             . Examine updated successfully 
-037. Staff : mkessentini               :                                     . Examine updated successfully 
-038. Staff : ascymiao                  : Miao Chun Yan                       . Examine updated successfully 
-039. Staff : awkng                     : Ng Wee Keong                        . Examine updated successfully 
-040. Staff : hloh                      : Oh Hong Lye                         . Examine updated successfully 
-041. Staff : ofernando                 : Owen Noel Newton Fernando           . Examine updated successfully 
-042. Staff : sinnopan                  : Pan, Sinno Jialin                   . Examine updated successfully 
-043. Staff : mkmqian                   : Qian Kemao                          . Examine updated successfully 
-044. Staff : ashcquek                  : Quek Hiok Chai                      . Examine updated successfully 
-045. Staff : ashsseah                  : Seah Hock Soon                      . Examine updated successfully 
-046. Staff : smitha                    : Smitha K G                          . Examine updated successfully 
-047. Staff : assourav                  : Sourav Saha Bhowmick                . Examine updated successfully 
-048. Staff : axsun                     : Sun Aixin                           . Examine updated successfully 
-049. Staff : czsun                     : Sun Chengzheng                      . Examine updated successfully 
-050. Staff : ssundaram                 : Suresh Sundaram                     . Examine updated successfully 
-051. Staff : lana                      : Lana Obraztsova                     . Examine updated successfully 
-052. Staff : donta                     : Ta Nguyen Binh Duong                . Examine updated successfully 
-053. Staff : asahtan                   : Tan Ah Hwee                         . Examine updated successfully 
-054. Staff : khengleong                : Tan Kheng Leong                     . Examine updated successfully 
-055. Staff : tanrui                    : Tan Rui                             . Examine updated successfully 
-056. Staff : asxytang                  : Tang Xueyan                         . Examine updated successfully 
-057. Staff : aschvun                   : Vun Chan Hua, Nicholas              . Examine updated successfully 
-058. Staff : wangping                  :                                     . Examine updated successfully 
-059. Staff : ygwen                     : Wen Yonggang                        . Examine updated successfully 
-060. Staff : xbresson                  : Xavier Bresson                      . Examine updated successfully 
-061. Staff : asckyeo                   : Yeo Chai Kiat                       . Examine updated successfully 
-062. Staff : zhangj                    : Zhang Jie                           . Examine updated successfully 
-063. Staff : asjmzheng                 : Zheng Jianmin                       . Examine updated successfully 
-064. Staff : zhengjie                  :                                     . Examine updated successfully 
-065. Staff : zinovi                    : Zinovi Rabinovich                   . Examine updated successfully 
-066. Staff : askajones                 : Kevin Anthony Jones                 . Examine updated successfully 
-067. Staff : qhliang                   : Althea Liang Qianhui                . Examine updated successfully 
-068. Staff : sinhasharad               :                                     . Examine updated successfully 
-069. Staff : zqshen                    : Shen Zhiqi                          . Examine updated successfully 
-070. Staff : vchaturvedi               :                                     . Examine updated successfully 
-071. Staff : lkshar                    : Shar Lwin Khin                      . Examine updated successfully 
-072. Staff : gslin                     : Lin Guosheng                        . Examine updated successfully 
-073. Staff : shijian.lu                : Lu Shijian                          . Examine updated successfully 
-074. Staff : mpratama                  : Mahardhika Pratama                  . Examine updated successfully 
-075. Staff : srjoty                    : Joty Shafiq Rayhan                  . Examine updated successfully 
-076. Staff : msabry                    : Mohamed M. Sabry                    . Examine updated successfully 
-077. Staff : liu                       : Liu Weichen                         . Examine updated successfully 
-078. Staff : hanwangzhang              : Zhang Hanwang                       . Examine updated successfully 
-079. Staff : sg.sourav                 : Sourav Sen Gupta                    . Examine updated successfully 
+001. projects: 255 Staff : asmadhukumar              : A S Madhukumar                      . Examine and exemption updated successfully 
+002. projects: 255 Staff : assourin                  : Alexei Sourin                       . Examine and exemption updated successfully 
+003. projects: 255 Staff : anupam                    : Anupam Chattopadhyay                . Examine and exemption updated successfully 
+004. projects: 255 Staff : anwitaman                 : Anwitaman Datta                     . Examine and exemption updated successfully 
+005. projects: 255 Staff : arijit.khan               : Arijit Khan                         . Examine and exemption updated successfully 
+006. projects: 255 Staff : arvinde                   : Arvind Easwaran                     . Examine and exemption updated successfully 
+007. projects: 255 Staff : boan                      : Bo An                               . Examine and exemption updated successfully 
+008. projects: 255 Staff : asjfcai                   : Cai Jianfei                         . Examine and exemption updated successfully 
+009. projects: 255 Staff : aswtcai                   : Cai Wentong                         . Examine and exemption updated successfully 
+010. projects: 255 Staff : astjcham                  : Cham Tat Jen                        . Examine and exemption updated successfully 
+011. projects: 255 Staff : asltchia                  : Chia Liang Tien                     . Examine and exemption updated successfully 
+012. projects: 255 Staff : aseschng                  : Chng Eng Siong                      . Examine and exemption updated successfully 
+013. projects: 255 Staff : asdrajan                  : Deepu Rajan                         . Examine and exemption updated successfully 
+014. projects: 255 Staff : asdouglas                 : Douglas Leslie Maskell              . Examine and exemption updated successfully 
+015. projects: 255 Staff : dniyato                   : Dusit Niyato                        . Examine and exemption updated successfully 
+016. projects: 255 Staff : cambria                   : Erik Cambria                        . Examine and exemption updated successfully 
+017. projects: 255 Staff : gaocong                   : Cong Gao                            . Examine and exemption updated successfully 
+018. projects: 255 Staff : aswbgoh                   : Goh Wooi Boon                       . Examine and exemption updated successfully 
+019. projects: 255 Staff : ctguan                    : Guan Cuntai                         . Examine and exemption updated successfully 
+020. projects: 255 Staff : yhe                       : He Ying                             . Examine and exemption updated successfully 
+021. projects: 255 Staff : assyhuang                 : Huang Shell Ying                    . Examine and exemption updated successfully 
+022. projects: 255 Staff : asschui                   : Hui Siu Cheung                      . Examine and exemption updated successfully 
+023. projects: 255 Staff : asjagath                  : Rajapakse Jagath Chandana           . Examine and exemption updated successfully 
+024. projects: 255 Staff : ypke                      : Ke Yiping, Kelly                    . Examine and exemption updated successfully 
+025. projects: 255 Staff : adamskong                 : Kong Wai-Kin Adams                  . Examine and exemption updated successfully 
+026. projects: 255 Staff : asckkwoh                  : Kwoh Chee Keong                     . Examine and exemption updated successfully 
+027. projects: 255 Staff : kwokyan.lam               : Lam Kwok Yan                        . Examine and exemption updated successfully 
+028. projects: 255 Staff : assklam                   : Lam Siew Kei                        . Examine and exemption updated successfully 
+029. projects: 255 Staff : ebslee                    : Lee Bu Sung                         . Examine and exemption updated successfully 
+030. projects: 255 Staff : asfli                     : Li Fang                             . Examine and exemption updated successfully 
+031. projects: 255 Staff : limo                      : Li Mo                               . Examine and exemption updated successfully 
+032. projects: 255 Staff : asflin                    : Lin Feng                            . Examine and exemption updated successfully 
+033. projects: 255 Staff : shang-wei.lin             : Lin Shang-Wei                       . Examine and exemption updated successfully 
+034. projects: 255 Staff : wslin                     : Lin Weisi                           . Examine and exemption updated successfully 
+035. projects: 255 Staff : yangliu                   : Liu Yang                            . Examine and exemption updated successfully 
+036. projects: 255 Staff : junluo                    : Luo Jun                             . Examine and exemption updated successfully 
+037. projects: 255 Staff : mkessentini               : Marouane Kessentini                 . Examine and exemption updated successfully 
+038. projects: 255 Staff : ascymiao                  : Miao Chun Yan                       . Examine and exemption updated successfully 
+039. projects: 255 Staff : awkng                     : Ng Wee Keong                        . Examine and exemption updated successfully 
+040. projects: 255 Staff : hloh                      : Oh Hong Lye                         . Examine and exemption updated successfully 
+041. projects: 255 Staff : ofernando                 : Owen Noel Newton Fernando           . Examine and exemption updated successfully 
+042. projects: 255 Staff : sinnopan                  : Pan, Sinno Jialin                   . Examine and exemption updated successfully 
+043. projects: 255 Staff : mkmqian                   : Qian Kemao                          . Examine and exemption updated successfully 
+044. projects: 255 Staff : ashcquek                  : Quek Hiok Chai                      . Examine and exemption updated successfully 
+045. projects: 255 Staff : ashsseah                  : Seah Hock Soon                      . Examine and exemption updated successfully 
+046. projects: 255 Staff : smitha                    : Smitha K G                          . Examine and exemption updated successfully 
+047. projects: 255 Staff : assourav                  : Sourav Saha Bhowmick                . Examine and exemption updated successfully 
+048. projects: 255 Staff : axsun                     : Sun Aixin                           . Examine and exemption updated successfully 
+049. projects: 255 Staff : czsun                     : Sun Chengzheng                      . Examine and exemption updated successfully 
+050. projects: 255 Staff : ssundaram                 : Suresh Sundaram                     . Examine and exemption updated successfully 
+051. projects: 255 Staff : lana                      : Lana Obraztsova                     . Examine and exemption updated successfully 
+052. projects: 255 Staff : donta                     : Ta Nguyen Binh Duong                . Examine and exemption updated successfully 
+053. projects: 255 Staff : asahtan                   : Tan Ah Hwee                         . Examine and exemption updated successfully 
+054. projects: 255 Staff : khengleong                : Tan Kheng Leong                     . Examine and exemption updated successfully 
+055. projects: 255 Staff : tanrui                    : Tan Rui                             . Examine and exemption updated successfully 
+056. projects: 255 Staff : asxytang                  : Tang Xueyan                         . Examine and exemption updated successfully 
+057. projects: 255 Staff : aschvun                   : Vun Chan Hua, Nicholas              . Examine and exemption updated successfully 
+058. projects: 255 Staff : wangping                  : Wang Ping                           . Examine and exemption updated successfully 
+059. projects: 255 Staff : ygwen                     : Wen Yonggang                        . Examine and exemption updated successfully 
+060. projects: 255 Staff : xbresson                  : Xavier Bresson                      . Examine and exemption updated successfully 
+061. projects: 255 Staff : asckyeo                   : Yeo Chai Kiat                       . Examine and exemption updated successfully 
+062. projects: 255 Staff : zhangj                    : Zhang Jie                           . Examine and exemption updated successfully 
+063. projects: 255 Staff : asjmzheng                 : Zheng Jianmin                       . Examine and exemption updated successfully 
+064. projects: 255 Staff : zhengjie                  : Zheng Jie                           . Examine and exemption updated successfully 
+065. projects: 255 Staff : zinovi                    : Zinovi Rabinovich                   . Examine and exemption updated successfully 
+066. projects: 255 Staff : askajones                 : Kevin Anthony Jones                 . Examine and exemption updated successfully 
+067. projects: 255 Staff : qhliang                   : Althea Liang Qianhui                . Examine and exemption updated successfully 
+068. projects: 255 Staff : sinhasharad               : Sinha Sharad                        . Examine and exemption updated successfully 
+069. projects: 255 Staff : zqshen                    : Shen Zhiqi                          . Examine and exemption updated successfully 
+070. projects: 255 Staff : vchaturvedi               : Vivek Chaturvedi                    . Examine and exemption updated successfully 
+071. projects: 255 Staff : lkshar                    : Shar Lwin Khin                      . Examine and exemption updated successfully 
+072. projects: 255 Staff : gslin                     : Lin Guosheng                        . Examine and exemption updated successfully 
+073. projects: 255 Staff : shijian.lu                : Lu Shijian                          . Examine and exemption updated successfully 
+074. projects: 255 Staff : mpratama                  : Mahardhika Pratama                  . Examine and exemption updated successfully 
+075. projects: 255 Staff : srjoty                    : Joty Shafiq Rayhan                  . Examine and exemption updated successfully 
+076. projects: 255 Staff : msabry                    : Mohamed M. Sabry                    . Examine and exemption updated successfully 
+077. projects: 255 Staff : liu                       : Liu Weichen                         . Examine and exemption updated successfully 
+078. projects: 255 Staff : hanwangzhang              : Zhang Hanwang                       . Examine and exemption updated successfully 
+079. projects: 255 Staff : sg.sourav                 : Sourav Sen Gupta                    . Examine and exemption updated successfully 
 080. Empty email detected at row    : 80                                  . FAILED - No Email                
 081. Empty email detected at row    : 81                                  . FAILED - No Email                
 082. Empty email detected at row    : 82                                  . FAILED - No Email                
@@ -174,3 +90,87 @@ Total staff workload created        : 0000
 089. Empty email detected at row    : 89                                  . FAILED - No Email                
 Total staff examine updated         : 0079/0079
 Total staff examine created         : 0000
+********************************** LOADING WORKLOAD_STAFF_LIST **********************************
+001. sem: 1. Staff : asmadhukumar              : A S Madhukumar                      . Workload updated successfully 
+002. sem: 1. Staff : assourin                  : Alexei Sourin                       . Workload updated successfully 
+003. sem: 1. Staff : anupam                    : Anupam Chattopadhyay                . Workload updated successfully 
+004. sem: 1. Staff : anwitaman                 : Anwitaman Datta                     . Workload updated successfully 
+005. sem: 1. Staff : arijit.khan               : Arijit Khan                         . Workload updated successfully 
+006. sem: 1. Staff : arvinde                   : Arvind Easwaran                     . Workload updated successfully 
+007. sem: 1. Staff : boan                      : Bo An                               . Workload updated successfully 
+008. sem: 1. Staff : asjfcai                   : Cai Jianfei                         . Workload updated successfully 
+009. sem: 1. Staff : aswtcai                   : Cai Wentong                         . Workload updated successfully 
+010. sem: 1. Staff : astjcham                  : Cham Tat Jen                        . Workload updated successfully 
+011. sem: 1. Staff : asschan                   : Chan Syin                           . Workload updated successfully 
+012. sem: 1. Staff : asltchia                  : Chia Liang Tien                     . Workload updated successfully 
+013. sem: 1. Staff : aseschng                  : Chng Eng Siong                      . Workload updated successfully 
+014. sem: 1. Staff : gaocong                   : Cong Gao                            . Workload updated successfully 
+015. sem: 1. Staff : asdrajan                  : Deepu Rajan                         . Workload updated successfully 
+016. sem: 1. Staff : asdouglas                 : Douglas Leslie Maskell              . Workload updated successfully 
+017. sem: 1. Staff : dniyato                   : Dusit Niyato                        . Workload updated successfully 
+018. sem: 1. Staff : cambria                   : Erik Cambria                        . Workload updated successfully 
+019. sem: 1. Staff : aswbgoh                   : Goh Wooi Boon                       . Workload updated successfully 
+020. sem: 1. Staff : ctguan                    : Guan Cuntai                         . Workload updated successfully 
+021. sem: 1. Staff : yhe                       : He Ying                             . Workload updated successfully 
+022. sem: 1. Staff : assyhuang                 : Huang Shell Ying                    . Workload updated successfully 
+023. sem: 1. Staff : asschui                   : Hui Siu Cheung                      . Workload updated successfully 
+024. sem: 1. Staff : srjoty                    : Joty Shafiq Rayhan                  . Workload updated successfully 
+025. sem: 1. Staff : ypke                      : Ke Yiping, Kelly                    . Workload updated successfully 
+026. sem: 1. Staff : askajones                 : Kevin Anthony Jones                 . Workload updated successfully 
+027. sem: 1. Staff : adamskong                 : Kong Wai-Kin Adams                  . Workload updated successfully 
+028. sem: 1. Staff : asckkwoh                  : Kwoh Chee Keong                     . Workload updated successfully 
+029. sem: 1. Staff : kwokyan.lam               : Lam Kwok Yan                        . Workload updated successfully 
+030. sem: 1. Staff : assklam                   : Lam Siew Kei                        . Workload updated successfully 
+031. sem: 1. Staff : lana                      : Lana Obraztsova                     . Workload updated successfully 
+032. sem: 1. Staff : asctlau                   : Lau Chiew Tong                      . Workload updated successfully 
+033. sem: 1. Staff : ebslee                    : Lee Bu Sung                         . Workload updated successfully 
+034. sem: 1. Staff : asfli                     : Li Fang                             . Workload updated successfully 
+035. sem: 1. Staff : limo                      : Li Mo                               . Workload updated successfully 
+036. sem: 1. Staff : qhliang                   : Althea Liang Qianhui                . Workload updated successfully 
+037. sem: 1. Staff : asflin                    : Lin Feng                            . Workload updated successfully 
+038. sem: 1. Staff : gslin                     : Lin Guosheng                        . Workload updated successfully 
+039. sem: 1. Staff : shang-wei.lin             : Lin Shang-Wei                       . Workload updated successfully 
+040. sem: 1. Staff : wslin                     : Lin Weisi                           . Workload updated successfully 
+041. sem: 1. Staff : liu                       : Liu Weichen                         . Workload updated successfully 
+042. sem: 1. Staff : yangliu                   : Liu Yang                            . Workload updated successfully 
+043. sem: 1. Staff : shijian.lu                : Lu Shijian                          . Workload updated successfully 
+044. sem: 1. Staff : junluo                    : Luo Jun                             . Workload updated successfully 
+045. sem: 1. Staff : mpratama                  : Mahardhika Pratama                  . Workload updated successfully 
+046. sem: 1. Staff : mkessentini               : Marouane Kessentini                 . Workload updated successfully 
+047. sem: 1. Staff : ascymiao                  : Miao Chun Yan                       . Workload updated successfully 
+048. sem: 1. Staff : msabry                    : Mohamed M. Sabry                    . Workload updated successfully 
+049. sem: 1. Staff : awkng                     : Ng Wee Keong                        . Workload updated successfully 
+050. sem: 1. Staff : hloh                      : Oh Hong Lye                         . Workload updated successfully 
+051. sem: 1. Staff : asysong                   : Ong Yew Soon                        . Workload updated successfully 
+052. sem: 1. Staff : ofernando                 : Owen Noel Newton Fernando           . Workload updated successfully 
+053. sem: 1. Staff : sinnopan                  : Pan, Sinno Jialin                   . Workload updated successfully 
+054. sem: 1. Staff : mkmqian                   : Qian Kemao                          . Workload updated successfully 
+055. sem: 1. Staff : ashcquek                  : Quek Hiok Chai                      . Workload updated successfully 
+056. sem: 1. Staff : asjagath                  : Rajapakse Jagath Chandana           . Workload updated successfully 
+057. sem: 1. Staff : ashsseah                  : Seah Hock Soon                      . Workload updated successfully 
+058. sem: 1. Staff : zqshen                    : Shen Zhiqi                          . Workload updated successfully 
+059. sem: 1. Staff : sinhasharad               : Sinha Sharad                        . Workload updated successfully 
+060. sem: 1. Staff : smitha                    : Smitha K G                          . Workload updated successfully 
+061. sem: 1. Staff : assourav                  : Sourav Saha Bhowmick                . Workload updated successfully 
+062. sem: 1. Staff : sg.sourav                 : Sourav Sen Gupta                    . Workload updated successfully 
+063. sem: 1. Staff : axsun                     : Sun Aixin                           . Workload updated successfully 
+064. sem: 1. Staff : czsun                     : Sun Chengzheng                      . Workload updated successfully 
+065. sem: 1. Staff : ssundaram                 : Suresh Sundaram                     . Workload updated successfully 
+066. sem: 1. Staff : donta                     : Ta Nguyen Binh Duong                . Workload updated successfully 
+067. sem: 1. Staff : asahtan                   : Tan Ah Hwee                         . Workload updated successfully 
+068. sem: 1. Staff : khengleong                : Tan Kheng Leong                     . Workload updated successfully 
+069. sem: 1. Staff : tanrui                    : Tan Rui                             . Workload updated successfully 
+070. sem: 1. Staff : asxytang                  : Tang Xueyan                         . Workload updated successfully 
+071. sem: 1. Staff : vchaturvedi               : Vivek Chaturvedi                    . Workload updated successfully 
+072. sem: 1. Staff : aschvun                   : Vun Chan Hua, Nicholas              . Workload updated successfully 
+073. sem: 1. Staff : wangping                  : Wang Ping                           . Workload updated successfully 
+074. sem: 1. Staff : ygwen                     : Wen Yonggang                        . Workload updated successfully 
+075. sem: 1. Staff : xbresson                  : Xavier Bresson                      . Workload updated successfully 
+076. sem: 1. Staff : asckyeo                   : Yeo Chai Kiat                       . Workload updated successfully 
+077. sem: 1. Staff : hanwangzhang              : Zhang Hanwang                       . Workload updated successfully 
+078. sem: 1. Staff : zhangj                    : Zhang Jie                           . Workload updated successfully 
+079. sem: 1. Staff : asjmzheng                 : Zheng Jianmin                       . Workload updated successfully 
+080. sem: 1. Staff : zhengjie                  : Zheng Jie                           . Workload updated successfully 
+081. sem: 1. Staff : zinovi                    : Zinovi Rabinovich                   . Workload updated successfully 
+Total staff workload updated        : 0081/0081
+Total staff workload created        : 0000
