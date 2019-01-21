@@ -307,7 +307,7 @@ $conn_db_ntu = null;
                             </colgroup>
                             <tr>
                                 <td  >
-                                    <b> Year</b>
+                                    <b> Exam AC Year</b>
                                     <select id="filter_Year" name="filter_Year" onchange="this.form.submit()">
                                         <?php
                                         $currentYear = sprintf("%04d", substr(date("Y"), 0));
