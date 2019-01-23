@@ -153,7 +153,7 @@ $conn_db_ntu = null;
 						<?php $csrf->echoInputField();?>
 					</form>
 					<script type="text/javascript">
-						IsValidFileUpload = true;
+						var IsValidFileUpload = true;
 						// To list all the selected files
 						$( "#FileToUpload_ExaminerSettings" ).change(function() {
 							var FileToUpload_ExaminerSettings 	= _("FileToUpload_ExaminerSettings");
@@ -165,10 +165,16 @@ $conn_db_ntu = null;
 								FileToUpload_FileList.removeChild(FileToUpload_FileList.firstChild);
 							}
 
-							if(FileToUpload_ExaminerSettings.files.length != 2){
+							/*if(FileToUpload_ExaminerSettings.files.length != 2){
 								FileToUpload_ExaminerSettings.value = "";
 								alert("Please select only 2 files for upload!");
-							}else{
+							}*/
+							if (FileToUpload_ExaminerSettings.files.length == 0 || FileToUpload_ExaminerSettings.files.length > 3 ) {
+							    alert ("Please select file(s) for upload!");
+                            }
+							else{
+
+							    let selected = $('#filter_Sem :selected').text();
 								
 								// display every file...
 								for (var FileIndex = 0; FileIndex < FileToUpload_ExaminerSettings.files.length; FileIndex++) {
@@ -177,10 +183,10 @@ $conn_db_ntu = null;
 									li.innerHTML = 'File ' + (FileIndex + 1) + ':  ' + FileToUpload_ExaminerSettings.files[FileIndex].name;
 									Filename =  FileToUpload_ExaminerSettings.files[FileIndex].name.substr(0, FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.')); 
 
-									if(	Filename.toLowerCase() == "examinable_staff_list" ){
+									if( Filename.toLowerCase() == "examinable_staff_list" ){
 										li.innerHTML += " (Valid)";
 										li.setAttribute("style", "list-style-type: none; color: green;");
-									} else if( Filename.toLowerCase() == "workload_staff_list" ){
+									} else if(selected == "2" && Filename.toLowerCase() == "workload_staff_list" ){
 										li.innerHTML += " (Valid)";
 										li.setAttribute("style", "list-style-type: none; color: green;");
 									} else{
@@ -189,12 +195,20 @@ $conn_db_ntu = null;
 									}
 									FileToUpload_FileList.append(li);
 								}
-								if( (FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list")) && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list"))){
+
+								if ( selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") && FileToUpload_ExaminerSettings.files.length < 2) {
+								    IsValidFileUpload=true;
+                                }
+								else if (selected == "2" && FileToUpload_ExaminerSettings.files.length == 2 && ((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list"))
+                                    && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list") ))) {
+								    IsValidFileUpload=true;
+                                }
+								/*if((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list")) || ((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list"))
+                                    && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list") ))){
 									IsValidFileUpload=true;
 
-								} else{
+								}*/ else{
 									IsValidFileUpload=false;
-
 								}
 							}
 						});
@@ -207,7 +221,7 @@ $conn_db_ntu = null;
 								 //alert("UPLOAD ME");
                                 UploadFile_ExaminerSettings();
 							}else{
-								alert("Please check that you have the correct file and file name format");
+								alert("Please check that you have the correct files and file name format");
 							}
 							
 							event.preventDefault();
@@ -217,8 +231,8 @@ $conn_db_ntu = null;
 							return document.getElementById(el);
 						}
 						function UploadFile_ExaminerSettings(){
-							if(_("FileToUpload_ExaminerSettings").files.length != 2) {
-								alert("Please ensure you have the two files selected!");
+							if(_("FileToUpload_ExaminerSettings").files.length == 0 || _("FileToUpload_ExaminerSettings").files.length > 3) {
+								alert("Please ensure you have the correct file(s) selected!");
 							}
 							else {
 								var FileToUpload_ExaminerSettings 	= _("FileToUpload_ExaminerSettings");
@@ -232,8 +246,8 @@ $conn_db_ntu = null;
 								}
 								formData.append("filter_Sem", $('#filter_Sem :selected').text());
 								formData.append("filter_Year", $('#filter_Year :selected').text());
-								//alert(formData.get("filter_Sem"));
-								formData.append("csrf__",csrfToken );
+								// i change this from csrf__ to validate but not sure why is it csrf__ in the first place.
+								formData.append("validate",csrfToken );
 								_("loadingdiv").style.display  = "block";
 								$.ajax({
 									url: 'submit_import_examiner_settings.php',

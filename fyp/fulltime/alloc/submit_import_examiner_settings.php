@@ -13,6 +13,8 @@ $csrf = new CSRFProtection();
 
 $_REQUEST['validate'] = $csrf->cfmRequest();
 
+$sem = $_REQUEST['filter_Sem'];
+
 
 // initialise variables for file upload
 $target_dir 		= "../../../uploaded_files/";
@@ -46,31 +48,49 @@ if(isset($_FILES["FileToUpload_ExaminerSettings"])){
 	$error_code=1; // Cannot find uploaded file
 }
 
-// Assign examinable faculty into DB first
-// Assign faculty workload into DB first
-$FilesInDir = glob("$target_dir". "examinable_staff_list.*");
-if (count($FilesInDir) == 1){
-	$error_code = HandleExcelData_ExaminableFacultyList($error_code, $FilesInDir[0]);
-	if($error_code == 0 ){ // no error
 
-		$FilesInDir = glob("$target_dir". "workload_staff_list.*");
-		if (count($FilesInDir) == 1){
-			$error_code = HandleExcelData_WorkloadList($error_code, $FilesInDir[0]);
-			if($error_code != 0){
-				echo "Error in HandleExcelData_WorkloadList : error_code=$error_code\n";
-			}
-		}else{
-			$error_code=4; // Cannot locate workload_staff_list excel file
-			echo "Cannot locate examinable_staff_list excel file\n";
-		}
-	}else{
-		echo "Error in HandleExcelData_ExaminableFacultyList : error_code=$error_code\n";
-	}
-} else {
-	$error_code=4; // Cannot locate examinable_staff_list excel file
-	echo "Cannot locate examinable_staff_list excel file\n";
+
+if ($sem == 1) {
+    $FilesInDir = glob("$target_dir" . "examinable_staff_list.*");
+    if (count($FilesInDir) == 1) {
+        $error_code = HandleExcelData_ExaminableFacultyList($error_code, $FilesInDir[0]);
+        if ($error_code != 0) {
+            echo "Error in HandleExcelData_ExaminableFacultyList : error_code=$error_code\n";
+        }
+    } else {
+        $error_code = 4; // Cannot locate examinable_staff_list excel file
+        echo "Cannot locate examinable_staff_list excel file\n";
+    }
+
 }
 
+else if ($sem == 2) {
+// Assign examinable faculty into DB first
+// Assign faculty workload into DB first
+    $FilesInDir = glob("$target_dir" . "examinable_staff_list.*");
+    if (count($FilesInDir) == 1) {
+        $error_code = HandleExcelData_ExaminableFacultyList($error_code, $FilesInDir[0]);
+        if ($error_code == 0) { // no error
+
+            $FilesInDir = glob("$target_dir" . "workload_staff_list.*");
+            if (count($FilesInDir) == 1) {
+                $error_code = HandleExcelData_WorkloadList($error_code, $FilesInDir[0]);
+                if ($error_code != 0) {
+                    echo "Error in HandleExcelData_WorkloadList : error_code=$error_code\n";
+                }
+            } else {
+                $error_code = 4; // Cannot locate workload_staff_list excel file
+                echo "Cannot locate examinable_staff_list excel file\n";
+            }
+        } else {
+            echo "Error in HandleExcelData_ExaminableFacultyList : error_code=$error_code\n";
+        }
+    } else {
+        $error_code = 4; // Cannot locate examinable_staff_list excel file
+        echo "Cannot locate examinable_staff_list excel file\n";
+    }
+
+}
 
 
 $redirect =true;
@@ -136,14 +156,13 @@ function HandleExcelData_ExaminableFacultyList($error_code, $InputFile_FullPath)
                 $EXCEL_Loading = intval(explode("%", $EXCEL_AllData[$RowIndex]["E"])[0]);
 
                 // Check if the staff in excel list is in staff table
-                $Stmt = sprintf("SELECT * FROM  %s WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffID);
+                $Stmt = sprintf("SELECT * FROM  %s WHERE (name = '%s' OR  name2 = '%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
                 $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                 $DBOBJ_Result->execute();
                 $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
 
+
                 // count the number of projects in the selected year and sem
-
-
                 // only updates if there is project for the selected year and semester.
                 $stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE acad_year = '%s' AND sem = '%s'", $TABLES["fyp"], $year, 1);
                 $DBOBJ_Result = $conn_db_ntu->prepare($stmt2);
@@ -153,25 +172,41 @@ function HandleExcelData_ExaminableFacultyList($error_code, $InputFile_FullPath)
                 $facultySize = $Total_DataInSheet;
                 //echo '<script> alert("$Total_DataInSheet")</script>';
                 $base = $projects * 4 / $facultySize;
-                $exemption = intval(floor(($base * (1 - ($EXCEL_Loading / 100)))));
+
+                $temp = (int)substr($year, -2);
+                $acadyear = (string)$temp . (string)($temp+1);
+
+                // calculate staff's contribution in sem 1
+                $stmt3 = sprintf("SELECT COUNT(*) FROM %s LEFT JOIN %s ON staff.id = fyp_assign.staff_id WHERE fyp_assign.year = '%s' AND fyp_assign.sem = '%s' AND (staff.name = '%s' OR staff.name2 = '%s')", $TABLES["staff"],$TABLES["fyp_assign"],$acadyear, 1, $EXCEL_StaffName, $EXCEL_StaffName);
+                $DBOBJ_Result = $conn_db_ntu->prepare($stmt3);
+                $DBOBJ_Result->execute();
+                $contribution = $DBOBJ_Result->fetchColumn();
+
+                $exemption = intval(floor(($base * (1 - ($EXCEL_Loading / 100))))) + $contribution*3;
+
 
                 if (isset($Data['id']) && !empty($Data['id'])) {
                     // Try to update the examine of the staff
 
-                    if ($sem == 2) {
-                        $Stmt = sprintf("UPDATE %s SET exemption = %d, exemptionS2 = %d, examine = %d WHERE id = '%s'", $TABLES["staff"],$exemption, $EXCEL_Loading, 1, $EXCEL_StaffID);
-                        $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                        if ($DBOBJ_Result->execute()) {
-                            $RowCount_Updated++;
-                            $Contents = $Contents . sprintf("%03d. projects: %d Staff : %-25s : %-35s . Examine and exemption updated successfully \n", $RowCount,$projects, $Data['id'], $Data['name']);
-                        } else {
-                            $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
-                        }
+
+                    $Stmt = sprintf("UPDATE %s SET workload = %d, exemption = %d, examine = %d WHERE (name = '%s' OR name2 = '%s')", $TABLES["staff"], $EXCEL_Loading, $exemption, 1, $EXCEL_StaffName, $EXCEL_StaffName);
+                    $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
+                    if ($DBOBJ_Result->execute()) {
+                        $RowCount_Updated++;
+                        $Contents = $Contents . sprintf("%03d. Staff exe: %d : %-25s : %-35s . Examine and exemption updated successfully \n", $RowCount,$EXCEL_Loading, $Data['id'], $Data['name']);
+                    } else {
+                        $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
                     }
 
-                    else {
+                    /*echo "<html>";
+                    echo "<h2>Hello world</h2>";
+                    echo "</html>";
+                    */
 
-                        $Stmt = sprintf("UPDATE %s SET exemption = %d, examine = %d WHERE id = '%s'", $TABLES["staff"], $exemption, 1, $EXCEL_StaffID);
+
+                   /* else {
+
+                        $Stmt = sprintf("UPDATE %s SET exemption = %d, examine = %d WHERE name = '%s' OR name2 = '%s'", $TABLES["staff"], $exemption, 1, $EXCEL_StaffName, $EXCEL_StaffName);
                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                         if ($DBOBJ_Result->execute()) {
                             $RowCount_Updated++;
@@ -179,10 +214,10 @@ function HandleExcelData_ExaminableFacultyList($error_code, $InputFile_FullPath)
                         } else {
                             $Contents = $Contents . sprintf("%03d. sem: %d. %d Staff : %-25s : %-35s . Examine was not updated successfully \n", $RowCount, $sem, $projects, $Data['id'], $Data['name']);
                         }
-                    }
+                    }*/
                 } else {
 
-                    if ($sem == 2) {
+                   /* if ($sem == 2) {
                         // Try to create the Examine of the staff
                         $Stmt = sprintf("INSERT INTO %s (id, email, name, workload, exemption, exemptionS2, examine) VALUES('%s', '%s', '%s', %d,%d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, 0, $exemption, $EXCEL_Loading, 1);
                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
@@ -192,19 +227,35 @@ function HandleExcelData_ExaminableFacultyList($error_code, $InputFile_FullPath)
                         } else {
                             $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
                         }
+                    }*/
+                  /* echo "<html>";
+                   echo "<form name=\"newstaff\" action=\"#\" method = >";
+                   echo "<table style=\"width: 100%;\">";
+                   echo "<tr>";
+                   echo "<td>";
+                   echo "<h2>test</h2>";
+                   echo $EXCEL_StaffName;
+                   echo "</td>";
+                   echo "</tr>";
+                   echo "</table>";
+                   echo "</form>";
+                   echo "</html>";
+                 */
+
+
+
+                    // Try to create the Examine of the staff
+                   /* $Stmt = sprintf("INSERT INTO %s (id, email, name, workload,exemption, examine) VALUES('%s', '%s', '%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, 0, $exemption, 1);
+                    $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
+                    if ($DBOBJ_Result->execute()) {
+                        $RowCount_Created++;
+                        $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s : Exemption : %2d . Examine created successfully! \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName, $exemption);
+                    } else {
+                        $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
                     }
-                    else {
-                        // Try to create the Examine of the staff
-                        $Stmt = sprintf("INSERT INTO %s (id, email, name, workload,exemption, examine) VALUES('%s', '%s', '%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, 0, $exemption, 1);
-                        $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                        if ($DBOBJ_Result->execute()) {
-                            $RowCount_Created++;
-                            $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s : Exemption : %2d . Examine created successfully! \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName, $exemption);
-                        } else {
-                            $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                        }
-                    }
+                   */
                 }
+
 
 
                 /*  $stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE acad_year = '%s'", $TABLES["fyp"], $year);
@@ -334,10 +385,11 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
         $DBOBJ_Result->execute();
         $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
-        if (isset($Data['id']) && !empty($Data['id'])) {
+       /* if (isset($Data['id']) && !empty($Data['id'])) {
             $initialize = sprintf("UPDATE %s SET workload = 0", $TABLES["staff"]);
             $conn_db_ntu->prepare($initialize)->execute();
         }
+       */
 
         if ($sem == 2) {
             for ($RowIndex = 3; $RowIndex <= $Total_DataInSheet + $Offset; $RowIndex++) {
@@ -364,7 +416,7 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
 
 
 				// Check if the staff in excel list is in staff table
-				$Stmt 			= sprintf("SELECT * FROM  %s WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffID);
+				$Stmt 			= sprintf("SELECT * FROM  %s WHERE (name = '%s' OR name2 ='%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
 				$DBOBJ_Result 	= $conn_db_ntu->prepare($Stmt);
 				$DBOBJ_Result->execute();
 				$Data 			= $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
@@ -374,11 +426,13 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
 
                     if ($sem == 2) {
                         $ProjectsSupervised   = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
-                        $MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
                         $ProjectsExaminedinS1 = is_numeric($EXCEL_AllData[$RowIndex]["E"]) ? $EXCEL_AllData[$RowIndex]["E"] : 0;
-                        $exemption = intval(floor($base * (1 - ($Data['exemptionS2'] / 100)) +  (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1));
+                        $MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
+                        $MScExamined = is_numeric($EXCEL_AllData[$RowIndex]["L"]) ? $EXCEL_AllData[$RowIndex]["L"] : 0;
+                        $exemption = intval(floor($base * (1 - ($Data['workload'] / 100)) +  (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1 + $MScExamined));
+                        $MScContribution = intval($MScSupervised *3 + $MScExamined);
 
-                        $Stmt 			= sprintf("UPDATE %s SET workload = %d, exemptionS2 = %d WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffWorkLoad, $exemption, $EXCEL_StaffID);
+                        $Stmt 			= sprintf("UPDATE %s SET exemptionS2 = %d, msc_contri = %d WHERE (name = '%s' OR name2 = '%s')", $TABLES["staff"], $exemption, $MScContribution, $EXCEL_StaffName, $EXCEL_StaffName);
                         $DBOBJ_Result 	= $conn_db_ntu->prepare($Stmt);
                         if($DBOBJ_Result->execute()){
                             $RowCount_Updated++;
@@ -388,7 +442,7 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
                         }
 
                     }
-                    else {
+                    /*else {
                         $Stmt = sprintf("UPDATE %s SET workload = %d WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffWorkLoad, $EXCEL_StaffID);
                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                         if ($DBOBJ_Result->execute()) {
@@ -397,7 +451,7 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
                         } else {
                             $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Workload was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
                         }
-                    }
+                    }*/
 
 
 					
@@ -405,9 +459,12 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
 
                     if ($sem == 2) {
                         $ProjectsSupervised   = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
-                        $MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
                         $ProjectsExaminedinS1 = is_numeric($EXCEL_AllData[$RowIndex]["E"]) ? $EXCEL_AllData[$RowIndex]["E"] : 0;
-                        $exemption = intval(floor($base * (1 - ($Data['exemptionS2'] / 100)) +  (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1));
+                        $MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
+                        $MScExamined = is_numeric($EXCEL_AllData[$RowIndex]["L"]) ? $EXCEL_AllData[$RowIndex]["L"] : 0;
+
+                        $exemption = intval(floor($base * (1 - ($Data['workload'] / 100)) +  (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1 + $MScExamined));
+
                         $Stmt 			= sprintf("INSERT INTO %s (id, email, name, workload, exemptionS2, examine) VALUES('%s', '%s', '%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, $EXCEL_StaffWorkLoad, $exemption, 0);
                         $DBOBJ_Result 	= $conn_db_ntu->prepare($Stmt);
                         if($DBOBJ_Result->execute()){
@@ -418,7 +475,7 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
                         }
 
                     }
-                    else {
+                  /*  else {
                         // Try to create the workload of the staff
                         $Stmt = sprintf("INSERT INTO %s (id, email, name, workload, examine) VALUES('%s', '%s', '%s', %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, $EXCEL_StaffWorkLoad, 0);
                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
@@ -428,7 +485,7 @@ function HandleExcelData_WorkloadList($error_code, $InputFile_FullPath){
                         } else {
                             $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Workload was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
                         }
-                    }
+                    }*/
 				}
 
 
