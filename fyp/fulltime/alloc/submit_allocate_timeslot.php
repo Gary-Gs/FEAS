@@ -149,7 +149,7 @@ else if ($NO_OF_DAYS <= 0 || $MAX_SLOTS <= 0) {
 	// prepare project list (sorted by supervising count >=4 , then from the rest sorted by examiner count) (to reduce movements)
 	$projectList = indexProjects($staffList, $projects, $projectList);
 
-	testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $timeslots_table, false);
+	testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $timeslots_table, true);
 
 	return; //ignore following code
 	/***TODO:ORIGINAL START OF ASSIGNING**/
@@ -302,7 +302,7 @@ function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $times
 				$ignore_staff++;
 			}
 		} //for-loop :: $attempts
-		insertValuesIntoDB($dayIndex, $projectList, $debug);
+		insertValuesIntoDB($dayIndex, $projectList);
 		$projectList = removeAssignedProjects($projectList);
 		$final_timetable[$dayIndex] = $rooms;
 	} //for-loop :: $dayIndex
@@ -359,7 +359,7 @@ function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $times
 				$ignore_slot = 0;
 			}
 		} //for-loop :: $rooms
-		insertValuesIntoDB($dayIndex, $projectList, $debug);
+		insertValuesIntoDB($dayIndex, $projectList);
 		$projectList = removeAssignedProjects($projectList);
 		$final_timetable[$dayIndex] = $rooms;
 	} //for-loop :: $dayIndex
@@ -564,8 +564,9 @@ function updateRoomList($room, $order, $start_slot) {
 }
 
 function assignProjectList($projectlist, $project, $day, $room, $start_slot) {
-	for (; current($project) != null; next($project)) {
-		$projectlist[current($project)]->assignTimeslot($day, $room, $start_slot + key($project));
+    for ($i = 0; $i < count($project); $i++) {
+	    if ($project[$i] == null) continue;
+		$projectlist[$project[$i]]->assignTimeslot($day, $room, $start_slot + $i);
 	}
 	return $projectlist;
 }
@@ -875,120 +876,118 @@ function assignRooms($projectList, $staffList, $timetable, $slotused, $dayIndex,
 	return $projectList;
 }
 
-function insertValuesIntoDB($dayIndex, $projectList, $debug) {
-	if (!$debug) {
-		//Bulk Insert
-		//Timeslot
-		global $conn_db_ntu, $TABLES, $timeslots_table;
-		$solution_found = false;
-		$actualDay = $dayIndex + 1;
-		$stmt1 = $conn_db_ntu->prepare("delete from " . $TABLES['allocation_result_timeslot'] . " where day = ? ");
-		$stmt1->bindParam("1", $actualDay);
-		$stmt1->execute();
-		$values = array();
+function insertValuesIntoDB($dayIndex, $projectList) {
+	//Bulk Insert
+	//Timeslot
+	global $conn_db_ntu, $TABLES, $timeslots_table;
+	$solution_found = false;
+	$actualDay = $dayIndex + 1;
+	$stmt1 = $conn_db_ntu->prepare("delete from " . $TABLES['allocation_result_timeslot'] . " where day = ? ");
+	$stmt1->bindParam("1", $actualDay);
+	$stmt1->execute();
+	$values = array();
 
-		foreach ($timeslots_table[$dayIndex] as $timeslot) {
-			//var_dump( $timeslot);
-			$timeSlotID = $timeslot->getID();
-			$timeSlotDay = $timeslot->getDay();
-			$slot = $timeslot->getSlot();
-			$timeSlotST = $timeslot->getStartTime()->format('H:i:s');
-			$timeSlotET = $timeslot->getEndTime()->format('H:i:s');
-			$stmt1 = $conn_db_ntu->prepare("select * from " . $TABLES['allocation_result_timeslot'] . " where id = ?");
-			$stmt1->bindParam("1", $timeSlotID);
+	foreach ($timeslots_table[$dayIndex] as $timeslot) {
+		//var_dump( $timeslot);
+		$timeSlotID = $timeslot->getID();
+		$timeSlotDay = $timeslot->getDay();
+		$slot = $timeslot->getSlot();
+		$timeSlotST = $timeslot->getStartTime()->format('H:i:s');
+		$timeSlotET = $timeslot->getEndTime()->format('H:i:s');
+		$stmt1 = $conn_db_ntu->prepare("select * from " . $TABLES['allocation_result_timeslot'] . " where id = ?");
+		$stmt1->bindParam("1", $timeSlotID);
+		$stmt1->execute();
+
+
+		$existingRecords = $stmt1->fetchAll();
+		if (sizeof($existingRecords) > 0) {
+			$stmt1 = $conn_db_ntu->prepare("update " . $TABLES['allocation_result_timeslot'] . " set day = ?, slot = ?, time_start = ?, time_end = ? where id = ?");
+			$stmt1->bindParam(1, $timeSlotDay);
+			$stmt1->bindParam(2, $slot);
+			$stmt1->bindParam(3, $timeSlotST);
+			$stmt1->bindParam(4, $timeSlotET);
+			$stmt1->bindParam(5, $timeSlotID);
 			$stmt1->execute();
-
-
-			$existingRecords = $stmt1->fetchAll();
-			if (sizeof($existingRecords) > 0) {
-				$stmt1 = $conn_db_ntu->prepare("update " . $TABLES['allocation_result_timeslot'] . " set day = ?, slot = ?, time_start = ?, time_end = ? where id = ?");
-				$stmt1->bindParam(1, $timeSlotDay);
-				$stmt1->bindParam(2, $slot);
-				$stmt1->bindParam(3, $timeSlotST);
-				$stmt1->bindParam(4, $timeSlotET);
-				$stmt1->bindParam(5, $timeSlotID);
-				$stmt1->execute();
-			} else {
-				$stmt1 = $conn_db_ntu->prepare("insert into " . $TABLES['allocation_result_timeslot'] . " (`id`, `day`, `slot`, `time_start`, `time_end`) VALUES (?, ?, ?, ?, ?)");
-				$stmt1->bindParam(1, $timeSlotID);
-				$stmt1->bindParam(2, $timeSlotDay);
-				$stmt1->bindParam(3, $slot);
-				$stmt1->bindParam(4, $timeSlotST);
-				$stmt1->bindParam(5, $timeSlotET);
-				$stmt1->execute();
-			}
-		}
-
-		//Rooms
-		$stmt1 = $conn_db_ntu->prepare("delete from " . $TABLES['allocation_result_room'] . " where day = ? ");
-		$stmt1->bindParam(1, $actualDay);
-		$stmt1->execute();
-
-		$stmt1 = $conn_db_ntu->prepare("select roomArray from " . $TABLES['allocation_settings_room'] . " where day = ? ");
-		$stmt1->bindParam("1", $actualDay);
-		$stmt1->execute();
-		$rooms = $stmt1->fetchAll();
-
-		if (sizeof($rooms) > 0) {
-			$roomsArr = $rooms[0]["roomArray"];
-
-			$stmt1 = $conn_db_ntu->prepare("insert into " . $TABLES['allocation_result_room'] . " ( `day`, `roomArray`) VALUES (? , ?)");
-			$stmt1->bindParam("1", $actualDay);
-
-			//var_dump($roomArr);
-			$stmt1->bindParam("2", $roomsArr);
+		} else {
+			$stmt1 = $conn_db_ntu->prepare("insert into " . $TABLES['allocation_result_timeslot'] . " (`id`, `day`, `slot`, `time_start`, `time_end`) VALUES (?, ?, ?, ?, ?)");
+			$stmt1->bindParam(1, $timeSlotID);
+			$stmt1->bindParam(2, $timeSlotDay);
+			$stmt1->bindParam(3, $slot);
+			$stmt1->bindParam(4, $timeSlotST);
+			$stmt1->bindParam(5, $timeSlotET);
 			$stmt1->execute();
 		}
-		foreach ($projectList as $project) {
-			$dayUs = -1;
-			$time = -1;
-			$room = -1;
+	}
 
-			if ($project->isAssignedTimeslot()) {
-				$dayUs = $project->getAssigned_Day() + 1; //Offset to database
-				$dayUs = $actualDay;
-				$time = $project->getAssigned_Time() + 1;
-				$room = $project->getAssigned_Room() + 1;
-			}
+	//Rooms
+	$stmt1 = $conn_db_ntu->prepare("delete from " . $TABLES['allocation_result_room'] . " where day = ? ");
+	$stmt1->bindParam(1, $actualDay);
+	$stmt1->execute();
 
-			//echo("project day: ");
-			//echo($actualDay);
-			//echo ("<br>");
-			$projectID = $project->getID();
-			//echo("prid: ");
+	$stmt1 = $conn_db_ntu->prepare("select roomArray from " . $TABLES['allocation_settings_room'] . " where day = ? ");
+	$stmt1->bindParam("1", $actualDay);
+	$stmt1->execute();
+	$rooms = $stmt1->fetchAll();
 
-			//echo($projectID);
-			$examinerID = $project->getExaminer();
+	if (sizeof($rooms) > 0) {
+		$roomsArr = $rooms[0]["roomArray"];
 
-			//Assignment Results
-			//Clear previous data first
-			$stmt1 = $conn_db_ntu->prepare("update " . $TABLES['allocation_result'] . " set day=0, slot =NULL, room =NULL where project_id = ? ");
+		$stmt1 = $conn_db_ntu->prepare("insert into " . $TABLES['allocation_result_room'] . " ( `day`, `roomArray`) VALUES (? , ?)");
+		$stmt1->bindParam("1", $actualDay);
+
+		//var_dump($roomArr);
+		$stmt1->bindParam("2", $roomsArr);
+		$stmt1->execute();
+	}
+	foreach ($projectList as $project) {
+		$dayUs = -1;
+		$time = -1;
+		$room = -1;
+
+		if ($project->isAssignedTimeslot()) {
+			$dayUs = $project->getAssigned_Day() + 1; //Offset to database
+			$dayUs = $actualDay;
+			$time = $project->getAssigned_Time() + 1;
+			$room = $project->getAssigned_Room() + 1;
+		}
+
+		//echo("project day: ");
+		//echo($actualDay);
+		//echo ("<br>");
+		$projectID = $project->getID();
+		//echo("prid: ");
+
+		//echo($projectID);
+		$examinerID = $project->getExaminer();
+
+		//Assignment Results
+		//Clear previous data first
+		$stmt1 = $conn_db_ntu->prepare("update " . $TABLES['allocation_result'] . " set day=0, slot =NULL, room =NULL where project_id = ? ");
+		$stmt1->bindParam("1", $projectID);
+		$stmt1->execute();
+
+		$stmt1 = $conn_db_ntu->prepare("select * from " . $TABLES['allocation_result'] . " where project_id = ? ");
+		$stmt1->bindParam("1", $projectID);
+		$stmt1->execute();
+		$existingRes = $stmt1->fetchAll();
+
+		if (sizeof($existingRes) > 0) {
+			$stmt1 = $conn_db_ntu->prepare("update " . $TABLES['allocation_result'] . " set day = ? , slot = ?, room =?, clash=0 where project_id = ? ");
+			//$stmt1->bindParam("1",$examinerID);
+			$stmt1->bindParam("1", $dayUs);
+			$stmt1->bindParam("2", $time);
+			$stmt1->bindParam("3", $room);
+			$stmt1->bindParam("4", $projectID);
+			$stmt1->execute();
+		} else {
+			$stmt1 = $conn_db_ntu->prepare("insert into  " . $TABLES['allocation_result'] . " (`project_id`, `examiner_id`, `day`, `slot`, `room`, `clash`) VALUES(?,?,?,?,?,0");
 			$stmt1->bindParam("1", $projectID);
+			$stmt1->bindParam("2", $examinerID);
+			$stmt1->bindParam("3", $dayUs);
+			$stmt1->bindParam("4", $time);
+			$stmt1->bindParam("5", $room);
 			$stmt1->execute();
 
-			$stmt1 = $conn_db_ntu->prepare("select * from " . $TABLES['allocation_result'] . " where project_id = ? ");
-			$stmt1->bindParam("1", $projectID);
-			$stmt1->execute();
-			$existingRes = $stmt1->fetchAll();
-
-			if (sizeof($existingRes) > 0) {
-				$stmt1 = $conn_db_ntu->prepare("update " . $TABLES['allocation_result'] . " set day = ? , slot = ?, room =?, clash=0 where project_id = ? ");
-				//$stmt1->bindParam("1",$examinerID);
-				$stmt1->bindParam("1", $dayUs);
-				$stmt1->bindParam("2", $time);
-				$stmt1->bindParam("3", $room);
-				$stmt1->bindParam("4", $projectID);
-				$stmt1->execute();
-			} else {
-				$stmt1 = $conn_db_ntu->prepare("insert into  " . $TABLES['allocation_result'] . " (`project_id`, `examiner_id`, `day`, `slot`, `room`, `clash`) VALUES(?,?,?,?,?,0");
-				$stmt1->bindParam("1", $projectID);
-				$stmt1->bindParam("2", $examinerID);
-				$stmt1->bindParam("3", $dayUs);
-				$stmt1->bindParam("4", $time);
-				$stmt1->bindParam("5", $room);
-				$stmt1->execute();
-
-			}
 		}
 	}
 }
