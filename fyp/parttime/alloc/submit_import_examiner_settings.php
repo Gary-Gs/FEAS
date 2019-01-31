@@ -48,12 +48,12 @@ if(isset($_FILES["FileToUpload_ExaminerSettings"])){
 // Assign faculty workload into DB first
 $FilesInDir = glob("$target_dir". "workload_staff_list.*");
 if (count($FilesInDir) == 1){
-	$error_code = HandleExcelData_WorkloadList($error_code, $FilesInDir[0]);
+	$error_code = HandleExcelData_Exemption($error_code, $FilesInDir[0]);
 	if($error_code == 0 ){ // no error
 		// Assign examinable faculty into DB first
 		$FilesInDir = glob("$target_dir". "examinable_staff_list.*");
 		if (count($FilesInDir) == 1){
-			$error_code = HandleExcelData_ExaminableFacultyList($error_code, $FilesInDir[0]);
+			$error_code = HandleExcelData_ExaminerList($error_code, $FilesInDir[0]);
 			if($error_code != 0){
 				echo "Error in HandleExcelData_ExaminableFacultyList : error_code=$error_code\n";
 			}
