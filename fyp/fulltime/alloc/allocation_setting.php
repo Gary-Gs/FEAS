@@ -239,6 +239,8 @@ function generateTSTable($noOfDays) {
 		$timeSlotTableStr .= '</tbody>';
 	}
 	echo $timeSlotTableStr;
+
+	echo "<script>allocate_datepicker($noOfDays)</script>";
 }
 
 function initRoomTable($noOfDays) {
@@ -315,15 +317,15 @@ function initRooms($dayIndex, $noOfDays) {
 //	// Fill Gaps
 //	while ($roomCount <= $MIN_ROOMS) { // min rooms = 10, if less than 10 then fill in with empty text boxes until 10
 //		$roomContentStr .= '<tr><td class = \"room_td\">' . $roomCount . '.</td>';
-////		if (sizeof($settings) >= $noOfDays) {
-////			if ($settings[$dayIndex]['opt_out'] == 1) {
-////				$disabledStr = "disabled";
-////				$roomContentStr .= '<td class = "room_td"><input style = "width:200px; background:#ededed;" id = "room' . $actualDay . '_' . $roomCount . '" name = "room' . $actualDay . '_' . $roomCount . '" readonly = "readonly" />';
-////			} else {
-////				$disabledStr = "";
-////				$roomContentStr .= '<td class = "room_td"><input style = "width:200px;" id = "room' . $actualDay . '_' . $roomCount . '" name = "room' . $actualDay . '_' . $roomCount . '" />';
-////			}
-////		}
+//		if (sizeof($settings) >= $noOfDays) {
+//			if ($settings[$dayIndex]['opt_out'] == 1) {
+//				$disabledStr = "disabled";
+//				$roomContentStr .= '<td class = "room_td"><input style = "width:200px; background:#ededed;" id = "room' . $actualDay . '_' . $roomCount . '" name = "room' . $actualDay . '_' . $roomCount . '" readonly = "readonly" />';
+//			} else {
+//				$disabledStr = "";
+//				$roomContentStr .= '<td class = "room_td"><input style = "width:200px;" id = "room' . $actualDay . '_' . $roomCount . '" name = "room' . $actualDay . '_' . $roomCount . '" />';
+//			}
+//		}
 //		$roomContentStr .= '<td class = "room_td"><input type = "text" style = "width:200px;" //id = "room' . $actualDay . '_' . $roomCount . '" name = "room' . $actualDay . '_' . $roomCount . '" ' . $disabledStr . '/></td></tr>';
 //		$roomCount++;
 //	}
@@ -336,272 +338,271 @@ function enoughSlots() {
 	return true;
 } ?>
 
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<title>Allocation Settings</title>
-	<?php require_once('../../../head.php'); ?>
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-	<style>
-		td .room_td {
-			padding-bottom: 10px;
-		}
+    <!DOCTYPE html>
+    <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Allocation Settings</title>
+		<?php require_once('../../../head.php'); ?>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+        <style>
+            td .room_td {
+                padding-bottom: 10px;
+            }
 
-		tbody {
-			width: 350px;
-			height: 200px;
-			margin: 0 auto;
-		}
+            tbody {
+                width: 350px;
+                height: 200px;
+                margin: 0 auto;
+            }
 
-		ul.tabs {
-			margin: 0px;
-			padding: 0px;
-			list-style: none;
-		}
+            ul.tabs {
+                margin: 0px;
+                padding: 0px;
+                list-style: none;
+            }
 
-		ul.tabs li {
-			background: none;
-			color: #444;
-			display: inline-block;
-			padding: 10px 15px;
-			cursor: pointer;
-		}
+            ul.tabs li {
+                background: none;
+                color: #444;
+                display: inline-block;
+                padding: 10px 15px;
+                cursor: pointer;
+            }
 
-		ul.tabs li.current {
-			background: #ededed;
-			color: #444;
-		}
+            ul.tabs li.current {
+                background: #ededed;
+                color: #444;
+            }
 
-		.tab-content {
-			display: none;
-			background: #ededed;
-			padding: 15px;
-		}
+            .tab-content {
+                display: none;
+                background: #ededed;
+                padding: 15px;
+            }
 
-		.tab-content.current {
-			display: inherit;
-		}
+            .tab-content.current {
+                display: inherit;
+            }
 
-		ul.room_tabs {
-			margin: 0px;
-			padding: 0px;
-			list-style: none;
-		}
+            ul.room_tabs {
+                margin: 0px;
+                padding: 0px;
+                list-style: none;
+            }
 
-		ul.room_tabs li {
-			background: none;
-			color: #222;
-			display: inline-block;
-			padding: 10px 15px;
-			cursor: pointer;
-		}
+            ul.room_tabs li {
+                background: none;
+                color: #222;
+                display: inline-block;
+                padding: 10px 15px;
+                cursor: pointer;
+            }
 
-		ul.room_tabs li.current {
-			background: #ededed;
-			color: #222;
-		}
+            ul.room_tabs li.current {
+                background: #ededed;
+                color: #222;
+            }
 
-		.room-content {
-			display: none;
-			background: #ededed;
-			padding: 15px;
-		}
+            .room-content {
+                display: none;
+                background: #ededed;
+                padding: 15px;
+            }
 
-		.room-content.current {
-			display: inherit;
-		}
+            .room-content.current {
+                display: inherit;
+            }
 
-		table tr {
-			height: 40px;
-		}
+            table tr {
+                height: 40px;
+            }
 
-		#settings_table {
-			width: 100%;
-		}
-	</style>
+            #settings_table {
+                width: 100%;
+            }
+        </style>
 
-	<script type="text/javascript">
-		// global variables to keep track of no of rooms(textboxes) for each day
-		var roomCount_Day1, roomCount_Day2, roomCount_Day3;
+        <script type="text/javascript">
+            // global variables to keep track of no of rooms(textboxes) for each day
+            var roomCount_Day1, roomCount_Day2, roomCount_Day3;
 
-		$(document).ready(function () {
-			roomCount_Day1 = <?php echo $roomCount_day1; ?>;
-			roomCount_Day2 = <?php echo $roomCount_day2; ?>;
-			roomCount_Day3 = <?php echo $roomCount_day3; ?>;
+            $(document).ready(function () {
+                roomCount_Day1 = <?php echo $roomCount_day1; ?>;
+                roomCount_Day2 = <?php echo $roomCount_day2; ?>;
+                roomCount_Day3 = <?php echo $roomCount_day3; ?>;
 
-			$("#alloc_days1").datepicker({
-											 dateFormat: "yy-mm-dd",
-										 });
-			$("#alloc_days2").datepicker({
-											 dateFormat: "yy-mm-dd",
-										 });
-			$("#alloc_days3").datepicker({
-											 dateFormat: "yy-mm-dd",
-										 });
-			var no_of_days = <?php echo $NO_OF_DAYS; ?>;
-			generateTabs(no_of_days);
-		});
+                var no_of_days = <?php echo $NO_OF_DAYS; ?>;
+                generateTabs(no_of_days);
+            });
 
-		// function calculateNextDate() {
-		// 	var start_date = $("#alloc_date").val();
-		//
-		// 	var date = new Date(start_date);
-		// 	var day_1 = new Date(date.setDate(date.getDate()));
-		// 	var day_2 = new Date(date.setDate(date.getDate() + 1));
-		// 	var day_3 = new Date(date.setDate(date.getDate() + 1.5));
-		//
-		// 	var day1_string = day_1.getDate() + '/' + (day_1.getMonth() + 1) + '/' + day_1.getUTCFullYear();
-		// 	var day2_string = day_2.getDate() + '/' + (day_2.getMonth() + 1) + '/' + day_2.getUTCFullYear();
-		// 	var day3_string = day_3.getDate() + '/' + (day_3.getMonth() + 1) + '/' + day_3.getUTCFullYear();
-		//
-		// 	$("#next_date0").html(day1_string);
-		// 	$("#next_date1").html(day2_string);
-		// 	$("#next_date2").html(day3_string);
-		//
-		// 	var day1_value = day_1.getUTCFullYear() + '-' + (day_1.getMonth() + 1) + '-' + day_1.getDate();
-		// 	var day2_value = day_2.getUTCFullYear() + '-' + (day_2.getMonth() + 1) + '-' + day_2.getDate();
-		// 	var day3_value = day_3.getUTCFullYear() + '-' + (day_3.getMonth() + 1) + '-' + day_3.getDate();
-		//
-		// 	$("#day0").val(day1_value);
-		// 	$("#day1").val(day2_value);
-		// 	$("#day2").val(day3_value);
-		// }
-		//
-		// $(function () {
-		// 	$("#alloc_date").on("change", function () {
-		// 		 calculateNextDate();
-		// 	});
-		// })
+            function allocate_datepicker($noOfDays) {
+                for (var day = 1; day <= $noOfDays; day++) {
+                    $("#alloc_days" + day).datepicker({
+                        dateFormat: "yy-mm-dd",
+                    });
+                }
+            }
 
-		$(function () { // tabs function for both time alloc and room
-			// when you click the ul for timeslot
-			$('ul.tabs').on("click", "li", function () {
+            // function calculateNextDate() {
+            //     var start_date = $("#alloc_date").val();
+            //
+            //     var date = new Date(start_date);
+            //     var day_1 = new Date(date.setDate(date.getDate()));
+            //     var day_2 = new Date(date.setDate(date.getDate() + 1));
+            //     var day_3 = new Date(date.setDate(date.getDate() + 1.5));
+            //
+            //     var day1_string = day_1.getDate() + '/' + (day_1.getMonth() + 1) + '/' + day_1.getUTCFullYear();
+            //     var day2_string = day_2.getDate() + '/' + (day_2.getMonth() + 1) + '/' + day_2.getUTCFullYear();
+            //     var day3_string = day_3.getDate() + '/' + (day_3.getMonth() + 1) + '/' + day_3.getUTCFullYear();
+            //
+            //     $("#next_date0").html(day1_string);
+            //     $("#next_date1").html(day2_string);
+            //     $("#next_date2").html(day3_string);
+            //
+            //     var day1_value = day_1.getUTCFullYear() + '-' + (day_1.getMonth() + 1) + '-' + day_1.getDate();
+            //     var day2_value = day_2.getUTCFullYear() + '-' + (day_2.getMonth() + 1) + '-' + day_2.getDate();
+            //     var day3_value = day_3.getUTCFullYear() + '-' + (day_3.getMonth() + 1) + '-' + day_3.getDate();
+            //
+            //     $("#day0").val(day1_value);
+            //     $("#day1").val(day2_value);
+            //     $("#day2").val(day3_value);
+            // }
+            //
+            // $(function () {
+            //     $("#alloc_date").on("change", function () {
+            //         calculateNextDate();
+            //     });
+            // })
 
-				var tab_id = $(this).attr('data-tab'),
-					day;
+            $(function () { // tabs function for both time alloc and room
+                // when you click the ul for timeslot
+                $('ul.tabs').on("click", "li", function () {
 
-				// remove current from ul and div for tabs
-				$('ul.tabs li').removeClass('current');
-				$('.tab-content').removeClass('current');
+                    var tab_id = $(this).attr('data-tab'),
+                        day;
 
-				// remove current from ul and div for rooms
-				$('ul.room_tabs li').removeClass('current');
-				$('.room-content').removeClass('current');
+                    // remove current from ul and div for tabs
+                    $('ul.tabs li').removeClass('current');
+                    $('.tab-content').removeClass('current');
 
-				switch (tab_id) {
-					case 'tab-1':
-						day = 1
-						break;
-					case 'tab-2':
-						day = 2;
-						break;
-					case 'tab-3':
-						day = 3;
-						break;
-				}
+                    // remove current from ul and div for rooms
+                    $('ul.room_tabs li').removeClass('current');
+                    $('.room-content').removeClass('current');
 
-				// for the room side - assign current
-				$("#room_day" + day).addClass('current');
-				$("#day-" + day).addClass('current');
+                    switch (tab_id) {
+                        case 'tab-1':
+                            day = 1
+                            break;
+                        case 'tab-2':
+                            day = 2;
+                            break;
+                        case 'tab-3':
+                            day = 3;
+                            break;
+                    }
 
-				// for the tabs side - assign current
-				$(this).addClass('current');
-				$("#" + tab_id).addClass('current');
-			});
+                    // for the room side - assign current
+                    $("#room_day" + day).addClass('current');
+                    $("#day-" + day).addClass('current');
 
-			// when you click rooms setting tabs
-			$('ul.room_tabs').on("click", "li", function () {
-				var room_id = $(this).attr('data-tab'),
-					day;
+                    // for the tabs side - assign current
+                    $(this).addClass('current');
+                    $("#" + tab_id).addClass('current');
+                });
 
-				// remove current from ul and div for rooms
-				$('ul.room_tabs li').removeClass('current');
-				$('.room-content').removeClass('current');
+                // when you click rooms setting tabs
+                $('ul.room_tabs').on("click", "li", function () {
+                    var room_id = $(this).attr('data-tab'),
+                        day;
 
-				// remove current from ul and div for tabs
-				$('ul.tabs li').removeClass('current');
-				$('.tab-content').removeClass('current');
+                    // remove current from ul and div for rooms
+                    $('ul.room_tabs li').removeClass('current');
+                    $('.room-content').removeClass('current');
 
-				switch (room_id) {
-					case 'day-1':
-						day = 1;
-						break;
-					case 'day-2':
-						day = 2;
-						break;
-					case 'day-3':
-						day = 3;
-						break;
-				}
+                    // remove current from ul and div for tabs
+                    $('ul.tabs li').removeClass('current');
+                    $('.tab-content').removeClass('current');
 
-				// for the tabs side - assign current
-				$("#tab" + day).addClass('current');
-				$("#tab-" + day).addClass('current');
+                    switch (room_id) {
+                        case 'day-1':
+                            day = 1;
+                            break;
+                        case 'day-2':
+                            day = 2;
+                            break;
+                        case 'day-3':
+                            day = 3;
+                            break;
+                    }
 
-				// for the room side - assign current
-				$(this).addClass('current');
-				$("#" + room_id).addClass('current');
-			});
-		});
+                    // for the tabs side - assign current
+                    $("#tab" + day).addClass('current');
+                    $("#tab-" + day).addClass('current');
 
-		function generateTabs(noOfDays) {
-			var roomTableTabHTMLStr = "";
-			var timeSlotTabHTMLStr = "";
-			for (var i = 1; i <= noOfDays; i++) {
-				if (i == 1) {
-					roomTableTabHTMLStr += "<li data-tab = \"day-" + i + "\" class = \"room-link current\" id = \"room_day" + i + "\"><b>Day " + i + "</b></li>";
-					timeSlotTabHTMLStr += "<li data-tab = \"tab-" + i + "\" class = \"tab-link current\" id = \"tab" + i + "\"><b>Day " + i + "</b></li>";
-				} else {
-					roomTableTabHTMLStr += "<li data-tab = \"day-" + i + "\" class = \"room-link\" id = \"room_day" + i + "\"><b>Day " + i + "</b></li>";
-					timeSlotTabHTMLStr += "<li data-tab = \"tab-" + i + "\" class = \"tab-link\" id = \"tab" + i + "\"><b>Day " + i + "</b></li>";
-				}
-			}
-			$("#roomTabs").html(roomTableTabHTMLStr);
-			$("#timeSlotTabs").html(timeSlotTabHTMLStr);
-		}
+                    // for the room side - assign current
+                    $(this).addClass('current');
+                    $("#" + room_id).addClass('current');
+                });
+            });
 
-		function regenerateRoomTable(no_of_days) {
-			var dataArr = {"no_of_days_room": no_of_days};
-			$.ajax({
-					   type: "POST",
-					   url: "allocation_setting.php",
-					   data: dataArr,
-					   success: function (data) {
-						   $("#roomTableGroup").html("");
-						   $("#roomTableGroup").html(data);
-					   },
-					   error: function (msg) {
-						   alert("error occurred");
-					   }
-				   });
-		}
+            function generateTabs(noOfDays) {
+                var roomTableTabHTMLStr = "";
+                var timeSlotTabHTMLStr = "";
+                for (var i = 1; i <= noOfDays; i++) {
+                    if (i == 1) {
+                        roomTableTabHTMLStr += "<li data-tab = \"day-" + i + "\" class = \"room-link current\" id = \"room_day" + i + "\"><b>Day " + i + "</b></li>";
+                        timeSlotTabHTMLStr += "<li data-tab = \"tab-" + i + "\" class = \"tab-link current\" id = \"tab" + i + "\"><b>Day " + i + "</b></li>";
+                    } else {
+                        roomTableTabHTMLStr += "<li data-tab = \"day-" + i + "\" class = \"room-link\" id = \"room_day" + i + "\"><b>Day " + i + "</b></li>";
+                        timeSlotTabHTMLStr += "<li data-tab = \"tab-" + i + "\" class = \"tab-link\" id = \"tab" + i + "\"><b>Day " + i + "</b></li>";
+                    }
+                }
+                $("#roomTabs").html(roomTableTabHTMLStr);
+                $("#timeSlotTabs").html(timeSlotTabHTMLStr);
+            }
 
-		function regenerateTimeSlotTable(no_of_days) {
-			var dataArr = {"no_of_days_timeslot": no_of_days};
-			$.ajax({
-					   type: "POST",
-					   url: "allocation_setting.php",
-					   data: dataArr,
-					   success: function (data) {
-						   $("#tsSettingsBody").html("");
-						   $("#tsSettingsBody").html(data);
-					   },
-					   error: function (data) {
-						   alert("error occurred");
-					   }
-				   });
-		}
-	</script>
-</head>
-<body> 
-<?php require_once('../../../php_css/headerwnav.php'); ?> 
+            function regenerateRoomTable(no_of_days) {
+                var dataArr = {"no_of_days_room": no_of_days};
+                $.ajax({
+                    type: "POST",
+                    url: "allocation_setting.php",
+                    data: dataArr,
+                    success: function (data) {
+                        $("#roomTableGroup").html("");
+                        $("#roomTableGroup").html(data);
+                    },
+                    error: function (msg) {
+                        alert("error occurred");
+                    }
+                });
+            }
 
-	<div style="margin-left: -15px;">
-		<div class="container-fluid">
-			 <?php require_once('../../nav.php'); ?> 
-			 <!-- Page Content Holder -->
-             <div class="container-fluid">
-             	<h3>Allocation Settings for Full Time Projects</h3>
+            function regenerateTimeSlotTable(no_of_days) {
+                var dataArr = {"no_of_days_timeslot": no_of_days};
+                $.ajax({
+                    type: "POST",
+                    url: "allocation_setting.php",
+                    data: dataArr,
+                    success: function (data) {
+                        $("#tsSettingsBody").html("");
+                        $("#tsSettingsBody").html(data);
+                    },
+                    error: function (data) {
+                        alert("error occurred");
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+	<?php require_once('../../../php_css/headerwnav.php'); ?>
+
+    <div style="margin-left: -15px;">
+        <div class="container-fluid">
+			<?php require_once('../../nav.php'); ?>
+            <!-- Page Content Holder -->
+            <div class="container-fluid">
+                <h3>Allocation Settings for Full Time Projects</h3>
 
 				<?php
 				if (!enoughSlots()) {
@@ -619,160 +620,156 @@ function enoughSlots() {
 				if (isset ($_REQUEST['validate'])) {
 					echo "<p class = 'warn'> CSRF validation failed.</p>";
 				} else { ?>
-					<div id="topcon">
-						<form action="submit_saveas.php" method="post">
+                    <div id="topcon">
+                        <form action="submit_saveas.php" method="post">
 							<?php $csrf->echoInputField(); ?>
-							<table id="settings_table" border="0" style="margin-top:15px;">
-								<tr>
-									<td valign="top" style="text-align:left;">
-										<div id="exam_settings">
-											<u><h4 style="padding-bottom:10px;">Exam Settings</h4></u>
-											<table id="examsettings_table" border="0" width="406" style="background-color: #ededed; text-align:left;">
-												<col width="110"/>
-												<col width="220"/>
-												<tr>
-													<td style="padding:5px;">Exam Year:</td>
-													<td><?php generateYearSelect('exam_year', $examYearValue); ?></td>
-												</tr>
-												<tr>
-													<td style="padding:5px;">Exam Sem:</td>
-													<td><?php generateSemSelect('exam_sem', $examSemValue); ?></td>
-												</tr>
-												<tr>
-													<td style="padding:5px;">Number of Days:</td>
-													<td>
-														<input type="number" id="number_of_days" name="number_of_days" min="1" max="3" value="<?php echo $NO_OF_DAYS; ?>" required/><br/>
-														<span id="dayErrorMsg" class="errorMsg"></span>
-													</td>
-												</tr>
-											</table>
-										</div>
-									</td>
-									<td valign="top" style="text-align:left; padding-left:70px;" rowspan="2">
-										<u><h4 style="padding-bottom:10px;">Room Settings</h4></u>
-										<ul id="roomTabs" class="room_tabs"></ul>
-										<div id="roomTableGroup">
+                            <table id="settings_table" border="0" style="margin-top:15px;">
+                                <tr>
+                                    <td valign="top" style="text-align:left;">
+                                        <div id="exam_settings">
+                                            <u><h4 style="padding-bottom:10px;">Exam Settings</h4></u>
+                                            <table id="examsettings_table" border="0" width="406"
+                                                   style="background-color: #ededed; text-align:left;">
+                                                <col width="110"/>
+                                                <col width="220"/>
+                                                <tr>
+                                                    <td style="padding:5px;">Exam Year:</td>
+                                                    <td><?php generateYearSelect('exam_year', $examYearValue); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:5px;">Exam Sem:</td>
+                                                    <td><?php generateSemSelect('exam_sem', $examSemValue); ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:5px;">Number of Days:</td>
+                                                    <td>
+                                                        <input type="number" id="number_of_days" name="number_of_days"
+                                                               min="1" max="3" value="<?php echo $NO_OF_DAYS; ?>"
+                                                               required/><br/>
+                                                        <span id="dayErrorMsg" class="errorMsg"></span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                    <td valign="top" style="text-align:left; padding-left:70px;" rowspan="2">
+                                        <u><h4 style="padding-bottom:10px;">Room Settings</h4></u>
+                                        <ul id="roomTabs" class="room_tabs"></ul>
+                                        <div id="roomTableGroup">
 											<?php initRoomTable($NO_OF_DAYS) ?>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td valign="top" style="text-align:left;">
-										<div id="timeslot_settings">
-											<u><h4 style="padding-bottom:10px;">Timeslot Settings</h4></u>
-											<table id="timeslot_table" border="0" width="406" style="text-align:left;">
-												<col width="110"/>
-												<col width="220"/>
-												<!--<tr>-->
-												<!--<td style = "padding:5px;">Allocation<br> Open Date:</td>-->
-												<!---->
-												<!--<td>--><?php // generateAllocDate() ?><!--</td>-->
-												<!--</tr>-->
-												<!--<tr>-->
-												<!--<td style = "padding:5px;">Allocation<br> Close Date:</td>-->
-												<!---->
-												<!--<td>pending</td>-->
-												<!--</tr>-->
-												<tr>
-													<td colspan="2">
-														<ul id="timeSlotTabs" class="tabs"></ul>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<table id="tsSettingsBody">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" style="text-align:left;">
+                                        <div id="timeslot_settings">
+                                            <u><h4 style="padding-bottom:10px;">Timeslot Settings</h4></u>
+                                            <table id="timeslot_table" border="0" width="406" style="text-align:left;">
+                                                <col width="110"/>
+                                                <col width="220"/>
+                                                <!--<tr>-->
+                                                <!--<td style = "padding:5px;">Allocation<br> Open Date:</td>-->
+                                                <!---->
+                                                <!--<td>--><?php // generateAllocDate() ?><!--</td>-->
+                                                <!--</tr>-->
+                                                <!--<tr>-->
+                                                <!--<td style = "padding:5px;">Allocation<br> Close Date:</td>-->
+                                                <!---->
+                                                <!--<td>pending</td>-->
+                                                <!--</tr>-->
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <ul id="timeSlotTabs" class="tabs"></ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table id="tsSettingsBody">
 															<?php generateTSTable($NO_OF_DAYS); ?>
-														</table>
-													</td>
-												</tr>
-											</table>
-											<label><input type="checkbox" name="apply_to_all[]"/> Apply to all</label>
-										</div>
-									</td>
-								</tr>
-							</table>
-							<div style="float:right; padding-top:25px;">
-								<a href="submit_resetas.php" class="btn bg-dark text-white" title="Reset to default" style="width:130px;font-size:12px;">Reset to default</a>
-								<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
-								<br/><br/>
-							</div>
-						</form>
-					</div>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <label><input type="checkbox" name="apply_to_all[]"/> Apply to all</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="float:right; padding-top:25px;">
+                                <a href="submit_resetas.php" class="btn bg-dark text-white" title="Reset to default"
+                                   style="width:130px;font-size:12px;">Reset to default</a>
+                                <input type="submit" title="Save all changes" value="Save Changes"
+                                       class="btn bg-dark text-white" style="font-size:12px !important;"/>
+                                <br/><br/>
+                            </div>
+                        </form>
+                    </div>
 				<?php } ?>
 
+                <script>
+                    function addRoom_Day(roomCount, val, elementId, day) { // add rooms
+                        var table = document.getElementById(elementId);
 
-				<script>
-					function addRoom_Day(roomCount, val, elementId, day) { // add rooms
-						var table = document.getElementById(elementId);
+                        for (var i = 0; i < val; i++) {
+                            var row = table.insertRow(table.rows.length),
+                                td_index = row.insertCell(0),
+                                td_field = row.insertCell(1);
+                            roomCount++;
+                            td_index.innerHTML = roomCount + ".";
+                            td_index.className = 'room_td';
 
-						for (var i = 0; i < val; i++) {
-							var row = table.insertRow(table.rows.length),
-								td_index = row.insertCell(0),
-								td_field = row.insertCell(1);
-							roomCount++;
-							td_index.innerHTML = roomCount + ".";
-							td_index.className = 'room_td';
+                            td_field.innerHTML = "<input style = \"width:200px;\" id = \"room" + day + "_" + roomCount + "\" name = \"room" + day + "_" + roomCount + "\">";
+                            td_field.className = 'room_td';
+                        }
+                        return roomCount;
+                    }
 
-							td_field.innerHTML = "<input style = \"width:200px;\" id = \"room" + day + "_" + roomCount + "\" name = \"room" + day + "_" + roomCount + "\">";
-							td_field.className = 'room_td';
-						}
-						return roomCount;
-					}
+                    $("#number_of_days").change(function () {
+                        $("#dayErrorMsg").html("");
+                        if (this.value < 1 || this.value > 3) {
+                            $("#dayErrorMsg").html("Please enter a valid number between 1 and 3!");
+                        } else {
+                            generateTabs(this.value);
+                            regenerateRoomTable(this.value);
+                            regenerateTimeSlotTable(this.value);
+                            // reset room count for each day since the no of days change
+                            roomCount_Day1 = <?php echo $roomCount_day1; ?>;
+                            roomCount_Day2 = <?php echo $roomCount_day2; ?>;
+                            roomCount_Day3 = <?php echo $roomCount_day3; ?>;
+                        }
+                    });
 
-					$("#number_of_days").change(function () {
-						$("#dayErrorMsg").html("");
-						if (this.value < 1 || this.value > 3) {
-							$("#dayErrorMsg").html("Please enter a valid number between 1 and 3!");
-						}
-						else {
-							generateTabs(this.value);
-							regenerateRoomTable(this.value);
-							regenerateTimeSlotTable(this.value);
-							// reset room count for each day since the no of days change
-							roomCount_Day1 = <?php echo $roomCount_day1; ?>;
-							roomCount_Day2 = <?php echo $roomCount_day2; ?>;
-							roomCount_Day3 = <?php echo $roomCount_day3; ?>;
-						}
-					});
+                    $("#roomTableGroup").on("click", "#addRoomBtn1", function () {
+                        roomCount_Day1 = addRoom_Day(roomCount_Day1, 5, "room_table1", 1);
+                    });
+                    $("#roomTableGroup").on("click", "#addRoomBtn2", function () {
+                        roomCount_Day2 = addRoom_Day(roomCount_Day2, 5, "room_table2", 2);
+                    });
+                    $("#roomTableGroup").on("click", "#addRoomBtn3", function () {
+                        roomCount_Day3 = addRoom_Day(roomCount_Day3, 5, "room_table3", 3);
+                    });
 
-					$("#roomTableGroup").on("click", "#addRoomBtn1", function () {
-						roomCount_Day1 = addRoom_Day(roomCount_Day1, 5, "room_table1", 1);
-					});
-					$("#roomTableGroup").on("click", "#addRoomBtn2", function () {
-						roomCount_Day2 = addRoom_Day(roomCount_Day2, 5, "room_table2", 2);
-					});
-					$("#roomTableGroup").on("click", "#addRoomBtn3", function () {
-						roomCount_Day3 = addRoom_Day(roomCount_Day3, 5, "room_table3", 3);
-					});
+                    function checkTime(id, day) {
+                        var date_start = new Date("1-1-2018 " + $('#start_time' + day + ' option:selected').val()),
+                            date_end = new Date("1-1-2018 " + $('#end_time' + day + ' option:selected').val());
 
-					function checkTime(id, day) {
-						var date_start = new Date("1-1-2018 " + $('#start_time' + day + ' option:selected').val()),
-							date_end = new Date("1-1-2018 " + $('#end_time' + day + ' option:selected').val());
-
-						if (date_start >= date_end) {
-							if (id == "start_time")
-								$("#" + id + +day).val('08:30:00');
-							else
-								$("#" + id + +day).val('17:30:00');
-							alert("Start Time must be before End Time.");
-						}
-					}
-				</script>
-
-             </div>
-
-			<!-- closing navigation div in nav.php -->
-			</div>
-
-		</div>
-
-	</div>
-	
-	<!-- InstanceEndEditable -->
+                        if (date_start >= date_end) {
+                            if (id == "start_time")
+                                $("#" + id + +day).val('08:30:00');
+                            else
+                                $("#" + id + +day).val('17:30:00');
+                            alert("Start Time must be before End Time.");
+                        }
+                    }
+                </script>
+            </div>
+            <!-- closing navigation div in nav.php -->
+        </div>
+    </div>
+    <!-- InstanceEndEditable -->
 	<?php require_once('../../../footer.php'); ?>
-
-</body>
-</html>
+    </body>
+    </html>
 <?php
 $conn_db_ntu = null;
 unset($settings);
