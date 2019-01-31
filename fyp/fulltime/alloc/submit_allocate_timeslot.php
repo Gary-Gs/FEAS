@@ -9,6 +9,8 @@ $redirect = false;
 
 $error_code = 0;
 
+$debug = isset($_GET['debug']);
+
 global $NO_OF_DAYS;
 function CmpPriorityDesc($a, $b) {
 	//Exceptions First
@@ -149,99 +151,12 @@ else if ($NO_OF_DAYS <= 0 || $MAX_SLOTS <= 0) {
 	// prepare project list (sorted by supervising count >=4 , then from the rest sorted by examiner count) (to reduce movements)
 	$projectList = indexProjects($staffList, $projects, $projectList);
 
-	testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $timeslots_table, true);
-
-	return; //ignore following code
-	/***TODO:ORIGINAL START OF ASSIGNING**/
-	// first round allocation (sequential)
-	for ($dayIndex = 0; ($projectList != 0) && $dayIndex < $NO_OF_DAYS; $dayIndex++) {
-		$optOut = $settings[$dayIndex]["opt_out"];
-		if ($optOut == 0) {
-			$projectList = allocateTimeSlotsByDay($dayIndex, $staffList, $projectList, $MAX_SLOTS, $NO_OF_TIMESLOTS);
-			insertValuesIntoDB($dayIndex, $projectList);
-			$projectList = removeAssignedProjects($projectList);
-			$skipping = skipDecision($dayIndex, $projectList);
-			if ($skipping) {
-				$projectList = assignSkipping($projectList, $staffList, $overallTimeTable, $dayIndex);
-				insertValuesIntoDB($dayIndex, $projectList);
-				$projectList = removeAssignedProjects($projectList);
-			}
-		}
-	}
-
-	// second round allocation (by remaining vacancies)
-	$attempts = 100;
-	while (count($projectList) > 0 && $attempts != 0) {
-
-//        // debugging
-//         if (array_values($projectList)[0]->getID() === "SCE17-0373") {
-//             $test = 1;
-//         }
-
-		//find day index of vacancy day
-		$vacantDay = null;
-		for ($i = 0; $i < $NO_OF_DAYS && $vacantDay == null; $i++) {
-			$currentSlot = array();
-			$roomSlot = 0;
-			$rooms_table = retrieveRooms($i + 1, "allocation_settings_room");
-			$NO_OF_ROOMS = count($rooms_table);
-			$currentSlot = array_fill(0, 1, array_fill(0, $NO_OF_ROOMS, 0));
-			for ($k = 0; $k < $NO_OF_ROOMS && $vacantDay == null; $k++) {
-				$currentSlot[0][$k] = 0;
-				for ($z = 0; $z < $MAX_SLOTS && $vacantDay == null; $z++) {
-					//if slot of the room is empty, locate vacant day
-					if ($overallTimeTable[$i][$k][$z] == null) {
-						$vacantDay = $i;
-						$roomSlot = $k;
-					} else {
-						$currentSlot[0][$k]++;
-						$roomSlot = $k;
-					}
-				}
-			}
-			// try every slots in vacant day
-			while ($vacantDay != null && $currentSlot[0][$roomSlot] < $MAX_SLOTS) {
-				$projectList = assignRooms($projectList, $staffList, $overallTimeTable[$vacantDay], $currentSlot, $vacantDay, $NO_OF_ROOMS, $NO_OF_TIMESLOTS);
-				insertValuesIntoDB($vacantDay, $projectList);
-				$projectList = removeAssignedProjects($projectList);
-				$currentSlot[0][$roomSlot]++;
-			}
-			if (count($projectList) > 0) {
-				$vacantDay = null;
-			}
-		}
-		$attempts--;
-	}
-
-	//Check if there are leftover projects
-	$allocate_code = 1;
-	foreach ($projectList as $project) {
-		if (!$project->isAssignedTimeslot()) {  //Incomplete allocation
-			$allocate_code = 0;
-		}
-	}
-	//exit;
-	//debugging statements
-	//echo "<br>";
-	//echo "end, left over projects count: ";
-	//echo count($projectList);
-} // -- allocate timeslot
-//End of Allocation
-
-/***TODO:AUD START**/
-function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $timeslots_table, $debug) {
-	ksort($projectList);
-
-	$temp_projects = $projectList; //duplicate the original project list
-	if ($debug) {//TODO:debug
-		foreach ($temp_projects as $a) {
-			echo $a->getID() . "|" . $a->getStaff() . "|" . $a->getExaminer() . "<br>";
-		}
-		echo "<br>";
-		echo "1st allocation<br>";
-	}
-
+	//start new assigning method
 	$final_timetable = array();
+
+	ksort($projectList);
+	$temp_projects = $projectList; //duplicate the original project list
+	debug_displayproject($temp_projects, $debug);
 	for ($dayIndex = 0; (count($temp_projects) > 0) && ($dayIndex < $NO_OF_DAYS); $dayIndex++) {
 		$rooms_count = count(retrieveRooms($dayIndex + 1, "allocation_settings_room"));
 		$rooms = array_fill(0, $rooms_count, array_fill(0, $NO_OF_TIMESLOTS[$dayIndex], null)); //$rooms stores the room, with the respective time slots
@@ -279,12 +194,8 @@ function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $times
 						$projectList = assignProjectList($projectList, $slots_assign, $dayIndex, $r, $slot_at); //affects actual project list
 						$ignore_staff = 0;
 
-						if ($debug) {//TODO:debug
-							displayroom($rooms, $dayIndex);
-							echo $this_staff->getID() . " " . count($slots_assign) . "-" . count(array_filter($slots_assign)) . "===";
-							foreach ($slots_assign as $value) echo "=" . $value;
-							echo "<br><br>";
-						}
+						debug_displayroom($rooms, $dayIndex, $debug);
+						debug_displayassigned($this_staff, $slots_assign, $debug);
 						break;
 					} //check if first staff is free within period
 					else {
@@ -307,14 +218,7 @@ function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $times
 		$final_timetable[$dayIndex] = $rooms;
 	} //for-loop :: $dayIndex
 
-	if ($debug) {//TODO:debug
-		echo "<br>";
-		foreach ($temp_projects as $a) {
-			echo $a->getID() . "|" . $a->getStaff() . "|" . $a->getExaminer() . "<br>";
-		}
-		echo "<br>2nd allocation<br>";
-	}
-
+	debug_displayproject($temp_projects, $debug);
 	for ($dayIndex = 0; (count($temp_projects) > 0) && ($dayIndex < $NO_OF_DAYS); $dayIndex++) {
 		$rooms = $final_timetable[$dayIndex];
 		$ignore_slot = 0;
@@ -323,32 +227,30 @@ function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $times
 			$slot_at = $slot_arr[0];
 			if ($slot_at != -1) {
 				for (; current($temp_projects) != null; next($temp_projects)) {
-					$staff_free = $staffList[current($temp_projects)->getStaff()]->isAvailable($dayIndex,
-						$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
-						$timeslots_table[$dayIndex][$slot_at]->getEndTime()
-					);
-					$examiner_free = $staffList[current($temp_projects)->getExaminer()]->isAvailable($dayIndex,
-						$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
-						$timeslots_table[$dayIndex][$slot_at]->getEndTime()
-					);
-					if ($staff_free && $examiner_free) {
-						$slots_assign = array(current($temp_projects)->getID());
+					if (array_key_exists(current($temp_projects)->getStaff(), $staffList) && array_key_exists(current($temp_projects)->getExaminer(), $staffList)) {
+						$staff_free = $staffList[current($temp_projects)->getStaff()]->isAvailable($dayIndex,
+							$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
+							$timeslots_table[$dayIndex][$slot_at]->getEndTime()
+						);
+						$examiner_free = $staffList[current($temp_projects)->getExaminer()]->isAvailable($dayIndex,
+							$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
+							$timeslots_table[$dayIndex][$slot_at]->getEndTime()
+						);
+						if ($staff_free && $examiner_free) {
+							$slots_assign = array(current($temp_projects)->getID());
 
-						$staffList = addStaffException($temp_projects, $staffList, $slots_assign, $dayIndex, $slot_at);
-						$temp_projects = removeProjects($temp_projects, $slots_assign);
-						$rooms[$r] = updateRoomList($rooms[$r], $slots_assign, $slot_at);
+							$staffList = addStaffException($temp_projects, $staffList, $slots_assign, $dayIndex, $slot_at);
+							$temp_projects = removeProjects($temp_projects, $slots_assign);
+							$rooms[$r] = updateRoomList($rooms[$r], $slots_assign, $slot_at);
 
-						$projectList = assignProjectList($projectList, $slots_assign, $dayIndex, $r, $slot_at); //affects actual project list
+							$projectList = assignProjectList($projectList, $slots_assign, $dayIndex, $r, $slot_at); //affects actual project list
 
-						if ($debug) {//TODO:debug
-							displayroom($rooms, $dayIndex);
-							foreach ($slots_assign as $value) echo "=" . $value;
-							echo "<br><br>";
-						}
-
-						break;
-					} //check if both staff are free for that slot
-				} //for all available projects
+							debug_displayroom($rooms, $dayIndex, $debug);
+							debug_displayassigned(null, $slots_assign, $debug);
+							break;
+						} //check if both staff are free for that slot
+					} //for all available projects
+				}
 				reset($temp_projects);
 				if ($rooms[$r][$slot_at] == null) {
 					$ignore_slot++;
@@ -363,23 +265,218 @@ function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $times
 		$projectList = removeAssignedProjects($projectList);
 		$final_timetable[$dayIndex] = $rooms;
 	} //for-loop :: $dayIndex
-	if ($debug) {//TODO:debug
-		echo "final outcome<br>";
-		displaytimetable($final_timetable);
-	}
+
+	debug_displaytimetable($final_timetable, $debug);
+	return; //ignore following code
+
+//	// first round allocation (sequential)
+//	for ($dayIndex = 0; ($projectList != 0) && $dayIndex < $NO_OF_DAYS; $dayIndex++) {
+//		$optOut = $settings[$dayIndex]["opt_out"];
+//		if ($optOut == 0) {
+//			$projectList = allocateTimeSlotsByDay($dayIndex, $staffList, $projectList, $MAX_SLOTS, $NO_OF_TIMESLOTS);
+//			insertValuesIntoDB($dayIndex, $projectList);
+//			$projectList = removeAssignedProjects($projectList);
+//			$skipping = skipDecision($dayIndex, $projectList);
+//			if ($skipping) {
+//				$projectList = assignSkipping($projectList, $staffList, $overallTimeTable, $dayIndex);
+//				insertValuesIntoDB($dayIndex, $projectList);
+//				$projectList = removeAssignedProjects($projectList);
+//			}
+//		}
+//	}
+//
+//	// second round allocation (by remaining vacancies)
+//	$attempts = 100;
+//	while (count($projectList) > 0 && $attempts != 0) {
+//
+////        // debugging
+////         if (array_values($projectList)[0]->getID() === "SCE17-0373") {
+////             $test = 1;
+////         }
+//
+//		//find day index of vacancy day
+//		$vacantDay = null;
+//		for ($i = 0; $i < $NO_OF_DAYS && $vacantDay == null; $i++) {
+//			$currentSlot = array();
+//			$roomSlot = 0;
+//			$rooms_table = retrieveRooms($i + 1, "allocation_settings_room");
+//			$NO_OF_ROOMS = count($rooms_table);
+//			$currentSlot = array_fill(0, 1, array_fill(0, $NO_OF_ROOMS, 0));
+//			for ($k = 0; $k < $NO_OF_ROOMS && $vacantDay == null; $k++) {
+//				$currentSlot[0][$k] = 0;
+//				for ($z = 0; $z < $MAX_SLOTS && $vacantDay == null; $z++) {
+//					//if slot of the room is empty, locate vacant day
+//					if ($overallTimeTable[$i][$k][$z] == null) {
+//						$vacantDay = $i;
+//						$roomSlot = $k;
+//					} else {
+//						$currentSlot[0][$k]++;
+//						$roomSlot = $k;
+//					}
+//				}
+//			}
+//			// try every slots in vacant day
+//			while ($vacantDay != null && $currentSlot[0][$roomSlot] < $MAX_SLOTS) {
+//				$projectList = assignRooms($projectList, $staffList, $overallTimeTable[$vacantDay], $currentSlot, $vacantDay, $NO_OF_ROOMS, $NO_OF_TIMESLOTS);
+//				insertValuesIntoDB($vacantDay, $projectList);
+//				$projectList = removeAssignedProjects($projectList);
+//				$currentSlot[0][$roomSlot]++;
+//			}
+//			if (count($projectList) > 0) {
+//				$vacantDay = null;
+//			}
+//		}
+//		$attempts--;
+//	}
+//
+//	//Check if there are leftover projects
+//	$allocate_code = 1;
+//	foreach ($projectList as $project) {
+//		if (!$project->isAssignedTimeslot()) {  //Incomplete allocation
+//			$allocate_code = 0;
+//		}
+//	}
+//	//exit;
+//	//debugging statements
+//	//echo "<br>";
+//	//echo "end, left over projects count: ";
+//	//echo count($projectList);
+} // -- allocate timeslot
+//End of Allocation
+
+/***new algo start**/
+function testrun($projectList, $NO_OF_DAYS, $NO_OF_TIMESLOTS, $staffList, $timeslots_table, $debug) {
+	ksort($projectList);
+	$final_timetable = array();
+
+	$temp_projects = $projectList; //duplicate the original project list
+	debug_displayproject($temp_projects, $debug);
+	for ($dayIndex = 0; (count($temp_projects) > 0) && ($dayIndex < $NO_OF_DAYS); $dayIndex++) {
+		$rooms_count = count(retrieveRooms($dayIndex + 1, "allocation_settings_room"));
+		$rooms = array_fill(0, $rooms_count, array_fill(0, $NO_OF_TIMESLOTS[$dayIndex], null)); //$rooms stores the room, with the respective time slots
+
+		$ignore_staff = 0;
+		for ($attempts = 0; ($attempts < 100 && $ignore_staff < 20); $attempts++) {
+			$this_staff = getFirstStaff($staffList, $temp_projects, $ignore_staff, $debug);
+			if ($this_staff == null) break;
+			$this_projects = getFirstProjects($this_staff, $temp_projects);
+			if (count($this_projects) < 2) break; //if less than 2 go 2nd round
+			$ignore_slot = 0;
+			for ($r = 0; $r < $rooms_count; $r++) {
+				$slot_arr = getFreeSlot($rooms[$r], count($this_projects), $ignore_slot);
+				$slot_at = $slot_arr[0];    //start of vacancy slots
+				$slot_space = $slot_arr[1]; //if projects is more than available timeslot, returns timeslot count, else return project count
+				if ($slot_at != -1) {
+					if ($this_staff->isAvailable($dayIndex,
+						$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
+						$timeslots_table[$dayIndex][$slot_at + $slot_space - 1]->getEndTime()
+					)) {
+						$other_staffs = getSecondStaff($this_staff, $staffList, $this_projects);
+						$slots_assign = getSecondAssigned($other_staffs, $dayIndex, $slot_at, $slot_space);
+						if (count(array_filter($slots_assign, function ($x) {
+								return $x != null;
+							})) == 0) { //checking if there is at least 1 slot occupied by the other staffs
+							$ignore_staff++;
+							break;
+						}
+
+						//actions to be performed when schedule is set
+						$staffList = addStaffException($temp_projects, $staffList, $slots_assign, $dayIndex, $slot_at);
+						$temp_projects = removeProjects($temp_projects, $slots_assign);
+						$rooms[$r] = updateRoomList($rooms[$r], $slots_assign, $slot_at);
+
+						$projectList = assignProjectList($projectList, $slots_assign, $dayIndex, $r, $slot_at); //affects actual project list
+						$ignore_staff = 0;
+
+						debug_displayroom($rooms, $dayIndex, $debug);
+						debug_displayassigned($this_staff, $slots_assign, $debug);
+						break;
+					} //check if first staff is free within period
+					else {
+						$ignore_slot++;
+						if ($slot_at < count($rooms[$r])) {
+							$r--;
+						}
+					}
+				} //check if room have enough free slot for groups
+				else {
+					$ignore_slot = 0;
+				}
+			} //for-loop :: $rooms
+			if ($r == $rooms_count) {
+				$ignore_staff++;
+			}
+		} //for-loop :: $attempts
+		insertValuesIntoDB($dayIndex, $projectList);
+		$projectList = removeAssignedProjects($projectList);
+		$final_timetable[$dayIndex] = $rooms;
+	} //for-loop :: $dayIndex
+
+	debug_displayproject($temp_projects, $debug);
+	for ($dayIndex = 0; (count($temp_projects) > 0) && ($dayIndex < $NO_OF_DAYS); $dayIndex++) {
+		$rooms = $final_timetable[$dayIndex];
+		$ignore_slot = 0;
+		for ($r = 0; $r < count($rooms);) {
+			$slot_arr = getFreeSlot($rooms[$r], 1, $ignore_slot);
+			$slot_at = $slot_arr[0];
+			if ($slot_at != -1) {
+				for (; current($temp_projects) != null; next($temp_projects)) {
+					if (array_key_exists(current($temp_projects)->getStaff(), $staffList) && array_key_exists(current($temp_projects)->getExaminer(), $staffList)) {
+						$staff_free = $staffList[current($temp_projects)->getStaff()]->isAvailable($dayIndex,
+							$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
+							$timeslots_table[$dayIndex][$slot_at]->getEndTime()
+						);
+						$examiner_free = $staffList[current($temp_projects)->getExaminer()]->isAvailable($dayIndex,
+							$timeslots_table[$dayIndex][$slot_at]->getStartTime(),
+							$timeslots_table[$dayIndex][$slot_at]->getEndTime()
+						);
+						if ($staff_free && $examiner_free) {
+							$slots_assign = array(current($temp_projects)->getID());
+
+							$staffList = addStaffException($temp_projects, $staffList, $slots_assign, $dayIndex, $slot_at);
+							$temp_projects = removeProjects($temp_projects, $slots_assign);
+							$rooms[$r] = updateRoomList($rooms[$r], $slots_assign, $slot_at);
+
+							$projectList = assignProjectList($projectList, $slots_assign, $dayIndex, $r, $slot_at); //affects actual project list
+
+							debug_displayroom($rooms, $dayIndex, $debug);
+							debug_displayassigned(null, $slots_assign, $debug);
+							break;
+						} //check if both staff are free for that slot
+					} //for all available projects
+				}
+				reset($temp_projects);
+				if ($rooms[$r][$slot_at] == null) {
+					$ignore_slot++;
+				}
+			} //check if room have enough free slot
+			else {
+				$r++;
+				$ignore_slot = 0;
+			}
+		} //for-loop :: $rooms
+		insertValuesIntoDB($dayIndex, $projectList);
+		$projectList = removeAssignedProjects($projectList);
+		$final_timetable[$dayIndex] = $rooms;
+	} //for-loop :: $dayIndex
+
+	debug_displaytimetable($final_timetable, $debug);
 	return;
 }
 
-function displaytimetable($final_timetable) {
-	for ($day = 0; $day < count($final_timetable); $day++) {
-		echo "Day " . $day . "<br>";
+function debug_displaytimetable($final_timetable, $debug) {
+	if(!$debug) return;
 
-		displayroom($final_timetable[$day], $day);
-		echo "<br><br>";
+	for ($day = 0; $day < count($final_timetable); $day++) {
+		echo "<br>Day " . ($day + 1) . "<br>";
+
+		debug_displayroom($final_timetable[$day], $day, $debug);
 	}
 }
 
-function displayroom($rooms, $day) {
+function debug_displayroom($rooms, $day, $debug) {
+	if(!$debug) return;
+
 	global $timeslots_table;
 
 	$string = array();
@@ -397,19 +494,31 @@ function displayroom($rooms, $day) {
 	}
 }
 
-function debuglist($list, $count) {
-	$string = "";
-	foreach ($list as $key => $value) {
-		if ($count == -1) {
-			if ($value == 0) break;
-			else $string .= $key . "|" . $value . "\n";
-		} else {
-			$string .= $key . "|" . $value . "\n";
-			$count--;
-			if ($count == 0) break;
-		}
+function debug_displaystaff($staffs, $debug) {
+	if(!$debug) return;
+
+	for (; current($staffs) != null; next($staffs)) {
+		echo key($staffs) . "|" . current($staffs) . "<br>";
 	}
-	echo $string;
+	echo "====================" . "<br>";
+}
+
+function debug_displayproject($projects, $debug) {
+	if(!$debug) return;
+
+	echo "<br>";
+	foreach ($projects as $project) {
+		echo $project->getID() . "|" . $project->getStaff() . "|" . $project->getExaminer() . "<br>";
+	}
+	echo "<br>";
+}
+
+function debug_displayassigned($staff, $projects, $debug) {
+    if(!$debug) return;
+
+	if ($staff != null) echo $staff->getID() . "=" . count($projects) . "-" . count(array_filter($projects)) . "==";
+	foreach ($projects as $value) echo "=" . $value;
+	echo "<br><br>";
 }
 
 function getFreeSlot($slots, $vacancy, $ignore) {
@@ -453,13 +562,7 @@ function getFirstStaff($stafflist, $projectlist, $ignore, $debug) {
 		return $x != 0;
 	});
 	arsort($temp_staff);
-
-	if ($debug) {//TODO:debug
-		for (; current($temp_staff) != null; next($temp_staff)) {
-			echo key($temp_staff) . "|" . current($temp_staff) . "<br>";
-		}
-		reset($temp_staff);
-	}
+	debug_displaystaff($temp_staff, $debug);
 
 	for (; current($temp_staff) != null; next($temp_staff)) {
 		if ($ignore == 0) return $stafflist[key($temp_staff)];
@@ -481,10 +584,12 @@ function getFirstProjects($staff, $projectlist) {
 function getSecondStaff($first, $stafflist, $projects) {
 	$new_staff = array();
 	foreach ($projects as $project) {
-		if ($project->getStaff() == $first->getID()) {
-			$new_staff[$project->getID()] = $stafflist[$project->getExaminer()];
-		} else {
-			$new_staff[$project->getID()] = $stafflist[$project->getStaff()];
+		if (array_key_exists($project->getStaff(), $stafflist) && array_key_exists($project->getExaminer(), $stafflist)) {
+			if ($project->getStaff() == $first->getID()) {
+				$new_staff[$project->getID()] = $stafflist[$project->getExaminer()];
+			} else {
+				$new_staff[$project->getID()] = $stafflist[$project->getStaff()];
+			}
 		}
 	}
 	return $new_staff;
@@ -564,14 +669,14 @@ function updateRoomList($room, $order, $start_slot) {
 }
 
 function assignProjectList($projectlist, $project, $day, $room, $start_slot) {
-    for ($i = 0; $i < count($project); $i++) {
-	    if ($project[$i] == null) continue;
+	for ($i = 0; $i < count($project); $i++) {
+		if ($project[$i] == null) continue;
 		$projectlist[$project[$i]]->assignTimeslot($day, $room, $start_slot + $i);
 	}
 	return $projectlist;
 }
 
-/***TODO:AUD END**/
+/***new algo end**/
 
 function skipDecision($dayIndex, $projectList) {
 	if (count($projectList) == 0) {
