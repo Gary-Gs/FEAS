@@ -44,13 +44,13 @@ try {
 //$_SESSION['examSemValue']  = $examSemValue;
 //$_SESSION['examYearValue'] = $examYearValue;
 /* Converting DB to Object Models */
-$query_rsSS_Keys = "SELECT * FROM " . $TABLES["interest_area"];
+$query_rsInterestArea = "SELECT * FROM " . $TABLES["interest_area"];
 
 $query_rsStaff = "SELECT s.id as staffid, s.name as staffname, s.position as salutation, COALESCE(s.workload, 0) as workload, COALESCE(s.examine, 1) as examine FROM " . $TABLES['staff'] . " as s WHERE s.examine=1 ORDER BY s.workload ASC, staffid ASC";
 
 $query_rsProjPref = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE (prefer LIKE 'SCE%' OR prefer LIKE 'SCSE%') AND archive =0 ORDER BY choice ASC";
 
-//$query_rsAreaPref           = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE prefer not LIKE 'SCE%' ORDER BY choice ASC";
+//$query_rsAreaPref = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE prefer not LIKE 'SCE%' ORDER BY choice ASC";
 $query_rsAreaPref = "SELECT * FROM " . $TABLES['staff_pref'] . " as sp INNER JOIN " . $TABLES['interest_area'] . " as ia ON sp.prefer= ia.key  AND  archive =0 ORDER BY choice ASC";
 
 $query_rsExaminableProject = "select t1.pno, t1.staffid, t1.exam_year, t1.exam_sem, t1.ptitle, t1.parea1, t1.parea2, t1.parea3, t1.parea4, t1.parea5, count(t2.projects) as chosen from (SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM `fea_projects` as p3 LEFT JOIN `fyp_assign` as p2 ON p3.project_id=p2.project_id LEFT JOIN `fyp` as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 and p3.examine_year = " . $examYearValue . " and p3.examine_sem = " . $examSemValue . ") as t1 left join (select prefer as projects from `fea_staff_pref` where archive = 0) as t2 on t1.pno=t2.projects group by t1.pno order by chosen asc";
@@ -62,16 +62,16 @@ if ($examSemValue == 1) {
 	$searchCurrentYear = $examYearValue;
 	$searchLastYear = $examYearValue - 101;
 	// 17/18 Sem1 + 16/17 Sem2
-	$query_rsTotalProject = $query_rsTotalProject . " and p3.examine_year = " . $searchCurrentYear . " and p3.examine_sem = " . $examSemValue .
+	$query_rsTotalProject .= " and p3.examine_year = " . $searchCurrentYear . " and p3.examine_sem = " . $examSemValue .
 		" or p3.examine_year = " . $searchLastYear . " and p3.examine_sem = " . ($examSemValue + 1);
 } else if ($examSemValue == 2) {
 	// 17/18 Sem2+ 17/18 Sem1
-	$query_rsTotalProject = $query_rsTotalProject . "and p3.examine_year = " . $examYearValue;
+	$query_rsTotalProject .= "and p3.examine_year = " . $examYearValue;
 }
 $query_rsTotalProject .= " ORDER BY p3.project_id ASC ";
 
 try {
-	$ss_keys = $conn_db_ntu->query($query_rsSS_Keys);
+	$interestAreas = $conn_db_ntu->query($query_rsInterestArea);
 	$staffs = $conn_db_ntu->query($query_rsStaff);
 	$projPrefs = $conn_db_ntu->query($query_rsProjPref);
 	$areaPrefs = $conn_db_ntu->query($query_rsAreaPref);
@@ -90,11 +90,12 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	$error_code = 1;
 } else {
 	// Covert DB objects into arraylist
-	// SS Keys
-	$ss_KeyList = array();
-	foreach ($ss_keys as $ss_key) { //Index Staff by staffid
-		$ss_KeyList[$ss_key["key"]] = $ss_key["title"];
+	// Interest Area
+	$interestAreaList = array();
+	foreach ($interestAreas as $interestArea) { //Index Staff by staffid
+		$interestAreaList[$interestArea["key"]] = $interestArea["title"];
 	}
+
 	// Staff
 	$staffList = array();
 	foreach ($staffs as $staff) { //Index Staff by staffid
@@ -102,18 +103,27 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 		$staff_workload += $staff['workload'];
 	}
 
-	// Staff Project Preference (Ordered by staff's choice)
-	foreach ($projPrefs as $projPref) { //Project Preference
-		if (!array_key_exists($projPref['staff_id'], $staffList))
-			continue;
-		$staffList[$projPref['staff_id']]->addInterestProject($projPref['choice'], $projPref['prefer']);
-	}
 	// Staff Area Preference (Ordered by staff's choice)
 	foreach ($areaPrefs as $areaPref) { //Area Preference
 		if (!array_key_exists($areaPref['staff_id'], $staffList))
 			continue;
 		$staffList[$areaPref['staff_id']]->addInterestArea($areaPref['choice'], $areaPref['prefer']);
 	}
+
+	$projCount = array();
+	// Staff Project Preference (Ordered by staff's choice)
+	foreach ($projPrefs as $projPref) { //Project Preference
+		if (!array_key_exists($projPref['staff_id'], $staffList))
+			continue;
+		$staffList[$projPref['staff_id']]->addInterestProject($projPref['choice'], $projPref['prefer']);
+
+		if (array_key_exists($projPref['prefer'], $projCount)) {
+			$projCount[$projPref['prefer']]++;
+		} else {
+			$projCount[$projPref['prefer']] = 1;
+		}
+	}
+
 	// Project
 	$examinableProjectList = array();
 	foreach ($examinableProject as $project) { //Index Project By pno
@@ -125,10 +135,13 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 		}
 	}
 
+	//sort project list based on how many staff selected it (ascending)
+	$sorted_projectlist = mergesort($projCount, $examinableProjectList);
+
 	// Workload Sorting (ASC) Auto-Correction (Used to patch the workload correction)
 	uasort($staffList, "CmpWorkloadAsc");
 
-	Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS);
+	Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS);
 	try {
 		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result']);
 		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_room']);
@@ -160,7 +173,21 @@ if ($redirect) {
 	return;
 }
 
-function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS) {
+function mergesort($count, $proj_info) {
+	$final_list = array();
+
+	$count += $proj_info;
+	foreach (array_keys($count) as $key) {
+		if (!is_numeric($count[$key])) $count[$key] = 0;
+	}
+	asort($count);
+	foreach (array_keys($count) as $key) {
+		$final_list[$key] = $proj_info[$key];
+	}
+	return $final_list;
+}
+
+function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS) {
 
 	// Assignment Initialize
 	$String01 = "RUNNING RANDOM-RANDOM ALOGRITHM\n";
@@ -168,7 +195,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 	$Total_Projects = $WORKLOAD_TOTALPROJECTS; // sum of current and last sem
 	$Total_ExaminableProjects = sizeof($examinableProjectList);
 	$Total_Examinable_Staffs = sizeof($staffList);
-	$Total_BufferProjects = $_POST["Total_BufferProjects"];
+	$Total_BufferProjects = $_GET["Total_BufferProjects"];
 //	$Total_Workload = ($Total_BufferProjects + $Total_Projects) * $constant;
 	$Total_Workload = ($Total_BufferProjects + $Total_ExaminableProjects) * $constant;
 	$Target_Workload01 = ($Total_Examinable_Staffs > 0) ? ceil($Total_Workload / $Total_Examinable_Staffs) : 1;
@@ -230,15 +257,15 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 	$Total_Examinable_StaffsWithPref_Area = count($AL_StaffWithPref_Area);
 	$Total_Examinable_StaffsWithPref_NoSelection = count($AL_StaffWithPref_NoSelection);
 
-	$String01 = $String01 . sprintf("%-28s : %04d \n", "Total Examinable Staffs", $Total_Examinable_Staffs);
-	$String01 = $String01 . sprintf("%-28s : %04d \n", "Total Projects", $Total_Projects);
-	$String01 = $String01 . sprintf("%-28s : %04d \n", "Total Examinable Projects", $Total_ExaminableProjects);
-	$String01 = $String01 . sprintf("%-28s : %04d \n", "Total Buffer Projects", $Total_BufferProjects);
-	$String01 = $String01 . sprintf("%-28s : %04d = (%04d + %04d) * 4\n", "Total Workload", $Total_Workload, $Total_Projects, $Total_BufferProjects);
-	$String01 = $String01 . sprintf("%-28s : %04d = %04d / %04d\n", "Target Workload", $Target_Workload01, $Total_Workload, $Total_Examinable_Staffs);
-	$String01 = $String01 . sprintf("%-44s : (%04d|%04d) \n", "Number of Staff (Overload|Underload)", $Total_Examinable_Staffs_Overload, $Total_Examinable_Staffs - $Total_Examinable_Staffs_Overload);
-	$String01 = $String01 . sprintf("%-44s : (%04d|%04d|%04d) --- from underload staff only\n", "Number of Staff (ProjPref|AreaPref|NoPref) ",
-			$Total_Examinable_StaffsWithPref_Proj, $Total_Examinable_StaffsWithPref_Area, $Total_Examinable_StaffsWithPref_NoSelection);
+	$String01 .= sprintf("%-28s : %04d \n", "Total Examinable Staffs", $Total_Examinable_Staffs);
+	$String01 .= sprintf("%-28s : %04d \n", "Total Projects", $Total_Projects);
+	$String01 .= sprintf("%-28s : %04d \n", "Total Examinable Projects", $Total_ExaminableProjects);
+	$String01 .= sprintf("%-28s : %04d \n", "Total Buffer Projects", $Total_BufferProjects);
+	$String01 .= sprintf("%-28s : %04d = (%04d + %04d) * 4\n", "Total Workload", $Total_Workload, $Total_Projects, $Total_BufferProjects);
+	$String01 .= sprintf("%-28s : %04d = %04d / %04d\n", "Target Workload", $Target_Workload01, $Total_Workload, $Total_Examinable_Staffs);
+	$String01 .= sprintf("%-44s : (%04d|%04d) \n", "Number of Staff (Overload|Underload)", $Total_Examinable_Staffs_Overload, $Total_Examinable_Staffs - $Total_Examinable_Staffs_Overload);
+	$String01 .= sprintf("%-44s : (%04d|%04d|%04d) --- from underload staff only\n", "Number of Staff (ProjPref|AreaPref|NoPref) ",
+		$Total_Examinable_StaffsWithPref_Proj, $Total_Examinable_StaffsWithPref_Area, $Total_Examinable_StaffsWithPref_NoSelection);
 	$String01 = $String01 . sprintf("%-44s :  %04d = %04d + %04d\n\n", "Total Preferences (ProjPref|AreaPref)",
 			($Total_ProjPrefCount + $Total_AreaPrefCount), $Total_ProjPrefCount, $Total_AreaPrefCount);
 	// print_r($staffList);
@@ -253,43 +280,53 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 			break;
 		}
 		foreach ($WorkingStaffList as $staff) {
-			$count = 0;
 			$ignore_project = 0;
 			while ($staff->getWorkload() < $margin && count($WorkingProjectList) > 0) {
-				if ($count > 10 && !count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
+				if (!count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
 				// project assignment until margin
 				// project preference
 				if (array_key_exists($staff->getID(), $AL_StaffWithPref_Project)) {
 					$randomProjectPreferenceKey = key($staff->assignment_project);
 					$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
 					if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
-						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff() && $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID() && $staff->getWorkload() < $Target_Workload01) {
+						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff() &&
+							$WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID() &&
+							$staff->getWorkload() < $Target_Workload01)
+						{
 							$WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
 							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 							$staff->setWorkload($Workload_New);
 							$Total_ProjectAssigned++;
 							unset($WorkingProjectList[$randomProjectPreferenceValue]);
 							unset($staff->assignment_project[$randomProjectPreferenceKey]);
+
+							if (count($staff->assignment_project) == 0)
+								unset($AL_StaffWithPref_Project[$staff->getID()]);
 							continue;
 						}
 					} else {
 						unset($staff->assignment_project[$randomProjectPreferenceKey]);
+
+						if (count($staff->assignment_project) == 0)
+							unset($AL_StaffWithPref_Project[$staff->getID()]);
 					}
 				}
 				// end of project preference
 				if (!count($staff->assignment_project) > 0) {
-					if (!count($staff->assignment_area) > 0 && $count < 10) {
+					if (!count($staff->assignment_area) > 0) {
 						// area preference
 						if (array_key_exists($staff->getID(), $AL_StaffWithPref_Area)) {
 							$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
-							$PROJECT_AreaKeyCode = array_intersect($ss_KeyList, $randomProject->getProjectArea());
+							$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
 							$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
 							foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
-								$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $ss_KeyList[$AreaPrefInKeyCode];
+								$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
 							} // End of foreach
 							$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
 							if (count($IntersectResult) > 0) {
-								if (!$randomProject->isAssignedStaff() && $randomProject->getStaff() != $staff->getID() && $staff->getWorkload() < $Target_Workload01) {
+								if (!$randomProject->isAssignedStaff() && $randomProject->getStaff() != $staff->getID() &&
+									$staff->getWorkload() < $Target_Workload01)
+								{
 									$randomProject->assignStaff($staff->getID(), "Workload Assignment");
 									$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 									$staff->setWorkload($Workload_New);
@@ -310,7 +347,10 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 						}
 						$randomProject = current($WorkingProjectList)->getID();
 
-						if (!$WorkingProjectList[$randomProject]->isAssignedStaff() && $WorkingProjectList[$randomProject]->getStaff() != $staff->getID() && $staff->getWorkload() < $Target_Workload01) {
+						if (!$WorkingProjectList[$randomProject]->isAssignedStaff() &&
+							$WorkingProjectList[$randomProject]->getStaff() != $staff->getID() &&
+							$staff->getWorkload() < $Target_Workload01)
+						{
 							$WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
 							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 							$staff->setWorkload($Workload_New);
@@ -323,7 +363,6 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 					}
 					// end of no preference
 				}
-				$count++;
 			}
 		}
 		$margin++;
@@ -431,7 +470,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 //			$String03 = "";
 //			$String02 .= $RandomStaffObj->getID() . " => ";
 //			foreach ($RandomStaffObj->assignment_area as $Key) {
-//				$String02 .= $ss_KeyList[$Key] . ", ";
+//				$String02 .= $interestAreaList[$Key] . ", ";
 //			}
 //			$String02 .= "\n";
 //
@@ -439,11 +478,11 @@ function Algorithm_Random($staffList, $examinableProjectList, $ss_KeyList, $WORK
 //			foreach ($WorkingProjectList as $ThisProject) {
 //				// Due to three different types of array structure used to determine area pref for faculty, project and keylist (the category of project preference),
 //				// First do an intersect between the project from project list and the KeyList
-//				$PROJECT_AreaKeyCode = array_intersect($ss_KeyList, $ThisProject->getProjectArea());
-//				// Convert random staff area pref into the structure of ss_KeyList
+//				$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $ThisProject->getProjectArea());
+//				// Convert random staff area pref into the structure of interestAreaList
 //				$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
 //				foreach ($RandomStaffObj->assignment_area as $AreaPrefInKeyCode) {
-//					$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $ss_KeyList[$AreaPrefInKeyCode];
+//					$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
 //				} // End of foreach
 //				// Then do an intersection between the area pref of random staff with the project
 //				$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
