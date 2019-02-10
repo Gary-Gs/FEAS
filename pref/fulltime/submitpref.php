@@ -1,9 +1,9 @@
-<?php require_once('../../Connections/db_ntu.php'); 
-	  require_once('../../CSRFProtection.php');
-	  require_once('../../Utility.php');?>
 <?php
-		
-    $csrf = new CSRFProtection();
+require_once('../../Connections/db_ntu.php');
+require_once('../../CSRFProtection.php');
+require_once('../../Utility.php');?>
+<?php
+	$csrf = new CSRFProtection();
 
 	$_REQUEST['validate'] =	$csrf->cfmRequest();
 	
@@ -85,15 +85,15 @@
 		}
 		$i++;
 	}
-	
 	$conn_db_ntu = null;
 ?>
 <?php
-	 if (isset ($_REQUEST['validate'])) {
-           header("location:staffpref_fulltime.php?validate=1");
-      }
-      else {
-		header("location:staffpref_fulltime.php?save=1");
-       } 
-	   exit;
+if(isset ($_REQUEST['validate'])){
+	header("location:staffpref_fulltime.php?validate=1");
+	}
+else{
+	echo '<script> location.href="staffpref_fulltime.php?save=1"; </script>';
+	//header("location:staffpref_fulltime.php?save=1");
+	}
+	exit;
 ?>

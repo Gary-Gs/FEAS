@@ -13,7 +13,6 @@ session_destroy();
 
 <body style="background-image: url('images/The_Arc.jpg'); background-size: 100% 100%;">
 <?php require_once('php_css/headerwologin.php');?>
-		
 	<div style="min-height: 87vh;">
 		<div class="container-fluid text-center" style="background: white; opacity: 0.8; filter: alpha(opacity=80); margin-top: -8px;">
 			
