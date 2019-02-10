@@ -472,11 +472,11 @@ $conn_db_ntu = null;
                         let exemption = tr.insertCell(3);
                         let examine = tr.insertCell(4);
 
-                        name.innerHTML = "<input type='text' name='newName' required />";
-                        name2.innerHTML = "<input type='text' name='newName2' required />";
-                        email.innerHTML = "<input type='email' name='newEmail' required />";
-                        exemption.innerHTML = "<input type='number' name='newExemption' min='0' max='100' value='0' />";
-                        examine.innerHTML = "<input type='checkbox' name='newExamine' class='chk'/>"
+                        name.innerHTML = "<input type='text' name='newName[]' required />";
+                        name2.innerHTML = "<input type='text' name='newName2[]' required />";
+                        email.innerHTML = "<input type='email' name='newEmail[]' required />";
+                        exemption.innerHTML = "<input type='number' name='newExemption[]' min='0' max='100' value='0' />";
+                        examine.innerHTML = "<input type='checkbox' name='newExamine[]' class='chk'/>"
 
                     }
 
