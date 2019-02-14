@@ -34,7 +34,7 @@
 	}
 	if(isset($_REQUEST['alloc_days']))
 	{
-		for($i=1;$i<sizeof($_REQUEST['alloc_days']);$i++){
+		for($i=1; $i<sizeof($_REQUEST['alloc_days']); $i++){
 			$allocDays = $_REQUEST['alloc_days'][$i];
 			
 			
@@ -82,7 +82,7 @@
 		$check = $_REQUEST['start_time'];
 		
 
-		for ($i=0;$i<sizeof($_REQUEST['start_time']);$i++){
+		for ($i=0; $i<sizeof($_REQUEST['start_time']); $i++){
 			$startTime = $_REQUEST['start_time'][$i];
 
 				$id = $i+1;
@@ -148,7 +148,7 @@
 		$stmt->execute();
 	}
 	if(isset($_REQUEST['opt_out'])){ // there some checkbox value selected
-		for($i=0;$i<sizeof($_REQUEST['opt_out']);$i++){
+		for($i=0; $i<sizeof($_REQUEST['opt_out']); $i++){
 			$id = $_REQUEST['opt_out'][$i];
 			$value = 1;
 			

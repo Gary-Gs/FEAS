@@ -261,7 +261,7 @@ $conn_db_ntu = null;
 								</select>
 							</td>
 							<td colspan="3" style="text-align:right;">
-								<input type="search" name="search" value="<?php echo isset($_POST['search']) ?  $_POST['search'] : '' ?>" />
+								<input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" />
 								<input type="submit" value="Search" title="Search for a project" class="bt"/>
 							</td>
 						</tr>
