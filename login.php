@@ -1,7 +1,7 @@
 <?php
    session_start();
    // users who are able to access all modules
-   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155" ,"C170178", "ryo.huang", "SNKoh"];
+   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155" ,"c170178", "ryo.huang", "SNKoh"];
 
    if (isset ($_SESSION['login']) && isset($username)){
 	   if (in_array($username, $verifiedUsers)) {
