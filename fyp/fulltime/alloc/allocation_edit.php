@@ -98,7 +98,7 @@
 			}
 		
 	}
-	if (isset ($_REQUEST['dayTime'])) { 
+	if (isset ($_REQUEST['dayTime'])) {
 		$day = $_REQUEST['dayTime'];
 		return generateTimeSelect('exam_slot',NULL,$day );
 	}
@@ -182,8 +182,8 @@
 		/*$(document).ready(function(){
 			//Copy time selection
 			var day = 0;
-		
-		//	timeslots[0] = '<?php generateTimeSelect('exam_slot', NULL, NULL); ?>';		
+		*/
+		//	timeslots[0] = '<?php generateTimeSelect('exam_slot', NULL, NULL); ?>';
 					
 			//Undefined Fix
 			

@@ -13,11 +13,11 @@
 	   exit;
    }     
 
-   if(isset($_POST['username']) && isset($_POST['pwd'])&& isset($_POST['domain'])){
+   if(isset($_REQUEST['username']) && isset($_REQUEST['pwd'])&& isset($_REQUEST['domain'])){
 		
-		$domain =$_POST['domain'];
-		$username = $_POST['username'];
-		$password = $_POST['pwd'];
+		$domain =$_REQUEST['domain'];
+		$username = $_REQUEST['username'];
+		$password = $_REQUEST['pwd'];
 		if ($domain == "Student") {
 			
 			$ldaphost = "student10.student.main.ntu.edu.sg";  

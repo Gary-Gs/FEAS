@@ -67,8 +67,8 @@ class CSRFProtection
 	 */
 	public function cfmRequest()
 	{
-		if (isset ($_POST[$this->namespace])){
-			if (!$this->isTokenValid($_POST[$this->namespace]))
+		if (isset ($_REQUEST[$this->namespace])){
+			if (!$this->isTokenValid($_REQUEST[$this->namespace]))
 			{
 				//die("CSRF validation failed.");
 				//echo "<p class='warn'> CSRF validation failed.</p>";

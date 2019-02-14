@@ -70,10 +70,81 @@ $conn_db_ntu = null;
             $('.chk').prop('checked', val);
         }
     </script>
+
+    <?php require_once('../../../php_css/headerwnav.php'); ?>
+
 </head>
 
 <body>
-<?php require_once('../../../php_css/headerwnav.php'); ?>
+
+<!-- Modal-->
+<div class="modal fade" id="addNewStaffModal" tabindex="-1" role="dialog" aria-labelledby="eaddNewStaffModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Verify staff details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="submit_savemodal.php">
+                <div class="modal-body">
+
+
+                    <?php
+
+                    if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+                    $i = 0;
+                    if (isset($_SESSION["staffWithoutEmail"])) {
+                        foreach ($_SESSION["staffWithoutEmail"] as $staffWithoutEmail) {
+                            echo "<b>Staff Name</b>";
+                            echo "<input type='text' name='nameList[]' value='" . $_SESSION["staffWithoutEmail"][$i] . "' required/>";
+                            echo "<br/>";
+                            echo "<b>Staff Name 2</b>";
+                            echo "<input type='text' name='name2List[]' required/>";
+                            echo "<br/>";
+                            echo "<b>Staff Email</b>";
+                            echo "<input type='email' name='emailList[]' required/>";
+
+                            echo "<br/>";
+                            echo "<b>Exemption </b>";
+                            echo "<input type='number' name='exemptionList[]' min='0' max='100' value='0' required/>";
+                            echo "<br/>";
+                            echo "<b>Examine </b>";
+                            echo "<input type='checkbox' name='examineList[]' />";
+
+                            if ($i != (sizeof($_SESSION["staffWithoutEmail"]) - 1)) {
+                                echo "<hr>";
+                            }
+                            $i++;
+                        }
+                    }
+
+                    ?>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#myBtn").click(function(){
+            $("#addNewStaffModal").modal("show");
+        });
+
+    });
+
+
+</script>
+
 
 <div id="loadingdiv" class="loadingdiv">
     <img id="loadinggif" src="../../../images/loading.gif"/><br/>
@@ -84,6 +155,7 @@ $conn_db_ntu = null;
     <div class="container-fluid">
         <?php require_once('../../nav.php'); ?>
         <div class="container-fluid">
+
             <!-- for going back to top -->
             <div id="backtop"></div>
             <h3>Faculty Settings for Full Time Projects</h3>
@@ -118,14 +190,23 @@ $conn_db_ntu = null;
                                 <input type="submit" value="Import" name="submit" class="btn btn-xs btn-success">
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="5">
-                                Please select the <b><u>examiner list</u></b> and <b><u>exemption</u></b>:
+                        <tr><?php
+                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2)
+                                echo "<td colspan='5'>Please select <b><u>examiner list,</u></b> <b><u>exemption</u></b> and <b><u>master</u></b> files to upload:</td>";
+                            else
+                                echo "<td colspan='5'>Please select <b><u>examiner list</u></b> file to upload: </td>"
+                                ?>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="5">File Name format: <b>fyp examiner list_for dr li fang_30aug2018</b> & <b>exemption</b>
-                            </td>
+                            <?php
+                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2)
+                                echo "<td colspan='5'>File Name format: <b>examiner_list.xlsx</b>, <b>exemption.xlsx</b> & <b>master.xlsx</b></td>";
+
+                            else
+                                echo "<td colspan='5'>File Name format: <b>examiner_list.xlsx</b></td>"
+                            ?>
+
                         </tr>
                         <tr>
                             <td colspan="2">
@@ -134,6 +215,12 @@ $conn_db_ntu = null;
                             </td>
                             <td colspan="3">
                                 <ul id="FileToUpload_FileList"></ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br/>
+                                <button type="button" class="btn btn-info btn-md" id="myBtn" data-toggle="modal" data-target="#addNewStaffModal">After import</button>
                             </td>
                         </tr>
                         <tr>
@@ -197,7 +284,7 @@ $conn_db_ntu = null;
                                 FileToUpload_FileList.append(li);
                             }
 
-                            if (selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") && FileToUpload_ExaminerSettings.files.length < 2) {
+                            if (selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") && FileToUpload_ExaminerSettings.files.length == 1) {
                                 IsValidFileUpload = true;
                             }
                             else if (selected == "2" && FileToUpload_ExaminerSettings.files.length == 3 && ((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("master") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("exemption"))
@@ -303,7 +390,11 @@ $conn_db_ntu = null;
                                     } else {
                                         console.log("File uploaded. Server Responded!");
                                         _('status').innerHTML = "File uploaded. Server Responded!";
-                                        window.location.href = ("examiner_setting.php?" + data);
+                                        try {
+                                            window.location.href = "examiner_setting.php";
+                                        }
+                                        catch (err) { alert(err);
+                                        }
                                     }
 
                                 },
@@ -419,19 +510,19 @@ $conn_db_ntu = null;
                             echo "</td>";
                             echo "<td>";
                             echo ($row_rsStaff['email'] != null) ? "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "'  value='" . $row_rsStaff['email'] . "' required />" :
-                                "<input type='text' id='email_" . $staffid . "' name='email_" . $staffid . "' required />";
+                                "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "' required />";
                             echo "</td>";
 
                             echo "<td>";
 
                             // display sem 2 staffs' exemptions.
                             if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
-                                echo ($row_rsStaff['exemptionS2'] != null) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' />" :
-                                    "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='0' />";
+                                echo ($row_rsStaff['exemptionS2'] != null) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' required />" :
+                                    "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='0' required />";
                             } // display sem 1 staffs' exemptions.
                             else {
-                                echo ($row_rsStaff['exemption'] != null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' />" :
-                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' />";
+                                echo ($row_rsStaff['exemption'] != null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />" :
+                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' required />";
                             }
                             echo "</td>";
                             echo "<td>";
@@ -472,11 +563,11 @@ $conn_db_ntu = null;
                         let exemption = tr.insertCell(3);
                         let examine = tr.insertCell(4);
 
-                        name.innerHTML = "<input type='text' name='newName' required />";
-                        name2.innerHTML = "<input type='text' name='newName2' required />";
-                        email.innerHTML = "<input type='email' name='newEmail' required />";
-                        exemption.innerHTML = "<input type='number' name='newExemption' min='0' max='100' value='0' />";
-                        examine.innerHTML = "<input type='checkbox' name='newExamine' class='chk'/>"
+                        name.innerHTML = "<input type='text' name='newName[]' required />";
+                        name2.innerHTML = "<input type='text' name='newName2[]' required />";
+                        email.innerHTML = "<input type='email' name='newEmail[]' required />";
+                        exemption.innerHTML = "<input type='number' name='newExemption[]' min='0' max='100' value='0' required />";
+                        examine.innerHTML = "<input type='checkbox' name='newExamine[]' class='chk'/>"
 
                     }
 
@@ -527,7 +618,7 @@ $conn_db_ntu = null;
                         $("#deleteEntry").click(function deleteRow() {
                             var sTable = document.getElementById("staffTable");
                             var selectedRowsIndex = getHighlightedRows().reverse();
-                            var r = confirm("Delete the selected staff entries?");
+                            var r = confirm("Delete the selected staff(s)?");
                             if (r == true){
                                 for (var i = 0; i < selectedRowsIndex.length; i++) {
                                         sTable.deleteRow(selectedRowsIndex[i]);
@@ -559,6 +650,9 @@ $conn_db_ntu = null;
                 </script>
 
 
+
+
+
             <?php } ?>
 
 
@@ -578,28 +672,8 @@ $conn_db_ntu = null;
 
 </div>
 
-<!-- Modal
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">New staff details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
--->
-</div>
+
 
 <!-- for going back to bottom -->
 <div id="tobottom"></div>

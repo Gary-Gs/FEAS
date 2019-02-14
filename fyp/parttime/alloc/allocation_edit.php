@@ -91,7 +91,7 @@
 			
 		}
 	}
-	if (isset ($_REQUEST['dayTime'])) { 
+	if (isset ($_REQUEST['dayTime'])) {
 		$day = $_REQUEST['dayTime'];
 		return generateTimeSelect('exam_slot',NULL,$day );
 	}
