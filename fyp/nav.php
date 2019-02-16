@@ -12,14 +12,16 @@
         <!-- Our Custom CSS -->
         <?php 
             if(strcmp($_SERVER["REQUEST_URI"] , "fyp.php")){
-                echo "<link rel='stylesheet' href='../css.navibarstyle.css'>";
+                echo "<link rel='stylesheet' href='../css/navbarstyle.css'>";
             }
 
             if(strcmp($_SERVER["REQUEST_URI"] , "project.php")){
-                echo "<link rel='stylesheet' href='../../../css/navibarstyle.css'>";
+                echo "<link rel='stylesheet' href='../../../css/navbarstyle.css'>";
                 //for floating panel 
                 echo "<script src='../../../scripts/float-panel.js'></script>";
             }
+        
+
         ?>
         
     </head>
