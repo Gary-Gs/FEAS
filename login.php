@@ -1,7 +1,7 @@
 <?php
    session_start();
    // users who are able to access all modules
-   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155" ,"c170178", "ryo.huang", "SNKoh"];
+   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178"];
 
    if (isset ($_SESSION['login']) && isset($username)){
 	   if (in_array($username, $verifiedUsers)) {
@@ -13,11 +13,11 @@
 	   exit;
    }     
 
-   if(isset($_REQUEST['username']) && isset($_REQUEST['pwd'])&& isset($_REQUEST['domain'])){
+   if(isset($_POST['username']) && isset($_POST['pwd'])&& isset($_POST['domain'])){
 		
-		$domain =$_REQUEST['domain'];
-		$username = $_REQUEST['username'];
-		$password = $_REQUEST['pwd'];
+		$domain =$_POST['domain'];
+		$username = $_POST['username'];
+		$password = $_POST['pwd'];
 		if ($domain == "Student") {
 			
 			$ldaphost = "student10.student.main.ntu.edu.sg";  
@@ -117,8 +117,8 @@
 
 			<label for="domain" class="control-label">DOMAIN:</label>
 			<select class="form-control" name="domain">
-				<option value="Student">Student</option>
 				<option value="Staff">Staff</option>
+				<option value="Student">Student</option>
 			</select> 
 			<div class="float-right"><a href="https://pwd.ntu.edu.sg/">Forgot Password?</a></div>
 			<br/><br/>
