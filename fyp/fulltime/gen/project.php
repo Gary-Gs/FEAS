@@ -258,7 +258,7 @@ $conn_db_ntu = null;
 							</select>
 						</td>
 						<td colspan="2" style="text-align:right;">
-							<input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" />
+							<input type="search" name="search" value="<?php echo isset($_POST['search']) ?  $_POST['search'] : '' ?>" />
 							<input type="submit" value="Search" title="Search for a project" class="bt"/>
 						</td>
 					</tr>
@@ -307,7 +307,7 @@ $conn_db_ntu = null;
 				$("#FORM_FileToUpload_ProjectList").submit(function( event ) {
 					// start of xm edits 
 					//this for displaying to show that the data format for excel uploaded is wrong, somehow it worked but dont understand why
-		            window.location.href = ("project.php?error_code=5");
+		            //window.location.href = ("project.php?error_code=5");
 		            // end of xm edits 
 					uploadFile();
 					event.preventDefault();
@@ -383,8 +383,9 @@ $conn_db_ntu = null;
 
 	    <div class="container col-sm-1 col-md-1 col-lg-1">
 	    	<div class="float-panel">
-	    		<br/><br/>
-	    		<a href="#backtop"><img src="../../../images/totop.png" width="50%" height="50%" /></a>
+	    		<br/><br/><br/>
+            		<a href="#backtop"><img src="../../../images/totop.png" width="40%" height="40%" /></a><br/>
+            		<a href="#tobottom"><img src="../../../images/tobottom.png" width="40%" height="40%" /></a><br/>
 	    	</div>
 
 	    </div> 
@@ -395,6 +396,8 @@ $conn_db_ntu = null;
 	 
 	</div>
 </div>
+	<!-- for going back to bottom --> 
+	<div id="tobottom"></div>
 
 <?php require_once('../../../footer.php'); ?>
 </body>
