@@ -12,16 +12,14 @@
         <!-- Our Custom CSS -->
         <?php 
             if(strcmp($_SERVER["REQUEST_URI"] , "fyp.php")){
-                echo "<link rel='stylesheet' href='../css/navbarstyle.css'>";
+                echo "<link rel='stylesheet' href='../css.navibarstyle.css'>";
             }
 
             if(strcmp($_SERVER["REQUEST_URI"] , "project.php")){
-                echo "<link rel='stylesheet' href='../../../css/navbarstyle.css'>";
+                echo "<link rel='stylesheet' href='../../../css/navibarstyle.css'>";
                 //for floating panel 
                 echo "<script src='../../../scripts/float-panel.js'></script>";
             }
-        
-
         ?>
         
     </head>
@@ -87,6 +85,7 @@
                             <li><a href="/fyp/fulltime/alloc/allocation_setting.php">Allocation Settings</a></li>
                             <li><a href="/fyp/fulltime/alloc/allocation.php">Allocation System</a></li>
                             <li><a href="/fyp/fulltime/alloc/allocation_timetable.php">View Allocation Plan</a></li>
+                            <li><a href="/fyp/fulltime/alloc/result_visualization.php">Results Visualization</a></li>
                         </ul>
                     </li>
                     
