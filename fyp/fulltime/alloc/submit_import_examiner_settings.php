@@ -251,7 +251,7 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
 
 
                     // Try to create the Examine of the staff
-                     $Stmt = sprintf("INSERT INTO %s (id, email, name, name2, workload,exemption, examine) VALUES('%s', '%s', '%s','%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail,$EXCEL_StaffName, $EXCEL_StaffName, $EXCEL_Loading, $exemption, 1);
+                     $Stmt = sprintf("INSERT INTO %s (id, email, name, workload,exemption, examine) VALUES('%s', '%s', '%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail,$EXCEL_StaffName, $EXCEL_Loading, $exemption, 1);
                      $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                      if ($DBOBJ_Result->execute()) {
                          $RowCount_Created++;
@@ -260,14 +260,18 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
                          $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
                      }
 
+                    // to do let user input name2
+                    $staffWithoutName2['name'] = $EXCEL_StaffName;
+                    $staffWithoutName2['email'] = $EXCEL_StaffName;
+                    $staffWithoutName2['workload'] = $EXCEL_Loading;
+                    $staffWithoutName2['exemption'] = $exemption;
+
+
                 }
 
-                // to do let user input name2
 
-                $staffWithoutName2['name'] = $EXCEL_StaffName;
-                $staffWithoutName2['email'] = $EXCEL_StaffName;
-                $staffWithoutName2['workload'] = $EXCEL_Loading;
-                $staffWithoutName2['exemption'] = $exemption;
+
+
 
 
                 /*  $stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE acad_year = '%s'", $TABLES["fyp"], $year);
@@ -359,10 +363,11 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
         // $DBOBJ_Result->execute();
         // $RowCount = $DBOBJ_Result->fetchColumn();
 
-        /*if (!empty($staffWithoutName2)) {
-            if (session_status())
+        if (!empty($staffWithoutName2)) {
+            if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
+            $_SESSION["staffWithoutName2"] = $staffWithoutName2;
         }
-        */
+
         if (!empty($staffWithoutEmail)) {
             if (session_status() !== PHP_SESSION_ACTIVE) { session_start();}
             $_SESSION["staffWithoutEmail"] = $staffWithoutEmail;
@@ -475,7 +480,7 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
 
 
                 // Check if the staff in excel list is in staff table
-                $Stmt = sprintf("SELECT * FROM  %s WHERE (name = '%s' OR name2 ='%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
+                $Stmt = sprintf("SELECT * FROM  %s WHERE examine=1 AND (name = '%s' OR name2 ='%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
                 $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                 $DBOBJ_Result->execute();
                 $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
