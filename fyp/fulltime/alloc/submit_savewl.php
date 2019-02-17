@@ -83,8 +83,8 @@ foreach ($rsStaff as $curStaff) {
             }
         }
     } else {
-
         $staffid = GetSQLValueString($staffid, "text");
+        echo $staffid;
         $delete[] = sprintf("id=%s", $staffid);
     }
 }

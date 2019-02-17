@@ -57,7 +57,7 @@ if (isset($_REQUEST['filter_Sem'])) {
 
         $FilesInDir = glob("$target_dir" . "examiner_list.*");
         if (count($FilesInDir) == 1) {
-            $error_code = HandleExcelData_ExaminerList($error_code, $FilesInDir[0]);
+            $error_code = HandleExcelData_ExaminerList($error_code, $FilesInDir[0],null);
 
             if ($error_code != 0) {
                 echo "Error in HandleExcelData_ExaminableFacultyList : error_code=$error_code\n";
@@ -71,22 +71,22 @@ if (isset($_REQUEST['filter_Sem'])) {
 
         // Assign examinable faculty into DB first
         $FilesInDir = glob("$target_dir" . "examiner_list.*");
+        $FilesInDir_1 = glob("$target_dir" . "exemption.*");
+        $FilesInDir_2 = glob("$target_dir" . "master.*");
         if (count($FilesInDir) == 1) {
-            $error_code = HandleExcelData_ExaminerList($error_code, $FilesInDir[0]);
+            $error_code = HandleExcelData_ExaminerList($error_code, $FilesInDir[0],$FilesInDir_1[0]);
             if ($error_code == 0) { // no error
-                $FilesInDir_1 = glob("$target_dir" . "exemption.*");
-                $FilesInDir_2 = glob("$target_dir" . "master.*");
                 if (count ($FilesInDir) == 1 && count($FilesInDir_1) == 1 && count($FilesInDir_2) == 1) {
                     $error_code = HandleExcelData_Exemption($error_code, $FilesInDir[0], $FilesInDir_1[0], $FilesInDir_2[0]);
                     if ($error_code != 0) {
-                        echo "Error in HandleExcelData_Exemption : error_code=$error_code\n";
+                        echo "Error in exemption or master: error_code=$error_code\n";
                     }
                 } else {
-                    $error_code = 4; // Cannot locate workload_staff_list excel file
-                    echo "Cannot locate exemption\n";
+                    $error_code = 4; // Cannot locate excel files
+                    echo "Cannot locate files\n";
                 }
             } else {
-                echo "Error in HandleExcelData_ExaminableFacultyList : error_code=$error_code\n";
+                echo "Error in HandleExcelData_ExaminerList : error_code=$error_code\n";
             }
         } else {
             $error_code = 4; // Cannot locate examinable_staff_list excel file
@@ -95,7 +95,6 @@ if (isset($_REQUEST['filter_Sem'])) {
     }
 }
 
-echo "test ";
 
 $redirect = true;
 if (isset ($_REQUEST['validate'])) {
@@ -112,7 +111,7 @@ exit();
 
 
 // CUSTOM CODE GOES HERE ---- do whatever you want
-function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
+function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath, $ExemptionFile_FullPath)
 {
     $Contents = "********************************** LOADING examiner_list **********************************\n";
     //$PHPExcelObj = PHPExcel_IOFactory::load($InputFile_FullPath);
@@ -123,7 +122,7 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
     global $TABLES, $conn_db_ntu;
     try {
 
-        // initialize all staff examinable to be 0
+
 
         $Stmt = sprintf("SELECT * FROM  %s", $TABLES["staff"]);
         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
@@ -131,6 +130,7 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
         $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
 
 
+        // initialize all staff examinable to be 0
         if (isset($Data['id']) && !empty($Data['id'])) {
             $initialize = sprintf("UPDATE %s SET exemption = 0, examine = 0", $TABLES["staff"]);
             $conn_db_ntu->prepare($initialize)->execute();
@@ -139,8 +139,10 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
         $Offset = 1; // Exclude headers
         $Total_DataInSheet = count($EXCEL_AllData) - $Offset;
         $Total_DataEmpty = 0;
-        $staffWithoutEmail = array();
-        $staffWithoutName2 = array();
+       // $staffWithoutEmail = array();
+        $newExaminerWithoutName2 = array();
+        $missingExaminerInExemption = array();
+
         $RowCount = 0;
         $RowCount_Updated = 0;
         $RowCount_Created = 0;
@@ -261,16 +263,20 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
                      }
 
                     // to do let user input name2
-                    $staffWithoutName2['name'] = $EXCEL_StaffName;
-                    $staffWithoutName2['email'] = $EXCEL_StaffName;
-                    $staffWithoutName2['workload'] = $EXCEL_Loading;
-                    $staffWithoutName2['exemption'] = $exemption;
-
+                    $newExaminerWithoutName2[] = array("name" => $EXCEL_StaffName, "email" => $EXCEL_StaffEmail);
 
                 }
 
 
+                $sem =0;
 
+                if (isset($_REQUEST['filter_Sem']))
+                    $sem = $_REQUEST['filter_Sem'];
+
+
+                if ($sem == 2) {
+                    findExaminersInExemption($ExemptionFile_FullPath, $EXCEL_StaffName,$EXCEL_StaffEmail,$missingExaminerInExemption);
+                }
 
 
 
@@ -352,7 +358,9 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
             } else {
                 $Total_DataEmpty++;
                 $EXCEL_StaffName = $EXCEL_AllData[$RowIndex]["B"];
-                $staffWithoutEmail[] = $EXCEL_StaffName;
+                // staff without email address
+              //  $staffWithoutEmail["name"] = $EXCEL_StaffName;
+
                 $Contents = $Contents . sprintf("%03d. %-30s : %-35s %-35s\n", $RowCount, "Empty email detected at row ", $RowCount, ". FAILED - No Email");
             }
         }
@@ -363,14 +371,16 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath)
         // $DBOBJ_Result->execute();
         // $RowCount = $DBOBJ_Result->fetchColumn();
 
-        if (!empty($staffWithoutName2)) {
+        if (!empty($newExaminerWithoutName2)) {
             if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
-            $_SESSION["staffWithoutName2"] = $staffWithoutName2;
+            $_SESSION["newExaminerWithoutName2"] = $newExaminerWithoutName2;
         }
+        if (!empty($missingExaminerInExemption)) {
+            if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
+            $_SESSION["missingExaminerInExemption"] = $missingExaminerInExemption;
+            //$_SESSION["exemptionFile"] = $ExemptionFile_FullPath;
+           // $_SESSION["masterFile"] = $MasterFile_FullPath;
 
-        if (!empty($staffWithoutEmail)) {
-            if (session_status() !== PHP_SESSION_ACTIVE) { session_start();}
-            $_SESSION["staffWithoutEmail"] = $staffWithoutEmail;
         }
         $Contents = $Contents . sprintf("%-35s : %04d/%04d\n", "Total staff examine updated", $RowCount_Updated, $Total_DataInSheet - $Total_DataEmpty);
         $Contents = $Contents . sprintf("%-35s : %04d\n", "Total staff examine created", $RowCount_Created);
@@ -408,6 +418,39 @@ function getFacultySize($ExaminerFile_FullPath) {
 
 }
 
+function findExaminersInExemption($ExemptionFile_FullPath,$staffName,$staffEmail,&$missingExaminerInExemption) {
+
+    $PHPExcelObj = \PhpOffice\PhpSpreadsheet\IOFactory::load($ExemptionFile_FullPath);
+    $EXCEL_AllData = $PHPExcelObj->getActiveSheet()->toArray(null, true, true, true);
+
+    try {
+        $Offset = 2; // Exclude headers
+        $Total_DataInSheet = count($EXCEL_AllData) - $Offset;
+        $found = false;
+
+
+        for ($RowIndex = 3; $RowIndex <= $Total_DataInSheet + $Offset; $RowIndex++) {
+
+            // Check if name is empty or null
+            if (isset($EXCEL_AllData[$RowIndex]["B"]) && !empty($EXCEL_AllData[$RowIndex]["B"])) {
+                if (strtolower(trim($staffName)) == strtolower(trim($EXCEL_AllData[$RowIndex]["B"]))) {
+                    $found = true;
+                }
+
+            }
+        }
+        if ($found == false) {
+            $missingExaminerInExemption[] = array("name" => $staffName, "email" => $staffEmail);
+        }
+        return 0;
+    }
+    catch (Exception $Ex) {
+        echo $Ex->getMessage();
+        return -1; // General exception
+    }
+
+}
+
 function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $ExemptionFile_FullPath, $MasterFile_FullPath)
 {
     $Contents = "********************************** LOADING exemption **********************************\n";
@@ -428,6 +471,8 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
 
         $projects = 0;
         $base = 0;
+
+        $sem =0;
 
         if (isset($_REQUEST['filter_Sem']))
             $sem = $_REQUEST['filter_Sem'];
@@ -463,6 +508,8 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
             //$facultySize = $Total_DataInSheet;
             $facultySize = getFacultySize($ExaminerFile_FullPath);
             $base = $projects * 4 / $facultySize;
+            if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
+            $_SESSION["S2base"] = $base;
            // echo "base value ". $base;
         }
 
@@ -486,7 +533,7 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
                 $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
 
                 if (isset($Data['id']) && !empty($Data['id'])) {
-                    // Try to update the workload of the staff
+
                     if ($sem == 2) {
                         $ProjectsSupervised = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
                         $ProjectsExaminedinS1 = is_numeric($EXCEL_AllData[$RowIndex]["E"]) ? $EXCEL_AllData[$RowIndex]["E"] : 0;
@@ -496,11 +543,12 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
                         $MScExamined = 0;
                         HandleExcelData_Master($error_code, $MasterFile_FullPath, $Data['name'], $Data['name2'], $MScSupervised, $MScExamined);
 
+                        // exemption formula for sem 2
                         $exemption = intval(floor($base * (1 - ($Data['workload'] / 100)) + (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1 + $MScExamined));
 
                         $MScContribution = intval($MScSupervised * 3 + $MScExamined);
 
-                        $Stmt = sprintf("UPDATE %s SET exemptionS2 = %d, msc_contri = %d WHERE (name = '%s' OR name2 = '%s')", $TABLES["staff"], $exemption, $MScContribution, $EXCEL_StaffName, $EXCEL_StaffName);
+                        $Stmt = sprintf("UPDATE %s SET exemptionS2 = %d, msc_contri = %d WHERE id='%s'", $TABLES["staff"], $exemption, $MScContribution, $Data['id']);
                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                         if ($DBOBJ_Result->execute()) {
                             $RowCount_Updated++;
@@ -523,8 +571,19 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
 
 
                 } else {
+                    // Check if the staff in excel list is in staff table
+                /*    $Stmt = sprintf("SELECT * FROM  %s WHERE (name = '%s' OR name2 ='%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
+                    $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
+                    $DBOBJ_Result->execute();
+                    $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
 
-                    $newStaff[] = $EXCEL_StaffName;
+
+                    if (!isset($Data['id']) && empty($Data['id'])) {
+                        // to do let user input name2
+                        $newStaff[] = $EXCEL_StaffName;
+                    }
+                */
+
 
 
                     /* if ($sem == 2) {
@@ -605,16 +664,16 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
 
         }*/
 
-        if (!empty($newStaff)) {
+      /*  if (!empty($newStaff)) {
             if (session_status() !== PHP_SESSION_ACTIVE) { session_start();}
-            $result = array_merge((array)$_SESSION["staffWithoutEmail"], (array)$newStaff);
-            $result = array_unique($result);
-            $_SESSION["staffWithoutEmail"] = $result;
+           // $result = array_merge((array)$_SESSION["staffWithoutEmail"], (array)$newStaff);
+           // $result = array_unique($result);
+            $_SESSION["newNonExaminerWithoutEmail"] = $newStaff;
 
         }
+      */
 
-        $Contents = $Contents . sprintf("%-35s : %04d/%04d\n", "Total staff workload updated", $RowCount_Updated, $Total_DataInSheet - $Total_DataEmpty);
-        $Contents = $Contents . sprintf("%-35s : %04d\n", "Total staff workload created", $RowCount_Created);
+        $Contents = $Contents . sprintf("%-35s : %04d/%04d\n", "Total staff exemption updated", $RowCount_Updated, $Total_DataInSheet - $Total_DataEmpty);
         // RESULT
         $file = "submit_import_examiner_settings.txt";
         file_put_contents($file, $Contents, FILE_APPEND | LOCK_EX);

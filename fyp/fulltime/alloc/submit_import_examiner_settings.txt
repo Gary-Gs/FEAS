@@ -1,47 +1,47 @@
 ********************************** LOADING examiner_list **********************************
 001. Staff exemption: 0 : asmadhukumar              : A S Madhukumar                      . Examine and exemption updated successfully 
 002. Staff exemption: 9 : assourin                  : Alexei Sourin                       . Examine and exemption updated successfully 
-003. Staff exemption: 0 : qhliang                   : Liang Qianhui                       . Examine and exemption updated successfully 
+003. Staff exemption: 0 : qhliang                   : Althea Liang Qianhui                . Examine and exemption updated successfully 
 004. Staff exemption: 0 : anupam                    : Anupam Chattopadhyay                . Examine and exemption updated successfully 
 005. Staff exemption: 21 : anwitaman                 : Anwitaman Datta                     . Examine and exemption updated successfully 
 006. Staff exemption: 0 : arijit.khan               : Arijit Khan                         . Examine and exemption updated successfully 
 007. Staff exemption: 3 : arvinde                   : Arvind Easwaran                     . Examine and exemption updated successfully 
 008. Staff exemption: 12 : boan                      : Bo An                               . Examine and exemption updated successfully 
-009. Staff exemption: 4 : asjfcai                   : Cai Jianfei                         . Examine and exemption updated successfully 
+009. Staff exemption: 3 : asjfcai                   : Cai Jianfei                         . Examine and exemption updated successfully 
 010. Staff exemption: 3 : aswtcai                   : Cai Wentong                         . Examine and exemption updated successfully 
-011. Staff exemption: 7 : astjcham                  : Cham Tat Jen                        . Examine and exemption updated successfully 
-012. Staff exemption: 4 : ccloy                     : Chen Change Loy                     . Examine and exemption updated successfully 
+011. Staff exemption: 6 : astjcham                  : Cham Tat Jen                        . Examine and exemption updated successfully 
+012. Staff exemption: 3 : ccloy                     : Chen Change Loy                     . Examine and exemption updated successfully 
 013. Staff exemption: 3 : asltchia                  : Chia Liang Tien                     . Examine and exemption updated successfully 
 014. Staff exemption: 12 : aseschng                  : Chng Eng Siong                      . Examine and exemption updated successfully 
-015. Staff exemption: 16 : gaocong                   : Cong Gao                            . Examine and exemption updated successfully 
+015. Staff exemption: 15 : gaocong                   : Cong Gao                            . Examine and exemption updated successfully 
 016. Staff exemption: 0 : asdrajan                  : Deepu Rajan                         . Examine and exemption updated successfully 
-017. Staff exemption: 4 : rldeng                    : Deng Ruilong                        . Examine and exemption updated successfully 
+017. Staff exemption: 3 : rldeng                    : Deng Ruilong                        . Examine and exemption updated successfully 
 018. Staff exemption: 9 : asdouglas                 : Douglas Leslie Maskell              . Examine and exemption updated successfully 
 019. Staff exemption: 18 : dniyato                   : Dusit Niyato                        . Examine and exemption updated successfully 
 020. Staff exemption: 0 : cambria                   : Erik Cambria                        . Examine and exemption updated successfully 
 021. Staff exemption: 15 : aswbgoh                   : Goh Wooi Boon                       . Examine and exemption updated successfully 
 022. Staff exemption: 15 : ctguan                    : Guan Cuntai                         . Examine and exemption updated successfully 
-023. Staff exemption: 4 : yhe                       : He Ying                             . Examine and exemption updated successfully 
+023. Staff exemption: 3 : yhe                       : He Ying                             . Examine and exemption updated successfully 
 024. Staff exemption: 0 : assyhuang                 : Huang Shell Ying                    . Examine and exemption updated successfully 
 025. Staff exemption: 27 : asschui                   : Hui Siu Cheung                      . Examine and exemption updated successfully 
-026. Staff exemption: 4 : srjoty                    : Joty Shafiq Rayhan                  . Examine and exemption updated successfully 
+026. Staff exemption: 3 : srjoty                    : Joty Shafiq Rayhan                  . Examine and exemption updated successfully 
 027. Staff exemption: 9 : ypke                      : Ke Yiping, Kelly                    . Examine and exemption updated successfully 
 028. Staff exemption: 3 : adamskong                 : Kong Wai-Kin Adams                  . Examine and exemption updated successfully 
-029. Staff exemption: 7 : asckkwoh                  : Kwoh Chee Keong                     . Examine and exemption updated successfully 
+029. Staff exemption: 6 : asckkwoh                  : Kwoh Chee Keong                     . Examine and exemption updated successfully 
 030. Staff exemption: 15 : kwokyan.lam               : Lam Kwok Yan                        . Examine and exemption updated successfully 
 031. Staff exemption: 3 : assklam                   : Lam Siew Kei                        . Examine and exemption updated successfully 
 032. Staff exemption: 0 : lana                      : Lana Obraztsova                     . Examine and exemption updated successfully 
 033. Staff exemption: 15 : ebslee                    : Lee Bu Sung                         . Examine and exemption updated successfully 
 034. Staff exemption: 33 : asfli                     : Li Fang                             . Examine and exemption updated successfully 
 035. Staff exemption: 15 : limo                      : Li Mo                               . Examine and exemption updated successfully 
-036. Staff exemption: 4 : yi_li                     : Li Yi                               . Examine and exemption updated successfully 
+036. Staff exemption: 3 : yi_li                     : Li Yi                               . Examine and exemption updated successfully 
 037. Staff exemption: 6 : asflin                    : Lin Feng                            . Examine and exemption updated successfully 
 038. Staff exemption: 0 : shang-wei.lin             : Lin Shang-Wei                       . Examine and exemption updated successfully 
 039. Staff exemption: 0 : wslin                     : Lin Weisi                           . Examine and exemption updated successfully 
-040. Staff exemption: 25 : liu                       : Liu Weichen                         . Examine and exemption updated successfully 
+040. Staff exemption: 24 : liu                       : Liu Weichen                         . Examine and exemption updated successfully 
 041. Staff exemption: 0 : yangliu                   : Liu Yang                            . Examine and exemption updated successfully 
-042. Staff exemption: 4 : yrloke                    : Loke Yuan Ren                       . Examine and exemption updated successfully 
-043. Staff exemption: 4 : c.long                    : Long Cheng                          . Examine and exemption updated successfully 
+042. Staff exemption: 3 : yrloke                    : Loke Yuan Ren                       . Examine and exemption updated successfully 
+043. Staff exemption: 3 : c.long                    : Long Cheng                          . Examine and exemption updated successfully 
 044. Staff exemption: 12 : shijian.lu                : Lu Shijian                          . Examine and exemption updated successfully 
 045. Staff exemption: 3 : junluo                    : Luo Jun                             . Examine and exemption updated successfully 
 046. Staff exemption: 15 : mpratama                  : Mahardhika Pratama                  . Examine and exemption updated successfully 
@@ -49,7 +49,7 @@
 048. Staff exemption: 27 : awkng                     : Ng Wee Keong                        . Examine and exemption updated successfully 
 049. Staff exemption: 30 : hloh                      : Oh Hong Lye                         . Examine and exemption updated successfully 
 050. Staff exemption: 39 : ofernando                 : Owen Noel Newton Fernando           . Examine and exemption updated successfully 
-051. Staff exemption: 7 : sinnopan                  : Pan, Sinno Jialin                   . Examine and exemption updated successfully 
+051. Staff exemption: 6 : sinnopan                  : Pan, Sinno Jialin                   . Examine and exemption updated successfully 
 052. Staff exemption: 6 : mkmqian                   : Qian Kemao                          . Examine and exemption updated successfully 
 053. Staff exemption: 18 : ashcquek                  : Quek Hiok Chai                      . Examine and exemption updated successfully 
 054. Staff exemption: 15 : asjagath                  : Rajapakse Jagath Chandana           . Examine and exemption updated successfully 
@@ -58,25 +58,35 @@
 057. Staff exemption: 15 : smitha                    : Smitha Kavallur Pisharath Gopi      . Examine and exemption updated successfully 
 058. Staff exemption: 15 : assourav                  : Sourav Saha Bhowmick                . Examine and exemption updated successfully 
 059. Staff exemption: 24 : sg.sourav                 : Sourav Sen Gupta                    . Examine and exemption updated successfully 
-060. Staff exemption: 19 : axsun                     : Sun Aixin                           . Examine and exemption updated successfully 
+060. Staff exemption: 18 : axsun                     : Sun Aixin                           . Examine and exemption updated successfully 
 061. Staff exemption: 0 : czsun                     : Sun Chengzheng                      . Examine and exemption updated successfully 
 062. Staff exemption: 30 : donta                     : Ta Nguyen Binh Duong                . Examine and exemption updated successfully 
 063. Staff exemption: 21 : asahtan                   : Tan Ah Hwee                         . Examine and exemption updated successfully 
 064. Staff exemption: 6 : khengleong                : Tan Kheng Leong                     . Examine and exemption updated successfully 
 065. Staff exemption: 6 : tanrui                    : Tan Rui                             . Examine and exemption updated successfully 
-066. Staff exemption: 16 : asxytang                  : Tang Xueyan                         . Examine and exemption updated successfully 
-067. Staff exemption: 4 : kianboon.tay              : Tay Kian Boon                       . Examine and exemption updated successfully 
+066. Staff exemption: 15 : asxytang                  : Tang Xueyan                         . Examine and exemption updated successfully 
+067. Staff exemption: 3 : kianboon.tay              : Tay Kian Boon                       . Examine and exemption updated successfully 
 068. Staff exemption: 18 : aschvun                   : Vun Chan Hua, Nicholas              . Examine and exemption updated successfully 
 069. Staff exemption: 30 : xbresson                  : Xavier Bresson                      . Examine and exemption updated successfully 
-070. Staff exemption: 19 : asckyeo                   : Yeo Chai Kiat                       . Examine and exemption updated successfully 
-071. Staff exemption: 4 : han.yu                    : Yu Han                              . Examine and exemption updated successfully 
-072. Staff exemption: 4 : hanwangzhang              : Zhang Hanwang                       . Examine and exemption updated successfully 
+070. Staff exemption: 18 : asckyeo                   : Yeo Chai Kiat                       . Examine and exemption updated successfully 
+071. Staff exemption: 3 : han.yu                    : Yu Han                              . Examine and exemption updated successfully 
+072. Staff exemption: 3 : hanwangzhang              : Zhang Hanwang                       . Examine and exemption updated successfully 
 073. Staff exemption: 9 : zhangj                    : Zhang Jie                           . Examine and exemption updated successfully 
-074. Staff exemption: 4 : junzhao                   : Zhao Jun                            . Examine and exemption updated successfully 
-075. Staff exemption: 13 : asjmzheng                 : Zheng Jianmin                       . Examine and exemption updated successfully 
+074. Staff exemption: 3 : junzhao                   : Zhao Jun                            . Examine and exemption updated successfully 
+075. Staff exemption: 12 : asjmzheng                 : Zheng Jianmin                       . Examine and exemption updated successfully 
 076. Staff exemption: 3 : zinovi                    : Zinovi Rabinovich                   . Examine and exemption updated successfully 
+077. Empty email detected at row    : 77                                  . FAILED - No Email                
 Total staff examine updated         : 0076/0076
 Total staff examine created         : 0000
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
+********************************** LOADING master **********************************
 ********************************** LOADING master **********************************
 ********************************** LOADING master **********************************
 ********************************** LOADING master **********************************
@@ -809,6 +819,7 @@ Total staff examine created         : 0000
 ********************************** LOADING exemption **********************************
 001. Staff : asmadhukumar              : A S Madhukumar                      . ExemptionS2 and Workload updated successfully 
 002. Staff : assourin                  : Alexei Sourin                       . ExemptionS2 and Workload updated successfully 
+004. Staff : qhliang                   : Althea Liang Qianhui                . ExemptionS2 and Workload updated successfully 
 006. Staff : anupam                    : Anupam Chattopadhyay                . ExemptionS2 and Workload updated successfully 
 007. Staff : anwitaman                 : Anwitaman Datta                     . ExemptionS2 and Workload updated successfully 
 008. Staff : arijit.khan               : Arijit Khan                         . ExemptionS2 and Workload updated successfully 
@@ -882,5 +893,4 @@ Total staff examine created         : 0000
 105. Staff : junzhao                   : Zhao Jun                            . ExemptionS2 and Workload updated successfully 
 106. Staff : asjmzheng                 : Zheng Jianmin                       . ExemptionS2 and Workload updated successfully 
 107. Staff : zinovi                    : Zinovi Rabinovich                   . ExemptionS2 and Workload updated successfully 
-Total staff workload updated        : 0075/0107
-Total staff workload created        : 0000
+Total staff exemption updated       : 0076/0107

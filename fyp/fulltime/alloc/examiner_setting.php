@@ -82,7 +82,7 @@ $conn_db_ntu = null;
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Verify staff details</h5>
+                <h2 class="modal-title" id="exampleModalLongTitle">Verify staff details</h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -94,29 +94,62 @@ $conn_db_ntu = null;
                     <?php
 
                     if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
-                    $i = 0;
-                    if (isset($_SESSION["staffWithoutEmail"])) {
-                        foreach ($_SESSION["staffWithoutEmail"] as $staffWithoutEmail) {
-                            echo "<b>Staff Name</b>";
-                            echo "<input type='text' name='nameList[]' value='" . $_SESSION["staffWithoutEmail"][$i] . "' required/>";
-                            echo "<br/>";
-                            echo "<b>Staff Name 2</b>";
-                            echo "<input type='text' name='name2List[]' required/>";
-                            echo "<br/>";
-                            echo "<b>Staff Email</b>";
-                            echo "<input type='email' name='emailList[]' required/>";
 
+                    if (isset($_SESSION["missingExaminerInExemption"])) {
+                        for ($i=0;$i<sizeof($_SESSION["missingExaminerInExemption"]);$i++) {
+                            echo "<h4>Examiner(s) not found in exemption file</h4>";
                             echo "<br/>";
-                            echo "<b>Exemption </b>";
-                            echo "<input type='number' name='exemptionList[]' min='0' max='100' value='0' required/>";
+                            echo "<b>Staff Name </b>";
+                            echo "<input type='text' name='mnameList[]' value='" . $_SESSION["missingExaminerInExemption"][$i]["name"] . "' required/>";
+                            echo "<br/>";
+                            echo "<br/>";
+                            echo "<b>Staff Name 2 </b>";
+                            echo "<input type='text' name='mname2List[]' required/>";
+                            echo "<br/>";
+                            echo "<br/>";
+                            echo "<b>Staff Email </b>";
+                            echo "<input type='email' name='memailList[]' value='". $_SESSION["missingExaminerInExemption"][$i]["email"] ."' required/>";
+
+                           // echo "<br/>";
+                           // echo "<b>Exemption </b>";
+                           // echo "<input type='number' name='exemptionList[]' min='0' max='100' value='0' required/>";
+                            echo "<br/>";
                             echo "<br/>";
                             echo "<b>Examine </b>";
-                            echo "<input type='checkbox' name='examineList[]' />";
+                            echo "<input type='checkbox' name='mexamineList[]' checked />";
+                            echo "<br/>";
 
-                            if ($i != (sizeof($_SESSION["staffWithoutEmail"]) - 1)) {
+                            if ($i != (sizeof($_SESSION["missingExaminerInExemption"]) - 1)) {
                                 echo "<hr>";
                             }
-                            $i++;
+                        }
+                    }
+                    if (isset($_SESSION["newExaminerWithoutName2"])) {
+                        echo "<hr>";
+                        for($i=0;$i<sizeof($_SESSION["newExaminerWithoutName2"]);$i++) {
+                            echo "<h4>New examiners without name2</h4>";
+                            echo "<br/>";
+                            echo "<b>Staff Name </b>";
+                            echo "<input type='text' name='nameList[]' value='" . $_SESSION["newExaminerWithoutName2"][$i]["name"] . "' required/>";
+                            echo "<br/>";
+                            echo "<br/>";
+                            echo "<b>Staff Name 2 </b>";
+                            echo "<input type='text' name='name2List[]' required/>";
+                            echo "<br/>";
+                            echo "<br/>";
+                            echo "<b>Staff Email </b>";
+                            echo "<input type='email' name='emailList[]' value='" . $_SESSION["newExaminerWithoutName2"][$i]["email"] . "'  required/>";
+
+                            echo "<br/>";
+                            echo "<br/>";
+                           // echo "<b>Exemption </b>";
+                            // echo "<input type='number' name='exemptionList[]' value='" . $_SESSION["newExaminerWithoutName2"][$i]["exemption"] . "' min='0' max='100' value='0' required/>";
+                            echo "<b>Examine </b>";
+                            echo "<input type='checkbox' name='examineList[]' checked />";
+                            echo "<br/>";
+                            if ($i != (sizeof($_SESSION["newExaminerWithoutName2"]) - 1)) {
+                                echo "<hr>";
+                            }
                         }
                     }
 
