@@ -292,7 +292,7 @@
 		$(document).ready(function() {
 			var update_sp = false;
 			var update_ap = false;
-
+      var save = false;
 			var modified = false;
             // enable warning when leaving the page
             /* 1. window object represents an open window in a browser, the browser creates one window object for the HTML document
@@ -300,17 +300,7 @@
             syntax: 
             $(selector).on(event,childSelector,data,function,map)
             3. onbeforeunload event occurs when the document is about to be unloaded, this event allows you to display a message in a confirmation dialog box to inform the user whether he/she wants to stay or leave the current page*/
-            $(window).on('beforeunload', function(){
-                if (modified === true) {
-                    return "";
-                }
-            });
-            /* when the user click "leave" , the click will be registered on document when JS loaded and will delegate to the '.leave' element*/
-            $(document).on('click', '.leave', function () {
-                // disable unload warning
-                /* remove 'beforeunload' event handler from window elements. syntax: $(selector).off(event,selector,function(eventObj),map)*/
-                $(window).off('beforeunload');
-            });
+            
 
 			//Tabbed Tables
 			/* jQuery selectors 
@@ -563,7 +553,7 @@
 				if (update_ap)
 					UpdateAreaTable(0, false);
 			} );
-
+      
 			//Area Table
 			function UpdateAreaTable(value, reduce_shift)
 			{
@@ -622,7 +612,24 @@
 				selected_area_table.row( selected ).remove().draw();
 			});
 			
+			$(window).on('beforeunload', function ()
+      {
+          if($("input[name=save]").val() === "false")
+            return false;
+      });
+			
 		} );
+		function saveChanges(e)
+      {
+        if(confirm("Save changes?"))
+        {
+          // return true here to save
+          $("input[name=save]").val("true");
+          return true;
+        };
+        return false;
+      }
+      
 	</script>
 </head>
 
@@ -705,9 +712,9 @@
 					<br/><br/>
 					</p>
 					
-					<form action="submitpref.php" method="post">
+					<form action="submitpref.php" method="post" onsubmit="return saveChanges();">
 						<?php $csrf->echoInputField();?>
-						
+						<input name='save' value="false" />
 						<input name="staffid" id="staffID" type="text" value="<?php echo $staffid; ?>" style="display:none;" />
 			  
 						<!-- TABS -->
