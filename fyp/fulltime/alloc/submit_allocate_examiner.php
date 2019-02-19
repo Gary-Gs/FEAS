@@ -141,26 +141,27 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	// Workload Sorting (ASC) Auto-Correction (Used to patch the workload correction)
 	uasort($staffList, "CmpWorkloadAsc");
 
-	Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS);
-	try {
-		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result']);
-		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_room']);
-		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_timeslot']);
-	} catch (PDOException $e) {
-		die($e->getMessage());
-	}
+	if (Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS)) { //if all no issue
+		try {
+			$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result']);
+			$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_room']);
+			$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_timeslot']);
+		} catch (PDOException $e) {
+			die($e->getMessage());
+		}
 
-	//Bulk Insert
-	$values = array();
-	foreach ($examinableProjectList as $project) {
-		$values[] = sprintf("('%s', '%s', NULL, NULL, NULL)", $project->getID(), $project->getAssignedStaff());
-	}
+		//Bulk Insert
+		$values = array();
+		foreach ($examinableProjectList as $project) {
+			$values[] = sprintf("('%s', '%s', NULL, NULL, NULL)", $project->getID(), $project->getAssignedStaff());
+		}
 
-	$updateQuery = sprintf("INSERT INTO %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) VALUES %s ON DUPLICATE KEY UPDATE `examiner_id`=VALUES(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
-	$conn_db_ntu->exec($updateQuery);
-	unset($values);
-	//echo "[PDO] Results Saved.<br/>";
-	$error_code = 0;
+		$updateQuery = sprintf("INSERT INTO %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) VALUES %s ON DUPLICATE KEY UPDATE `examiner_id`=VALUES(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
+		$conn_db_ntu->exec($updateQuery);
+		unset($values);
+		//echo "[PDO] Results Saved.<br/>";
+		$error_code = 0;
+	}
 }
 
 $conn_db_ntu = null;
@@ -197,8 +198,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$Total_Examinable_Staffs = sizeof($staffList);
 	$Total_BufferProjects = $_GET["Total_BufferProjects"];
 //	$Total_Workload = ($Total_BufferProjects + $Total_Projects) * $constant;
-	$Total_Workload = ($Total_BufferProjects + $Total_ExaminableProjects) * $constant;
-	$Target_Workload01 = ($Total_Examinable_Staffs > 0) ? ceil($Total_Workload / $Total_Examinable_Staffs) : 1;
+//	$Total_Workload = ($Total_BufferProjects + $Total_ExaminableProjects) * $constant;
+//	$Target_Workload01 = ($Total_Examinable_Staffs > 0) ? ceil($Total_Workload / $Total_Examinable_Staffs) : 1;
 	$WorkingStaffList = $staffList;
 	$WorkingProjectList = $examinableProjectList;
 	$Total_Examinable_StaffsAssigned = $Total_ProjectAssigned = $Total_Examinable_Staffs_Overload = $Total_ProjPrefCount = $Total_AreaPrefCount = 0;
@@ -214,33 +215,33 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$indexcount = 0;
 	foreach ($WorkingStaffList as $WorkingStaff) {
 		$indexcount++;
-		if ($WorkingStaff->getWorkload() < $Target_Workload01) {
-			// Staffs that are underload
-			// Staff with Proj preference
-			if (count($WorkingStaff->assignment_project) > 0) {
-				$AL_StaffWithPref_Project[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
-			}
-			// Staff with area preference
-			if (count($WorkingStaff->assignment_area) > 0) {
-				$AL_StaffWithPref_Area[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
-			}
-			// Staff with no proference
-			if (count($WorkingStaff->assignment_project) <= 0 && count($WorkingStaff->assignment_area) <= 0) {
-				// DEBUG
-				// echo sprintf("%002d.processing : %s : %s \n", $indexcount, $WorkingStaff->getID(), "no preference");
-				$AL_StaffWithPref_NoSelection[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
-			} else {
-				// DEBUG
-				// echo sprintf("%002d.processing : %s \n", $indexcount, $WorkingStaff->getID());
-			}
-		} else {
-			// Ignore those staffs that are overloaded
-			$AL_StaffOverLoad[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+//		if ($WorkingStaff->getWorkload() < $Target_Workload01) {
+//			// Staffs that are underload
+		// Staff with Proj preference
+		if (count($WorkingStaff->assignment_project) > 0) {
+			$AL_StaffWithPref_Project[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
 		}
+		// Staff with area preference
+		if (count($WorkingStaff->assignment_area) > 0) {
+			$AL_StaffWithPref_Area[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+		}
+		// Staff with no proference
+		if (count($WorkingStaff->assignment_project) <= 0 && count($WorkingStaff->assignment_area) <= 0) {
+			// DEBUG
+			// echo sprintf("%002d.processing : %s : %s \n", $indexcount, $WorkingStaff->getID(), "no preference");
+			$AL_StaffWithPref_NoSelection[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+		} else {
+			// DEBUG
+			// echo sprintf("%002d.processing : %s \n", $indexcount, $WorkingStaff->getID());
+		}
+//		} else {
+//			// Ignore those staffs that are overloaded
+//			$AL_StaffOverLoad[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+//		}
 	} // End of foreach
 
 	// Stats Tracking
-	$Total_Examinable_Staffs_Overload = count($AL_StaffOverLoad);
+//	$Total_Examinable_Staffs_Overload = count($AL_StaffOverLoad);
 
 	$count = sizeof($WorkingStaffList);
 	while ($count > 0) {
@@ -261,8 +262,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$String01 .= sprintf("%-28s : %04d \n", "Total Projects", $Total_Projects);
 	$String01 .= sprintf("%-28s : %04d \n", "Total Examinable Projects", $Total_ExaminableProjects);
 	$String01 .= sprintf("%-28s : %04d \n", "Total Buffer Projects", $Total_BufferProjects);
-	$String01 .= sprintf("%-28s : %04d = (%04d + %04d) * 4\n", "Total Workload", $Total_Workload, $Total_Projects, $Total_BufferProjects);
-	$String01 .= sprintf("%-28s : %04d = %04d / %04d\n", "Target Workload", $Target_Workload01, $Total_Workload, $Total_Examinable_Staffs);
+//	$String01 .= sprintf("%-28s : %04d = (%04d + %04d) * 4\n", "Total Workload", $Total_Workload, $Total_Projects, $Total_BufferProjects);
+//	$String01 .= sprintf("%-28s : %04d = %04d / %04d\n", "Target Workload", $Target_Workload01, $Total_Workload, $Total_Examinable_Staffs);
 	$String01 .= sprintf("%-44s : (%04d|%04d) \n", "Number of Staff (Overload|Underload)", $Total_Examinable_Staffs_Overload, $Total_Examinable_Staffs - $Total_Examinable_Staffs_Overload);
 	$String01 .= sprintf("%-44s : (%04d|%04d|%04d) --- from underload staff only\n", "Number of Staff (ProjPref|AreaPref|NoPref) ",
 		$Total_Examinable_StaffsWithPref_Proj, $Total_Examinable_StaffsWithPref_Area, $Total_Examinable_StaffsWithPref_NoSelection);
@@ -289,10 +290,10 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 					$randomProjectPreferenceKey = key($staff->assignment_project);
 					$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
 					if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
-						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff() &&
-							$WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID() &&
-							$staff->getWorkload() < $Target_Workload01)
-						{
+						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
+							&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
+//							&& $staff->getWorkload() < $Target_Workload01
+						) {
 							$WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
 							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 							$staff->setWorkload($Workload_New);
@@ -324,9 +325,10 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 							} // End of foreach
 							$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
 							if (count($IntersectResult) > 0) {
-								if (!$randomProject->isAssignedStaff() && $randomProject->getStaff() != $staff->getID() &&
-									$staff->getWorkload() < $Target_Workload01)
-								{
+								if (!$randomProject->isAssignedStaff()
+									&& $randomProject->getStaff() != $staff->getID()
+//									&& $staff->getWorkload() < $Target_Workload01
+								) {
 									$randomProject->assignStaff($staff->getID(), "Workload Assignment");
 									$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 									$staff->setWorkload($Workload_New);
@@ -345,12 +347,13 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 						for ($i = 0; $i < $ignore_project; $i++) {
 							next($WorkingProjectList);
 						}
+						if (!current($WorkingProjectList)) return 0; //no more projects
 						$randomProject = current($WorkingProjectList)->getID();
 
-						if (!$WorkingProjectList[$randomProject]->isAssignedStaff() &&
-							$WorkingProjectList[$randomProject]->getStaff() != $staff->getID() &&
-							$staff->getWorkload() < $Target_Workload01)
-						{
+						if (!$WorkingProjectList[$randomProject]->isAssignedStaff()
+							&& $WorkingProjectList[$randomProject]->getStaff() != $staff->getID()
+//							&& $staff->getWorkload() < $Target_Workload01
+						) {
 							$WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
 							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 							$staff->setWorkload($Workload_New);
@@ -368,7 +371,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 		$margin++;
 	}
 
-	return; //ignore following code
+	return 1; //ignore following code
 	// end of flooding algorithm
 
 //    $String01 = $String01 . sprintf("%s\n", "********************** Start of Project Pref Allocation ********************** ");
