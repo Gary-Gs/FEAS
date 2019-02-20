@@ -90,10 +90,22 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	$error_code = 1;
 } else {
 	// Covert DB objects into arraylist
+
 	// Interest Area
 	$interestAreaList = array();
 	foreach ($interestAreas as $interestArea) { //Index Staff by staffid
 		$interestAreaList[$interestArea["key"]] = $interestArea["title"];
+	}
+
+	// Project
+	$examinableProjectList = array();
+	foreach ($examinableProject as $project) { //Index Project By pno
+		$examinableProjectList[$project['pno']] = new Project($project['pno'], $project['staffid'], "", $project['ptitle']);
+		//Assign Project Area
+		for ($i = 1; $i <= 5; $i++) {
+			if ($project['parea' . $i] == null) continue;
+			$examinableProjectList[$project['pno']]->addProjectArea($project['parea' . $i]);
+		}
 	}
 
 	// Staff
@@ -117,21 +129,12 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 			continue;
 		$staffList[$projPref['staff_id']]->addInterestProject($projPref['choice'], $projPref['prefer']);
 
-		if (array_key_exists($projPref['prefer'], $projCount)) {
-			$projCount[$projPref['prefer']]++;
-		} else {
-			$projCount[$projPref['prefer']] = 1;
-		}
-	}
-
-	// Project
-	$examinableProjectList = array();
-	foreach ($examinableProject as $project) { //Index Project By pno
-		$examinableProjectList[$project['pno']] = new Project($project['pno'], $project['staffid'], "", $project['ptitle']);
-		//Assign Project Area
-		for ($i = 1; $i <= 5; $i++) {
-			if ($project['parea' . $i] == null) continue;
-			$examinableProjectList[$project['pno']]->addProjectArea($project['parea' . $i]);
+		if (array_key_exists($projPref['prefer'], $examinableProjectList)) {
+			if (array_key_exists($projPref['prefer'], $projCount)) {
+				$projCount[$projPref['prefer']]++;
+			} else {
+				$projCount[$projPref['prefer']] = 1;
+			}
 		}
 	}
 
@@ -141,27 +144,26 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	// Workload Sorting (ASC) Auto-Correction (Used to patch the workload correction)
 	uasort($staffList, "CmpWorkloadAsc");
 
-	if (Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS)) { //if all no issue
-		try {
-			$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result']);
-			$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_room']);
-			$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_timeslot']);
-		} catch (PDOException $e) {
-			die($e->getMessage());
-		}
-
-		//Bulk Insert
-		$values = array();
-		foreach ($examinableProjectList as $project) {
-			$values[] = sprintf("('%s', '%s', NULL, NULL, NULL)", $project->getID(), $project->getAssignedStaff());
-		}
-
-		$updateQuery = sprintf("INSERT INTO %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) VALUES %s ON DUPLICATE KEY UPDATE `examiner_id`=VALUES(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
-		$conn_db_ntu->exec($updateQuery);
-		unset($values);
-		//echo "[PDO] Results Saved.<br/>";
-		$error_code = 0;
+	Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS); //if all no issue
+	try {
+		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result']);
+		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_room']);
+		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_timeslot']);
+	} catch (PDOException $e) {
+		die($e->getMessage());
 	}
+
+	//Bulk Insert
+	$values = array();
+	foreach ($examinableProjectList as $project) {
+		$values[] = sprintf("('%s', '%s', NULL, NULL, NULL)", $project->getID(), $project->getAssignedStaff());
+	}
+
+	$updateQuery = sprintf("INSERT INTO %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) VALUES %s ON DUPLICATE KEY UPDATE `examiner_id`=VALUES(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
+	$conn_db_ntu->exec($updateQuery);
+	unset($values);
+	//echo "[PDO] Results Saved.<br/>";
+	$error_code = 0;
 }
 
 $conn_db_ntu = null;
@@ -347,7 +349,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 						for ($i = 0; $i < $ignore_project; $i++) {
 							next($WorkingProjectList);
 						}
-						if (!current($WorkingProjectList)) return 0; //no more projects
+						if (!current($WorkingProjectList)) return; //no more projects
 						$randomProject = current($WorkingProjectList)->getID();
 
 						if (!$WorkingProjectList[$randomProject]->isAssignedStaff()
@@ -371,7 +373,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 		$margin++;
 	}
 
-	return 1; //ignore following code
+	return; //ignore following code
 	// end of flooding algorithm
 
 //    $String01 = $String01 . sprintf("%s\n", "********************** Start of Project Pref Allocation ********************** ");
