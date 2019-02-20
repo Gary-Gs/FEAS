@@ -714,6 +714,7 @@
 					
 					<form action="submitpref.php" method="post" onsubmit="return saveChanges();">
 						<?php $csrf->echoInputField();?>
+						<input type="hidden" name ='save' value='false'/>
 						<input name="staffid" id="staffID" type="text" value="<?php echo $staffid; ?>" style="display:none;" />
 			  
 						<!-- TABS -->
