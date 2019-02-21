@@ -469,7 +469,7 @@
                         <?php 
                               $exemptionCount = 0;
                               $staffProjectCount = 0;
-                              $rowcount = 1;
+                              $rowcount = 0;
                               $count = 0;
                               $previousRecord;
                                     $details = "";
