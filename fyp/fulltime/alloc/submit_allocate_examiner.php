@@ -46,7 +46,7 @@ try {
 /* Converting DB to Object Models */
 $query_rsInterestArea = "SELECT * FROM " . $TABLES["interest_area"];
 
-$query_rsStaff = "SELECT s.id as staffid, s.name as staffname, s.position as salutation, COALESCE(s.workload, 0) as workload, COALESCE(s.examine, 1) as examine FROM " . $TABLES['staff'] . " as s WHERE s.examine=1 ORDER BY s.workload ASC, staffid ASC";
+$query_rsStaff = "SELECT s.id as staffid, s.name as staffname, s.position as salutation, COALESCE(s.exemptionS2, 0) as workload, COALESCE(s.examine, 1) as examine FROM " . $TABLES['staff'] . " as s WHERE s.examine=1 ORDER BY s.exemptionS2 ASC, staffid ASC";
 
 $query_rsProjPref = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE (prefer LIKE 'SCE%' OR prefer LIKE 'SCSE%') AND archive =0 ORDER BY choice ASC";
 
@@ -227,7 +227,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 		if (count($WorkingStaff->assignment_area) > 0) {
 			$AL_StaffWithPref_Area[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
 		}
-		// Staff with no proference
+		// Staff with no preference
 		if (count($WorkingStaff->assignment_project) <= 0 && count($WorkingStaff->assignment_area) <= 0) {
 			// DEBUG
 			// echo sprintf("%002d.processing : %s : %s \n", $indexcount, $WorkingStaff->getID(), "no preference");
@@ -362,7 +362,10 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 							$Total_ProjectAssigned++;
 							unset($WorkingProjectList[$randomProject]);
 							continue;
-						} else {
+						} else if ($WorkingProjectList[$randomProject]->getStaff() != $staff->getID()) {
+                            continue;
+                        }
+						else {
 							$ignore_project++;
 						}
 					}
