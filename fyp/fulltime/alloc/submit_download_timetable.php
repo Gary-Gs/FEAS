@@ -333,7 +333,7 @@
         $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCount, $staff['email']);
         $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCount, $staff['name']);
         $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCount, $staff['workload']);
-        $objPHPExcel->getActiveSheet()->SetCellValue('E'.$rowCount, $staff['exemption']);
+        $objPHPExcel->getActiveSheet()->SetCellValue('E'.$rowCount, $staff['exemptionS2']);
         foreach($supervising_load as $supervising) {
         	if ($supervising['staff_id'] == $staff['id']) {
         		if ($supervising['supervising_count']==null || $supervising['supervising_count']=="") {
