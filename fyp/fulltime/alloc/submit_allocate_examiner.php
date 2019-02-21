@@ -46,7 +46,7 @@ try {
 /* Converting DB to Object Models */
 $query_rsInterestArea = "SELECT * FROM " . $TABLES["interest_area"];
 
-$query_rsStaff = "SELECT s.id as staffid, s.name as staffname, s.position as salutation, COALESCE(s.workload, 0) as workload, COALESCE(s.examine, 1) as examine FROM " . $TABLES['staff'] . " as s WHERE s.examine=1 ORDER BY s.workload ASC, staffid ASC";
+$query_rsStaff = "SELECT s.id as staffid, s.name as staffname, s.position as salutation, COALESCE(s.exemptionS2, 0) as workload, COALESCE(s.examine, 1) as examine FROM " . $TABLES['staff'] . " as s WHERE s.examine=1 ORDER BY s.workload ASC, staffid ASC";
 
 $query_rsProjPref = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE (prefer LIKE 'SCE%' OR prefer LIKE 'SCSE%') AND archive =0 ORDER BY choice ASC";
 
@@ -200,8 +200,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$Total_Examinable_Staffs = sizeof($staffList);
 	$Total_BufferProjects = $_GET["Total_BufferProjects"];
 //	$Total_Workload = ($Total_BufferProjects + $Total_Projects) * $constant;
-//	$Total_Workload = ($Total_BufferProjects + $Total_ExaminableProjects) * $constant;
-//	$Target_Workload01 = ($Total_Examinable_Staffs > 0) ? ceil($Total_Workload / $Total_Examinable_Staffs) : 1;
+	$Total_Workload = ($Total_BufferProjects + $Total_ExaminableProjects) * $constant;
+	$Target_Workload01 = ($Total_Examinable_Staffs > 0) ? ceil($Total_Workload / $Total_Examinable_Staffs) : 1;
 	$WorkingStaffList = $staffList;
 	$WorkingProjectList = $examinableProjectList;
 	$Total_Examinable_StaffsAssigned = $Total_ProjectAssigned = $Total_Examinable_Staffs_Overload = $Total_ProjPrefCount = $Total_AreaPrefCount = 0;
@@ -217,29 +217,29 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$indexcount = 0;
 	foreach ($WorkingStaffList as $WorkingStaff) {
 		$indexcount++;
-//		if ($WorkingStaff->getWorkload() < $Target_Workload01) {
-//			// Staffs that are underload
-		// Staff with Proj preference
-		if (count($WorkingStaff->assignment_project) > 0) {
-			$AL_StaffWithPref_Project[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
-		}
-		// Staff with area preference
-		if (count($WorkingStaff->assignment_area) > 0) {
-			$AL_StaffWithPref_Area[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
-		}
-		// Staff with no proference
-		if (count($WorkingStaff->assignment_project) <= 0 && count($WorkingStaff->assignment_area) <= 0) {
-			// DEBUG
-			// echo sprintf("%002d.processing : %s : %s \n", $indexcount, $WorkingStaff->getID(), "no preference");
-			$AL_StaffWithPref_NoSelection[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+		if ($WorkingStaff->getWorkload() < $Target_Workload01) {
+			// Staffs that are underload
+			// Staff with Proj preference
+			if (count($WorkingStaff->assignment_project) > 0) {
+				$AL_StaffWithPref_Project[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+			}
+			// Staff with area preference
+			if (count($WorkingStaff->assignment_area) > 0) {
+				$AL_StaffWithPref_Area[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+			}
+			// Staff with no proference
+			if (count($WorkingStaff->assignment_project) <= 0 && count($WorkingStaff->assignment_area) <= 0) {
+				// DEBUG
+				// echo sprintf("%002d.processing : %s : %s \n", $indexcount, $WorkingStaff->getID(), "no preference");
+				$AL_StaffWithPref_NoSelection[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
+			} else {
+				// DEBUG
+				// echo sprintf("%002d.processing : %s \n", $indexcount, $WorkingStaff->getID());
+			}
 		} else {
-			// DEBUG
-			// echo sprintf("%002d.processing : %s \n", $indexcount, $WorkingStaff->getID());
+			// Ignore those staffs that are overloaded
+			$AL_StaffOverLoad[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
 		}
-//		} else {
-//			// Ignore those staffs that are overloaded
-//			$AL_StaffOverLoad[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
-//		}
 	} // End of foreach
 
 	// Stats Tracking
@@ -294,7 +294,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 					if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
 						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
 							&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
-//							&& $staff->getWorkload() < $Target_Workload01
+							&& $staff->getWorkload() < $Target_Workload01
 						) {
 							$WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
 							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
@@ -329,7 +329,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 							if (count($IntersectResult) > 0) {
 								if (!$randomProject->isAssignedStaff()
 									&& $randomProject->getStaff() != $staff->getID()
-//									&& $staff->getWorkload() < $Target_Workload01
+									&& $staff->getWorkload() < $Target_Workload01
 								) {
 									$randomProject->assignStaff($staff->getID(), "Workload Assignment");
 									$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
@@ -354,7 +354,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 
 						if (!$WorkingProjectList[$randomProject]->isAssignedStaff()
 							&& $WorkingProjectList[$randomProject]->getStaff() != $staff->getID()
-//							&& $staff->getWorkload() < $Target_Workload01
+							&& $staff->getWorkload() < $Target_Workload01
 						) {
 							$WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
 							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
