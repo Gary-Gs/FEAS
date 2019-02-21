@@ -113,6 +113,8 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	foreach ($staffs as $staff) { //Index Staff by staffid
 		$staffList[$staff['staffid']] = new Staff($staff['staffid'], $staff['salutation'], $staff['staffname'], $staff['workload']);
 		$staff_workload += $staff['workload'];
+		echo $staff['staffid'] . "|" . $staff['workload'];
+
 	}
 
 	// Staff Area Preference (Ordered by staff's choice)
@@ -122,7 +124,6 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 		$staffList[$areaPref['staff_id']]->addInterestArea($areaPref['choice'], $areaPref['prefer']);
 	}
 
-	echo staffList['asfli']['workload'];
 
 	$projCount = array();
 	// Staff Project Preference (Ordered by staff's choice)
