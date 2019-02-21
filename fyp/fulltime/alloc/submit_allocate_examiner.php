@@ -122,6 +122,8 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 		$staffList[$areaPref['staff_id']]->addInterestArea($areaPref['choice'], $areaPref['prefer']);
 	}
 
+	echo staffList['asfli']['workload'];
+
 	$projCount = array();
 	// Staff Project Preference (Ordered by staff's choice)
 	foreach ($projPrefs as $projPref) { //Project Preference
