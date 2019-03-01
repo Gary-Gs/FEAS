@@ -21,7 +21,7 @@ function CmpWorkloadAsc($a, $b) {
 //Assignment Settings
 try {
 
-	$query_rsOtherSettings = "SELECT * FROM " . $TABLES['allocation_settings_others'] . " WHERE type = 'FT'";
+	$query_rsOtherSettings = "select * from " . $TABLES['allocation_settings_others'] . " where type = 'FT'";
 	$otherSettings = $conn_db_ntu->query($query_rsOtherSettings)->fetch();
 
 } catch (PDOException $e) {
@@ -44,18 +44,19 @@ try {
 //$_SESSION['examSemValue']  = $examSemValue;
 //$_SESSION['examYearValue'] = $examYearValue;
 /* Converting DB to Object Models */
-$query_rsInterestArea = "SELECT * FROM " . $TABLES["interest_area"];
+$query_rsInterestArea = "select * from " . $TABLES["interest_area"];
 
-$query_rsStaff = "SELECT s.id as staffid, s.name as staffname, s.position as salutation, COALESCE(s.exemptionS2, 0) as workload, COALESCE(s.examine, 1) as examine FROM " . $TABLES['staff'] . " as s WHERE s.examine=1 ORDER BY s.exemptionS2 ASC, staffid ASC";
+$exempt_sem = ($examSemValue == 2) ? "s.exemptionS2" : "s.exemption";
+$query_rsStaff = "select s.id as staffid, s.name as staffname, s.position as salutation, coalesce(" . $exempt_sem . ", 0) as workload, coalesce(s.examine, 1) as examine from " . $TABLES['staff'] . " as s where s.examine=1 order by " . $exempt_sem . " asc, staffid asc";
 
-$query_rsProjPref = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE (prefer LIKE 'SCE%' OR prefer LIKE 'SCSE%') AND archive =0 ORDER BY choice ASC";
+$query_rsProjPref = "select * from " . $TABLES['staff_pref'] . " where (prefer like 'SCE%' or prefer like 'SCSE%') and archive = 0 order by choice asc";
 
-//$query_rsAreaPref = "SELECT * FROM " . $TABLES['staff_pref'] . " WHERE prefer not LIKE 'SCE%' ORDER BY choice ASC";
-$query_rsAreaPref = "SELECT * FROM " . $TABLES['staff_pref'] . " as sp INNER JOIN " . $TABLES['interest_area'] . " as ia ON sp.prefer= ia.key  AND  archive =0 ORDER BY choice ASC";
+//$query_rsAreaPref = "select * from " . $TABLES['staff_pref'] . " where prefer not like 'SCE%' order by choice asc";
+$query_rsAreaPref = "select * from " . $TABLES['staff_pref'] . " as sp inner join " . $TABLES['interest_area'] . " as ia on sp.prefer= ia.key  and  archive =0 order by choice asc";
 
-$query_rsExaminableProject = "select t1.pno, t1.staffid, t1.exam_year, t1.exam_sem, t1.ptitle, t1.parea1, t1.parea2, t1.parea3, t1.parea4, t1.parea5, count(t2.projects) as chosen from (SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM `fea_projects` as p3 LEFT JOIN `fyp_assign` as p2 ON p3.project_id=p2.project_id LEFT JOIN `fyp` as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 and p3.examine_year = " . $examYearValue . " and p3.examine_sem = " . $examSemValue . ") as t1 left join (select prefer as projects from `fea_staff_pref` where archive = 0) as t2 on t1.pno=t2.projects group by t1.pno order by chosen asc";
+$query_rsExaminableProject = "select t1.pno, t1.staffid, t1.exam_year, t1.exam_sem, t1.ptitle, t1.parea1, t1.parea2, t1.parea3, t1.parea4, t1.parea5, count(t2.projects) as chosen from (select p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 from `fea_projects` as p3 left join `fyp_assign` as p2 on p3.project_id=p2.project_id left join `fyp` as p1 on p2.project_id=p1.project_id where p2.complete = 0 and p3.examine_year = " . $examYearValue . " and p3.examine_sem = " . $examSemValue . ") as t1 left join (select prefer as projects from `fea_staff_pref` where archive = 0) as t2 on t1.pno=t2.projects group by t1.pno order by chosen asc";
 
-$query_rsTotalProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 FROM " . $TABLES['fea_projects'] . " as p3 LEFT JOIN " . $TABLES['fyp_assign'] . " as p2 ON p3.project_id=p2.project_id  LEFT JOIN " . $TABLES['fyp'] . " as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 ";
+$query_rsTotalProject = "select p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 from " . $TABLES['fea_projects'] . " as p3 left join " . $TABLES['fyp_assign'] . " as p2 on p3.project_id=p2.project_id  left join " . $TABLES['fyp'] . " as p1 on p2.project_id=p1.project_id where p2.complete = 0 ";
 
 // Need to get the last 2 sems project list
 if ($examSemValue == 1) {
@@ -68,7 +69,7 @@ if ($examSemValue == 1) {
 	// 17/18 Sem2+ 17/18 Sem1
 	$query_rsTotalProject .= "and p3.examine_year = " . $examYearValue;
 }
-$query_rsTotalProject .= " ORDER BY p3.project_id ASC ";
+$query_rsTotalProject .= " order by p3.project_id asc ";
 
 try {
 	$interestAreas = $conn_db_ntu->query($query_rsInterestArea);
@@ -141,14 +142,14 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	//sort project list based on how many staff selected it (ascending)
 	$sorted_projectlist = mergesort($projCount, $examinableProjectList);
 
-	// Workload Sorting (ASC) Auto-Correction (Used to patch the workload correction)
+	// Workload Sorting (asc) Auto-Correction (Used to patch the workload correction)
 	uasort($staffList, "CmpWorkloadAsc");
 
 	Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS); //if all no issue
 	try {
-		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result']);
-		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_room']);
-		$conn_db_ntu->exec("DELETE FROM " . $TABLES['allocation_result_timeslot']);
+		$conn_db_ntu->exec("delete from " . $TABLES['allocation_result']);
+		$conn_db_ntu->exec("delete from " . $TABLES['allocation_result_room']);
+		$conn_db_ntu->exec("delete from " . $TABLES['allocation_result_timeslot']);
 	} catch (PDOException $e) {
 		die($e->getMessage());
 	}
@@ -159,7 +160,7 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 		$values[] = sprintf("('%s', '%s', NULL, NULL, NULL)", $project->getID(), $project->getAssignedStaff());
 	}
 
-	$updateQuery = sprintf("INSERT INTO %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) VALUES %s ON DUPLICATE KEY UPDATE `examiner_id`=VALUES(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
+	$updateQuery = sprintf("insert into %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) values %s on duplicate key update `examiner_id`=values(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
 	$conn_db_ntu->exec($updateQuery);
 	unset($values);
 	//echo "[PDO] Results Saved.<br/>";
@@ -283,6 +284,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 			break;
 		}
 		foreach ($WorkingStaffList as $staff) {
+
 			$ignore_project = 0;
 			while ($staff->getWorkload() < $margin && count($WorkingProjectList) > 0) {
 				if (!count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
@@ -363,9 +365,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 							unset($WorkingProjectList[$randomProject]);
 							continue;
 						} else if ($WorkingProjectList[$randomProject]->getStaff() != $staff->getID()) {
-                            continue;
-                        }
-						else {
+							continue;
+						} else {
 							$ignore_project++;
 						}
 					}
