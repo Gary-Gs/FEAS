@@ -99,11 +99,17 @@ if (isset($_REQUEST['filter_Sem'])) {
 $redirect = true;
 if (isset ($_REQUEST['validate'])) {
 
+    if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
+    $_SESSION["semester"] = $_REQUEST["filter_Sem"];
+    $_SESSION["year"] = $_REQUEST["filter_Year"];
     echo "validate=1";
 
 } else if ($redirect) {
     //header("location:examiner_setting.php?uploaded=1");
     //header("Location: examiner_settings.php",true,302);
+    if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
+    $_SESSION["semester"] = $_REQUEST["filter_Sem"];
+    $_SESSION["year"] = $_REQUEST["filter_Year"];
    echo ($error_code != 0) ? "error_code=$error_code" : "examiner_setting=1";
 
 }
@@ -206,50 +212,7 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath, $Exempti
                         $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
                     }
 
-                    /*echo "<html>";
-                    echo "<h2>Hello world</h2>";
-                    echo "</html>";
-                    */
-
-
-                    /* else {
-
-                         $Stmt = sprintf("UPDATE %s SET exemption = %d, examine = %d WHERE name = '%s' OR name2 = '%s'", $TABLES["staff"], $exemption, 1, $EXCEL_StaffName, $EXCEL_StaffName);
-                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                         if ($DBOBJ_Result->execute()) {
-                             $RowCount_Updated++;
-                             $Contents = $Contents . sprintf("%03d. projects: %d Staff : %-25s : %-35s . Examine and exemption updated successfully \n", $RowCount, $projects, $Data['id'], $Data['name']);
-                         } else {
-                             $Contents = $Contents . sprintf("%03d. sem: %d. %d Staff : %-25s : %-35s . Examine was not updated successfully \n", $RowCount, $sem, $projects, $Data['id'], $Data['name']);
-                         }
-                     }*/
                 } else {
-
-
-                    /* if ($sem == 2) {
-                         // Try to create the Examine of the staff
-                         $Stmt = sprintf("INSERT INTO %s (id, email, name, workload, exemption, exemptionS2, examine) VALUES('%s', '%s', '%s', %d,%d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, 0, $exemption, $EXCEL_Loading, 1);
-                         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                         if ($DBOBJ_Result->execute()) {
-                             $RowCount_Created++;
-                             $Contents = $Contents . sprintf("%03d. exe: %d sem: %d Staff : %-25s : %-35s : Exemption : %2d . Examine created successfully! \n", $RowCount,$exemption,$sem, $EXCEL_StaffID, $EXCEL_StaffName, $exemption);
-                         } else {
-                             $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                         }
-                     }*/
-                    /* echo "<html>";
-                     echo "<form name=\"newstaff\" action=\"#\" method = >";
-                     echo "<table style=\"width: 100%;\">";
-                     echo "<tr>";
-                     echo "<td>";
-                     echo "<h2>test</h2>";
-                     echo $EXCEL_StaffName;
-                     echo "</td>";
-                     echo "</tr>";
-                     echo "</table>";
-                     echo "</form>";
-                     echo "</html>";
-                   */
 
 
                     // Try to create the Examine of the staff
@@ -279,107 +242,26 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath, $Exempti
                 }
 
 
-
-                /*  $stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE acad_year = '%s'", $TABLES["fyp"], $year);
-                  $DBOBJ_Result = $conn_db_ntu->prepare($stmt2);
-                  $DBOBJ_Result->execute();
-                  $projects = $DBOBJ_Result->fetchColumn();
-
-                  $facultySize = $Total_DataInSheet;
-                  //echo '<script> alert("$Total_DataInSheet")</script>';
-                  $base = $projects * 4 / $facultySize;
-                */
-
-                /*if ($sem == 2) {
-                    /*$stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE acad_year = '%s' AND sem = '%s'", $TABLES["fyp"], $year, $sem);
-                    $DBOBJ_Result = $conn_db_ntu->prepare($stmt2);
-                    $DBOBJ_Result->execute();
-                    $projects = $DBOBJ_Result->fetchColumn()
-
-                    $facultySize = $Total_DataInSheet;
-                    //echo '<script> alert("$Total_DataInSheet")</script>';
-                    $base = $projects * 4 / $facultySize;
-                    $exemption = (int)floor($base * (1 - ($EXCEL_Loading / 100)));
-                    */
-
-                // Check if the staff in excel list is in staff table
-                /* $Stmt = sprintf("SELECT * FROM  %s WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffID);
-                 $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                 $DBOBJ_Result->execute();
-                 $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
-
-                 if (isset($Data['id']) && !empty($Data['id'])) {
-                     // Try to update the examine of the staff
-
-                     $Stmt = sprintf("UPDATE %s SET exemptionS2 = %d, examine = %d WHERE id = '%s'", $TABLES["staff"], $EXCEL_Loading, 1, $EXCEL_StaffID);
-                     $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                     if ($DBOBJ_Result->execute()) {
-                         $RowCount_Updated++;
-                         $Contents = $Contents . sprintf("%03d. sem: %d. Staff : %-25s : %-35s . Examine updated successfully \n", $RowCount,$sem, $Data['id'], $Data['name']);
-                     } else {
-                         $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
-                     }
-                 } else {
-                     // Try to create the Examine of the staff
-                     $Stmt = sprintf("INSERT INTO %s (id, email, name, workload, exemptionS2, examine) VALUES('%s', '%s', '%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, 0, $EXCEL_Loading, 1);
-                     $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                     if ($DBOBJ_Result->execute()) {
-                         $RowCount_Created++;
-                         $Contents = $Contents . sprintf("%03d. sem: %d Staff : %-25s : %-35s : Exemption : %2d . Examine created successfully! \n", $RowCount,$sem, $EXCEL_StaffID, $EXCEL_StaffName, $exemption);
-                     } else {
-                         $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                     }
-                 }
-                 /*  if (isset($Data['id']) && !empty($Data['id'])) {
-                       $Stmt = sprintf("UPDATE %s SET exemptionS2 = %d, examine = %d WHERE id = '%s'", $TABLES["staff"], $EXCEL_Loading, 1, $EXCEL_StaffID);
-                       $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                       if ($DBOBJ_Result->execute()) {
-                           $RowCount_Updated++;
-
-                           $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Sem : %d . Examine updated successfully \n", $RowCount, $Data['id'], $Data['name'], $sem);
-                       } else {
-                           $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Sem: %d. Examine was not updated successfully \n", $RowCount, $Data['id'], $Data['name'], $sem);
-
-                       }
-                   } else {
-                       // Try to create the Examine of the staff
-                       $Stmt = sprintf("INSERT INTO %s (id, email, name, workload,exemptionS2, examine) VALUES('%s', '%s', '%s', %d, %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, 0, $EXCEL_Loading, 1);
-                       $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                       if ($DBOBJ_Result->execute()) {
-                           $RowCount_Created++;
-                           $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s : Exemption : %2d Sem : %d . Examine created successfully! \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName, $EXCEL_Loading, $sem);
-                       } else {
-                           $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Sem: %d Examine was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName, $sem);
-                       }
-                   }
-                 */
-
-
             } else {
                 $Total_DataEmpty++;
-                $EXCEL_StaffName = $EXCEL_AllData[$RowIndex]["B"];
-                // staff without email address
-              //  $staffWithoutEmail["name"] = $EXCEL_StaffName;
-
-                $Contents = $Contents . sprintf("%03d. %-30s : %-35s %-35s\n", $RowCount, "Empty email detected at row ", $RowCount, ". FAILED - No Email");
+                $Contents = $Contents . sprintf("%03d. %-30s : %03d %-35s\n", $RowCount, "Empty email detected at row ", $RowCount, ". FAILED - No Email");
             }
         }
 
 
-        // $Stmt = sprintf("SELECT COUNT(*) FROM %s WHERE examine=1;", $TABLES["staff_workload"]);
-        // $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-        // $DBOBJ_Result->execute();
-        // $RowCount = $DBOBJ_Result->fetchColumn();
 
+
+
+        // store new examiner without name2 into session var for modal input
         if (!empty($newExaminerWithoutName2)) {
             if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
             $_SESSION["newExaminerWithoutName2"] = $newExaminerWithoutName2;
         }
+        // store new examiner not in exemption file into session var for modal input
         if (!empty($missingExaminerInExemption)) {
             if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
             $_SESSION["missingExaminerInExemption"] = $missingExaminerInExemption;
-            //$_SESSION["exemptionFile"] = $ExemptionFile_FullPath;
-           // $_SESSION["masterFile"] = $MasterFile_FullPath;
+
 
         }
         $Contents = $Contents . sprintf("%-35s : %04d/%04d\n", "Total staff examine updated", $RowCount_Updated, $Total_DataInSheet - $Total_DataEmpty);
@@ -418,6 +300,7 @@ function getFacultySize($ExaminerFile_FullPath) {
 
 }
 
+// finds
 function findExaminersInExemption($ExemptionFile_FullPath,$staffName,$staffEmail,&$missingExaminerInExemption) {
 
     $PHPExcelObj = \PhpOffice\PhpSpreadsheet\IOFactory::load($ExemptionFile_FullPath);
@@ -481,11 +364,6 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
         $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
         $DBOBJ_Result->execute();
         $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
-        /* if (isset($Data['id']) && !empty($Data['id'])) {
-             $initialize = sprintf("UPDATE %s SET workload = 0", $TABLES["staff"]);
-             $conn_db_ntu->prepare($initialize)->execute();
-         }
-        */
 
         // reset staff's exemptionS2
         if (isset($Data['id']) && !empty($Data['id'])) {
@@ -503,14 +381,11 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
             }
             $EXCEL_MScSupervised = 0;
             HandleExcelData_Master($error_code, $MasterFile_FullPath, $Data['name'], $Data['name2'], $EXCEL_MScSupervised, $c);
-           // echo "msc value ". $EXCEL_MScSupervised;
             $projects = $projects + $EXCEL_MScSupervised;
-            //$facultySize = $Total_DataInSheet;
             $facultySize = getFacultySize($ExaminerFile_FullPath);
             $base = $projects * 4 / $facultySize;
             if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
             $_SESSION["S2base"] = $base;
-           // echo "base value ". $base;
         }
 
 
@@ -519,11 +394,7 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
             $RowCount++;
             // Check if name is empty or null
             if (isset($EXCEL_AllData[$RowIndex]["B"]) && !empty($EXCEL_AllData[$RowIndex]["B"])) {
-                // $EXCEL_StaffWorkLoad	= is_numeric ($EXCEL_AllData[$RowIndex]["N"]) && $EXCEL_AllData[$RowIndex]["N"] >= 0 ? $EXCEL_AllData[$RowIndex]["N"] : 0;
-                //$EXCEL_StaffID 		= strtolower($EXCEL_AllData[$RowIndex]["B"]);
                 $EXCEL_StaffName = trim($EXCEL_AllData[$RowIndex]["B"]);
-                //$EXCEL_StaffID			= explode('@', $EXCEL_StaffEmail)[0];
-                //$EXCEL_StaffEmail       = strtolower($EXCEL_StaffID) . "@ntu.edu.sg";
 
 
                 // Check if the staff in excel list is in staff table
@@ -537,8 +408,6 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
                     if ($sem == 2) {
                         $ProjectsSupervised = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
                         $ProjectsExaminedinS1 = is_numeric($EXCEL_AllData[$RowIndex]["E"]) ? $EXCEL_AllData[$RowIndex]["E"] : 0;
-                        //$MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
-                        //$MScExamined = is_numeric($EXCEL_AllData[$RowIndex]["L"]) ? $EXCEL_AllData[$RowIndex]["L"] : 0;
                         $MScSupervised = 0;
                         $MScExamined = 0;
                         HandleExcelData_Master($error_code, $MasterFile_FullPath, $Data['name'], $Data['name2'], $MScSupervised, $MScExamined);
@@ -558,120 +427,13 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
                         }
 
                     }
-                    /*else {
-                        $Stmt = sprintf("UPDATE %s SET workload = %d WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffWorkLoad, $EXCEL_StaffID);
-                        $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                        if ($DBOBJ_Result->execute()) {
-                            $RowCount_Updated++;
-                            $Contents = $Contents . sprintf("%03d. sem: %d. Staff : %-25s : %-35s . Workload updated successfully \n", $RowCount, $sem, $Data['id'], $Data['name']);
-                        } else {
-                            $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Workload was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
-                        }
-                    }*/
 
-
-                } else {
-                    // Check if the staff in excel list is in staff table
-                /*    $Stmt = sprintf("SELECT * FROM  %s WHERE (name = '%s' OR name2 ='%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
-                    $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                    $DBOBJ_Result->execute();
-                    $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
-
-
-                    if (!isset($Data['id']) && empty($Data['id'])) {
-                        // to do let user input name2
-                        $newStaff[] = $EXCEL_StaffName;
-                    }
-                */
-
-
-
-                    /* if ($sem == 2) {
-                         $ProjectsSupervised   = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
-                         $ProjectsExaminedinS1 = is_numeric($EXCEL_AllData[$RowIndex]["E"]) ? $EXCEL_AllData[$RowIndex]["E"] : 0;
-                         $MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
-                         $MScExamined = is_numeric($EXCEL_AllData[$RowIndex]["L"]) ? $EXCEL_AllData[$RowIndex]["L"] : 0;
-
-                         $exemption = intval(floor($base * (1 - ($Data['workload'] / 100)) +  (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1 + $MScExamined));
-
-                         $Stmt 			= sprintf("INSERT INTO %s (id, email, name, workload, exemptionS2, examine) VALUES('%s', '%s', '%s', %d, %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, $EXCEL_StaffWorkLoad, $exemption, 0);
-                         $DBOBJ_Result 	= $conn_db_ntu->prepare($Stmt);
-                         if($DBOBJ_Result->execute()){
-                             $RowCount_Created++;
-                             $Contents 	= $Contents . sprintf("%03d. Staff : %-25s : %-35s . ExemptionS2 and Workload created successfully! \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                         }else{
-                             $Contents 	= $Contents . sprintf("%03d. Staff : %-25s : %-35s . ExemptionS2 was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                         }
-
-                     }*/
-                    /*  else {
-                          // Try to create the workload of the staff
-                          $Stmt = sprintf("INSERT INTO %s (id, email, name, workload, examine) VALUES('%s', '%s', '%s', %d, %d)", $TABLES["staff"], $EXCEL_StaffID, $EXCEL_StaffEmail, $EXCEL_StaffName, $EXCEL_StaffWorkLoad, 0);
-                          $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
-                          if ($DBOBJ_Result->execute()) {
-                              $RowCount_Created++;
-                              $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Workload created successfully! \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                          } else {
-                              $Contents = $Contents . sprintf("%03d. Staff : %-25s : %-35s . Workload was not created successfully \n", $RowCount, $EXCEL_StaffID, $EXCEL_StaffName);
-                          }
-                      }*/
                 }
             } else {
                 $Total_DataEmpty++;
-                //$EXCEL_StaffName = $EXCEL_AllData[$RowIndex]["B"];
-                //$AL_StaffWithoutEmail[$EXCEL_StaffName] = $EXCEL_StaffName;
                 $Contents = $Contents . sprintf("%03d. %-30s : %-35s %-35s\n", $RowCount, "Empty name detected at row ", $RowCount, ". FAILED - No Name");
             }
         }
-
-        /*
-        if ($sem == 2) {
-            for ($RowIndex = 3; $RowIndex <= $Total_DataInSheet + $Offset; $RowIndex ++ ) {
-                $EXCEL_ProjectsSupervised   = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
-                $EXCEL_MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
-                $projects = $projects + $EXCEL_ProjectsSupervised + $EXCEL_MScSupervised;
-            }
-            $facultySize = $Total_DataInSheet;
-            $base = $projects * 4 / $facultySize;
-
-            for ($RowIndex = 3; $RowIndex <= $Total_DataInSheet + $Offset; $RowIndex ++ ) {
-                $EXCEL_StaffID 		= strtolower($EXCEL_AllData[$RowIndex]["B"]);
-                $stmt3 = sprintf("SELECT * FROM  %s WHERE id = '%s'", $TABLES["staff"], $EXCEL_StaffID);
-                $DBOBJ_Result = $conn_db_ntu->prepare($stmt3);
-                $DBOBJ_Result->execute();
-                $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
-
-
-                if (isset($Data['id']) && !empty($Data['id'])) {
-                    $ProjectsSupervised   = is_numeric($EXCEL_AllData[$RowIndex]["H"]) && $EXCEL_AllData[$RowIndex]["H"] >= 0 ? $EXCEL_AllData[$RowIndex]["H"] : 0;
-                    $MScSupervised = is_numeric($EXCEL_AllData[$RowIndex]["K"]) ? $EXCEL_AllData[$RowIndex]["K"] : 0;
-                    $ProjectsExaminedinS1 = is_numeric($EXCEL_AllData[$RowIndex]["E"]) ? $EXCEL_AllData[$RowIndex]["E"] : 0;
-                    $exemption = intval(floor($base * (1 - ($Data['exemptionS2'] / 100)) +  (($ProjectsSupervised + $MScSupervised) * 3) + $ProjectsExaminedinS1));
-
-                    $Stmt 			= sprintf("UPDATE %s SET exemptionS2 = %d WHERE id = '%s'", $TABLES["staff"], $exemption, $EXCEL_StaffID);
-                    $DBOBJ_Result 	= $conn_db_ntu->prepare($Stmt);
-                    if($DBOBJ_Result->execute()){
-                        $RowCount_Updated++;
-                        $Contents 	= $Contents . sprintf("%03d. Staff : %-25s : %-35s . ExemptionS2 updated successfully \n", $RowCount, $Data['id'], $Data['name']);
-                    }else{
-                        $Contents 	= $Contents . sprintf("%03d. Staff : %-25s : %-35s . ExemptionS2 was not updated successfully \n", $RowCount, $Data['id'], $Data['name']);
-                    }
-
-
-                }
-
-            }
-
-        }*/
-
-      /*  if (!empty($newStaff)) {
-            if (session_status() !== PHP_SESSION_ACTIVE) { session_start();}
-           // $result = array_merge((array)$_SESSION["staffWithoutEmail"], (array)$newStaff);
-           // $result = array_unique($result);
-            $_SESSION["newNonExaminerWithoutEmail"] = $newStaff;
-
-        }
-      */
 
         $Contents = $Contents . sprintf("%-35s : %04d/%04d\n", "Total staff exemption updated", $RowCount_Updated, $Total_DataInSheet - $Total_DataEmpty);
         // RESULT

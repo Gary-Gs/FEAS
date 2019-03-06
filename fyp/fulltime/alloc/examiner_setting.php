@@ -77,8 +77,9 @@ $conn_db_ntu = null;
 
 <body>
 
-<!-- Modal-->
-<div class="modal fade" id="addNewStaffModal" tabindex="-1" role="dialog" aria-labelledby="eaddNewStaffModalLongTitle" aria-hidden="true">
+
+<!-- modal to input new examiner name 2 -->
+<div class="modal fade" id="addNewStaffModal" tabindex="-1" role="dialog" aria-labelledby="addNewStaffModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,7 +88,7 @@ $conn_db_ntu = null;
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="submit_savemodal.php">
+            <form method="post" action="submit_save_examiner_modal.php">
                 <div class="modal-body">
 
 
@@ -167,16 +168,18 @@ $conn_db_ntu = null;
     </div>
 </div>
 
+<!-- jquery not launching modal
 <script>
-    $(document).ready(function() {
-        $("#myBtn").click(function(){
-            $("#addNewStaffModal").modal("show");
+    $(function() {
+        $("#modalBtn").click(function launch(){
+            $("#addNewStaffModal").modal({show:true});
         });
 
     });
 
 
 </script>
+-->
 
 
 <div id="loadingdiv" class="loadingdiv">
@@ -208,13 +211,10 @@ $conn_db_ntu = null;
                 <form id="FORM_FileToUpload_ExaminerSettings" class="form-inline" enctype="multipart/form-data"
                       role="form">
                     <table style="text-align: left; width: 100%;">
-                        <col width="20%"/>
-                        <col width="20%"/>
-                        <col width="20%"/>
-                        <col width="20%"/>
-                        <col width="20%"/>
+                        <col width="50%"/>
+                        <col width="50%"/>
                         <tr>
-                            <td style="text-align: left; color:Orange;" colspan="4">
+                            <td style="text-align: left; color:Orange;">
                                 Please ensure you have the latest staff list uploaded. You can do it <u><a
                                             href="../gen/faculty.php"> here</a></u>
 
@@ -223,6 +223,38 @@ $conn_db_ntu = null;
                                 <input type="submit" value="Import" name="submit" class="btn btn-xs btn-success">
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                Please select the examine academic year and the sem to import excel for:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b> Exam AC Year</b>
+                                <select id="filter_Year" name="filter_Year">
+                                    <?php
+                                    $currentYear = sprintf("%04d", substr(date("Y"), 0));
+                                    $earliestYear = $currentYear - 10;
+
+                                    // Loops over each int[year] from current year, back to the $earliest_year [1950]
+                                    foreach (range($currentYear, $earliestYear) as $i) {
+
+                                        if (isset($_REQUEST["filter_Year"]) && $_REQUEST["filter_Year"] == $i) {
+                                            echo "<option selected value='" . $i . "'>" . $i . "</option>";
+                                        }
+                                        else if (isset($_SESSION["year"]) && $_SESSION["year"] == $i) {
+                                            echo "<option selected value='". $i ."'>" . $i . "</option>";
+                                            unset($_SESSION["year"]);
+                                        }
+                                        else {
+                                            echo "<option value='" . $i . "'>" . $i . "</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+
                         <tr><?php
                             if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2)
                                 echo "<td colspan='5'>Please select <b><u>examiner list,</u></b> <b><u>exemption</u></b> and <b><u>master</u></b> files to upload:</td>";
@@ -241,6 +273,7 @@ $conn_db_ntu = null;
                             ?>
 
                         </tr>
+
                         <tr>
                             <td colspan="2">
                                 <input type="file" id="FileToUpload_ExaminerSettings"
@@ -253,7 +286,7 @@ $conn_db_ntu = null;
                         <tr>
                             <td>
                                 <br/>
-                                <button type="button" class="btn btn-info btn-md" id="myBtn" data-toggle="modal" data-target="#addNewStaffModal">After import</button>
+                                <button type="button" class="btn btn-info btn-md" id="modalBtn" data-toggle="modal" data-target="#addNewStaffModal">After Import</button>
                             </td>
                         </tr>
                         <tr>
@@ -448,26 +481,7 @@ $conn_db_ntu = null;
                             <col width="20%"/>
                         </colgroup>
                         <tr>
-                            <td>
-                                <b> Exam AC Year</b>
-                                <select id="filter_Year" name="filter_Year" onchange="this.form.submit()">
-                                    <?php
-                                    $currentYear = sprintf("%04d", substr(date("Y"), 0));
-                                    $earliestYear = $currentYear - 10;
 
-                                    // Loops over each int[year] from current year, back to the $earliest_year [1950]
-                                    foreach (range($currentYear, $earliestYear) as $i) {
-
-
-                                        if (isset($_REQUEST["filter_Year"]) && $_REQUEST["filter_Year"] == $i) {
-                                            echo "<option selected value='" . $i . "'>" . $i . "</option>";
-                                        } else {
-                                            echo "<option value='" . $i . "'>" . $i . "</option>";
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </td>
                         </tr>
                         <tr>
 
@@ -477,10 +491,17 @@ $conn_db_ntu = null;
                                 <select id="filter_Sem" name="filter_Sem" onchange="this.form.submit()">
                                     <!--<option value="">SELECT</option>-->
                                     <?php
+
+                                    if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
                                     for ($index = 1; $index < 3; $index++) {
                                         if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == $index) {
                                             echo "<option selected value='" . $index . "'>" . $index . "</option>";
-                                        } else {
+                                        }
+                                        else if (isset($_SESSION["semester"]) && $_SESSION["semester"] == $index) {
+                                            echo "<option selected value='". $index ."'>" . $index . "</option>";
+                                            unset($_SESSION["semester"]);
+                                        }
+                                        else {
                                             echo "<option value='" . $index . "'>" . $index . "</option>";
                                         }
                                     }
@@ -503,7 +524,7 @@ $conn_db_ntu = null;
                 </form>
                 <br/>
 
-                <form action="submit_savewl.php" method="post">
+                <form id="examiner_form" action="submit_savewl.php" method="post">
                     <?php $csrf->echoInputField(); ?>
                     <table id="staffTable" border="1" cellpadding="0" cellspacing="0" width="100%">
                         <col width="25%"/>
@@ -530,9 +551,9 @@ $conn_db_ntu = null;
 
                         <?php
                         foreach ($rsStaff as $row_rsStaff) {
-                            $staffid = str_replace('.', '', $row_rsStaff['id']);
+                            $staffid = str_replace('.','',$row_rsStaff['id']);
                             echo "<tr class='text-center'>";
-                            echo "<input type='hidden' id='index_" . $staffid . "' name='index_" . $staffid . "' value='" . $row_rsStaff['id'] . "'/>";
+                            echo "<input type='hidden' id='index_" . $staffid . "' name='index_" . $staffid . "' value='" . $staffid . "'/>";
                             echo "<td>";
                             echo ($row_rsStaff['name'] != null) ? "<input type='text' name='name_" . $staffid . "'  value='" . $row_rsStaff['name'] . "' required />" :
                                 "<input type='text'  name='name_" . $staffid . "'  required />";
@@ -552,7 +573,8 @@ $conn_db_ntu = null;
                             if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
                                 echo ($row_rsStaff['exemptionS2'] != null) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' required />" :
                                     "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='0' required />";
-                            } // display sem 1 staffs' exemptions.
+                            }
+                            // display sem 1 staffs' exemptions.
                             else {
                                 echo ($row_rsStaff['exemption'] != null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />" :
                                     "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' required />";
@@ -638,7 +660,7 @@ $conn_db_ntu = null;
                         var table = document.getElementById("staffTable");
                         var rows = table.getElementsByTagName("tr");
                         var selectedRowsIndex = [];
-                        for (var i = 0; i < rows.length; i++) {
+                        for (var i = rows.length-1 ; i >= 0 ; i--) {
                             var row = rows[i];
                             if (row.style.backgroundColor == "yellow" && row.classList.contains("selected")) {
                                 selectedRowsIndex.push(i);
@@ -650,7 +672,7 @@ $conn_db_ntu = null;
                     $(document).ready(function () {
                         $("#deleteEntry").click(function deleteRow() {
                             var sTable = document.getElementById("staffTable");
-                            var selectedRowsIndex = getHighlightedRows().reverse();
+                            var selectedRowsIndex = getHighlightedRows();
                             var r = confirm("Delete the selected staff(s)?");
                             if (r == true){
                                 for (var i = 0; i < selectedRowsIndex.length; i++) {
@@ -679,6 +701,14 @@ $conn_db_ntu = null;
                             }
                         }
                     }
+
+                    $("#examiner_form").submit( function(eventObj) {
+                        $('<input />').attr('type', 'hidden')
+                            .attr('name', "sem")
+                            .attr('value', $('#filter_Sem :selected').text())
+                            .appendTo('#examiner_form');
+                        return true;
+                    });
 
                 </script>
 

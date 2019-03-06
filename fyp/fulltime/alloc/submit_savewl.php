@@ -13,33 +13,13 @@ $_REQUEST['validate'] = $csrf->cfmRequest();
 $rsStaff = $conn_db_ntu->query("SELECT * FROM " . $TABLES['staff'] . " ORDER BY id ASC")->fetchAll();
 
 
-/*$sem = 0;
-if (isset($_REQUEST["filter_Sem"])) {
-    $sem
-}*/
-/*
-//Single Insert
-foreach ($rsStaff as $curStaff)
-{
-    if(isset($_REQUEST['index_'.$curStaff['id']]))
-    {
-        $workload = GetSQLValueString($_REQUEST['workload_'.$curStaff['id']],"int");
-        if($workload === "NULL") $workload = 0;
 
-        $canExamine = isset($_REQUEST['examine_'.$curStaff['id']]);
-        $updateQuery = sprintf("INSERT INTO %s (`staff_id`, `workload`, `examine`) VALUES ('%s', %d, %d) ON DUPLICATE KEY UPDATE `workload`=VALUES(`workload`), `examine`=VALUES(`examine`)",
-                                $TABLES['staff_workload'], $curStaff['id'], $workload, $canExamine);
-        $conn_db_ntu->exec($updateQuery);
-    }
-}*/
-
-//Bulk Insert
+//matches the table with the database and update database if there are changes.
 $delete = array();
 foreach ($rsStaff as $curStaff) {
-    //$staffid = str_replace('.', '', $curStaff['id']);
-    $staffid = $curStaff['id'];
-    if (isset($_REQUEST['index_' . $staffid])) {
-
+    $staffid = str_replace('.','',$curStaff['id']);
+    //$staffid = $curStaff['id'];
+    if (isset($_REQUEST['index_'.$staffid]) && !empty($_REQUEST['index_'.$staffid])) {
 
         $name = GetSQLValueString(trim($_REQUEST['name_' . $staffid]), "text");
         $name2 = GetSQLValueString(trim($_REQUEST['name2_' . $staffid]), "text");
@@ -62,17 +42,18 @@ foreach ($rsStaff as $curStaff) {
             $id, $email, $name, $name2, $exemption, $canExamine);
        */
 
-        if (isset($_REQUEST['exemption_' . $staffid]) && !empty($_REQUEST['exemption_' . $staffid])) {
+        if (isset($_REQUEST["sem"]) && $_REQUEST["sem"] == 1) {
             $exemption = GetSQLValueString(trim($_REQUEST['exemption_' . $staffid]), "int");
             if ($exemption === "NULL") $exemption = 0;
 
+            echo $exemption;
             if (trim($_REQUEST['name_' . $staffid]) != $curStaff['name'] || trim($_REQUEST['name2_' . $staffid]) != $curStaff['name2'] || $canExamine != $curStaff['examine'] || $exemption != $curStaff['exemption']) {
                 $query_Update = sprintf("UPDATE %s SET name=%s, name2=%s, examine=%d, exemption=%d where id =%s", $TABLES["staff"], $name, $name2, $canExamine, $exemption, $id);
                 $DBOBJ_Result = $conn_db_ntu->prepare($query_Update);
                 $DBOBJ_Result->execute();
             }
         }
-        else if (isset($_REQUEST['exemptionS2_' . $staffid]) && !empty($_REQUEST['exemptionS2_' . $staffid])) {
+        else if (isset($_REQUEST["sem"]) && $_REQUEST["sem"] == 2) {
             $exemptionS2 = GetSQLValueString(trim($_REQUEST['exemptionS2_' . $staffid]), "int");
             if ($exemptionS2 === "NULL") $exemptionS2 = 0;
 
@@ -82,25 +63,22 @@ foreach ($rsStaff as $curStaff) {
                 $DBOBJ_Result->execute();
             }
         }
-    } else {
-        $staffid = GetSQLValueString($staffid, "text");
-        echo $staffid;
-        $delete[] = sprintf("id=%s", $staffid);
+    }
+    // find any deleted staff entries from examiner setting table and delete the staffs from the database.
+    else {
+        $id = GetSQLValueString($curStaff['id'], "text");
+        $query_Delete = sprintf("DELETE FROM %s WHERE id=%s", $TABLES["staff"],$id);
+        $DBOBJ_Result = $conn_db_ntu->prepare($query_Delete);
+        $DBOBJ_Result->execute();
+        //$delete[] = sprintf("id=%s", $staffid);
     }
 }
 
-if (!empty($delete) && isset($delete)) {
-    $query_Delete = sprintf("DELETE FROM %s WHERE %s", $TABLES["staff"], implode(" OR ", $delete));
-    $DBOBJ_Result = $conn_db_ntu->prepare($query_Delete);
-    $DBOBJ_Result->execute();
-
-}
-
-
+// add new staff into database
 $c = 0;
 if (isset($_REQUEST['newEmail'])) {
     foreach ($_REQUEST['newEmail'] as $newRecord) {
-        $newID = GetSQLValueString(explode("@", strtolower(trim($_REQUEST['newEmail'][$c])))[0], "text");
+        $newID = GetSQLValueString(explode("@", strtolower(trim($newRecord)))[0], "text");
         $newEmail = GetSQLValueString(strtolower($_REQUEST['newEmail'][$c]), "text");
         $newName = GetSQLValueString(trim($_REQUEST['newName'][$c]), "text");
         $newName2 = GetSQLValueString(trim($_REQUEST['newName2'][$c]), "text");
@@ -119,7 +97,6 @@ if (isset($_REQUEST['newEmail'])) {
 
 $conn_db_ntu = null;
 unset($rsStaff);
-//unset($values);
 unset($delete);
 unset($c);
 
