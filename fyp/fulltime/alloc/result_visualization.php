@@ -13,10 +13,10 @@
       }
       else{
             if(($nmonth >= 01) && ($nmonth <= 06)){
-                  $filter_ProjectSem = 2;
+                  $filter_ProjectSem = 1;
             } 
             elseif(($nmonth >= 07) && ($nmonth <= 12)){
-                  $filter_ProjectSem = 1;
+                  $filter_ProjectSem = 2;
             } 
       }
       
