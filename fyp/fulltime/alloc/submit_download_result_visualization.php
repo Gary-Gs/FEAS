@@ -17,59 +17,161 @@
             $filter_ProjectYear = $_REQUEST['filter_ProjectYear'];
     }
     if($filter_ProjectSem == 1){
-          $query_rsProject    = "SELECT p.project_id as project_id, student.name as student_name, p1.title as project_name, s.name as staff_name, s.id as staff_id, s.exemption as no_of_exemption, r.examiner_id as examinerid, examiner_info.name as examiner_name,  r.day as day, r.slot as slot, r.room as room 
-            FROM " . $TABLES['fyp_assign'] . " as p 
-            JOIN ". $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+          // you need to order them in this order so that you will get the supervising slot first then examining slot
+            $query_rsProject = "SELECT DISTINCT staff_name, staff_id, project_id, student_name, project_name, no_of_exemption, examinerid, examiner_name, day, slot, room, supervisor_name
+            FROM
+            (SELECT s.name as staff_name, s.id as staff_id, p.project_id as project_id, student.name as student_name, p1.title as project_name, 
+            s.exemption as no_of_exemption, r.examiner_id as examinerid, examiner_info.name as examiner_name,  r.day as day, r.slot as slot, r.room as room, null as supervisor_name
+            FROM  " . $TABLES['fyp_assign'] . " as p 
             JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
             JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
             LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
-            LEFT JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
-            LEFT JOIN  " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
-            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) ORDER BY s.id";  
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+            UNION ALL 
+            SELECT examiner_info.name as staff_name, r.examiner_id as staff_id, 
+            p.project_id as project_id, student.name as student_name, p1.title as project_name, 
+            examiner_info.exemption as no_of_exemption, null as examinerid, null as examiner_name,  r.day as day, r.slot as slot, r.room as room, s.name as supervisor_name
+            FROM  " . $TABLES['fyp_assign'] . " as p 
+            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?)
+            ) as totalResults
+            ORDER BY staff_name, supervisor_name, examiner_name"; 
 
-            $query_rsProjectCount = "SELECT s.id as staff_id, COUNT(p.project_id) as project_count, s.exemption as no_of_exemption 
-                  FROM " . $TABLES['fyp_assign'] . " as p 
-                  JOIN " .$TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
-                  JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
-                  LEFT JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
-            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) GROUP BY s.id ORDER BY s.id"; 
+
+            //you need to get the supervising project count, exemption count and project examining count
+            $query_rsProjectCount = "SELECT DISTINCT staff_name, staff_id, SUM(project_count) as project_count, no_of_exemption, 
+            SUM(examining_project) as examining_project
+            FROM
+            (SELECT s.name as staff_name, s.id as staff_id, COUNT(p.project_id) as project_count, s.exemption as no_of_exemption, 
+            0 examining_project
+            FROM  " . $TABLES['fyp_assign'] . "  as p 
+            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+            GROUP BY s.name, s.id
+            UNION ALL
+                  SELECT s.name as staff_name, s.id as staff_id, 0 as project_count, s.exemption as no_of_exemption, 
+                  COUNT(r.project_id) as  examining_project
+                  FROM " . $TABLES['staff'] . " as s 
+                  JOIN " . $TABLES['allocation_result'] . " as r ON s.id = r.examiner_id 
+                  JOIN " . $TABLES['fea_projects'] . " as projects ON projects.project_id = r.project_id 
+                  WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+            GROUP BY s.name, s.id, s.exemption
+            UNION ALL 
+            SELECT examiner_info.name as staff_name, r.examiner_id as staff_id, 
+            0 project_count, examiner_info.exemption as no_of_exemption, 0 examining_project
+            FROM  " . $TABLES['fyp_assign'] . " as p 
+            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . "  as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?)
+            ) as totalResults
+            GROUP By staff_name, staff_id
+            ORDER BY staff_name";
       }
       else{
-             $query_rsProject    = "SELECT p.project_id as project_id, student.name as student_name, p1.title as project_name, s.name as staff_name, s.id as staff_id, s.exemptionS2 as no_of_exemption, r.examiner_id as examinerid, examiner_info.name as examiner_name,  r.day as day, r.slot as slot, r.room as room 
-            FROM " . $TABLES['fyp_assign'] . " as p 
-            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id
-            JOIN ". $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
-            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
-            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
-            LEFT JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
-            LEFT JOIN  " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
-            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) ORDER BY s.id";   
-
-            $query_rsProjectCount = "SELECT s.id as staff_id, COUNT(p.project_id) as project_count, s.exemptionS2 as no_of_exemption 
-                  FROM " . $TABLES['fyp_assign'] . " as p 
-                  JOIN " .$TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
-                  JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
-                  LEFT JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
-            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) GROUP BY s.id ORDER BY s.id"; 
-
-            /* $query_rsProject  = "SELECT p.project_id as project_id, student.name as student_name, p1.title as project_name, s.name as staff_name, s.id as staff_id, r.examiner_id as examinerid, examiner_info.name as examiner_name,  r.day as day, r.slot as slot, r.room as room FROM " . $TABLES['fyp_assign'] . " as p 
+            // you need to order them in this order so that you will get the supervising slot first then examining slot
+            $query_rsProject = "SELECT DISTINCT staff_name, staff_id, project_id, student_name, project_name, no_of_exemption, examinerid, examiner_name, day, slot, room, supervisor_name
+            FROM
+            (SELECT s.name as staff_name, s.id as staff_id, p.project_id as project_id, student.name as student_name, p1.title as project_name, 
+            s.exemptionS2 as no_of_exemption, r.examiner_id as examinerid, examiner_info.name as examiner_name,  r.day as day, r.slot as slot, r.room as room, null as supervisor_name
+            FROM  " . $TABLES['fyp_assign'] . " as p 
             JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
             JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
             LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
-            LEFT JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
-            LEFT JOIN  " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
-            WHERE (p.sem LIKE ? AND p.year LIKE ? AND s.id in ('adamskong', 'anupam')) ORDER BY s.id"; */
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+            UNION ALL 
+            SELECT examiner_info.name as staff_name, r.examiner_id as staff_id, 
+            p.project_id as project_id, student.name as student_name, p1.title as project_name, 
+            examiner_info.exemptionS2 as no_of_exemption, null as examinerid, null as examiner_name,  r.day as day, r.slot as slot, r.room as room, s.name as supervisor_name
+            FROM  " . $TABLES['fyp_assign'] . " as p 
+            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?)
+            ) as totalResults
+            ORDER BY staff_name, supervisor_name, examiner_name"; 
+
+            //you need to get the supervising project count, exemption count and project examining count
+            $query_rsProjectCount = "SELECT DISTINCT staff_name, staff_id, SUM(project_count) as project_count, no_of_exemption, 
+            SUM(examining_project) as examining_project
+            FROM
+            (SELECT s.name as staff_name, s.id as staff_id, COUNT(p.project_id) as project_count, s.exemptionS2 as no_of_exemption, 
+            0 examining_project
+            FROM  " . $TABLES['fyp_assign'] . "  as p 
+            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+            GROUP BY s.name, s.id
+            UNION ALL
+                  SELECT s.name as staff_name, s.id as staff_id, 0 as project_count, s.exemptionS2 as no_of_exemption, 
+                  COUNT(r.project_id) as  examining_project
+                  FROM " . $TABLES['staff'] . " as s 
+                  JOIN " . $TABLES['allocation_result'] . " as r ON s.id = r.examiner_id 
+                  JOIN " . $TABLES['fea_projects'] . " as projects ON projects.project_id = r.project_id 
+                  WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+            GROUP BY s.name, s.id, s.exemption
+            UNION ALL 
+            SELECT examiner_info.name as staff_name, r.examiner_id as staff_id, 
+            0 project_count, examiner_info.exemptionS2 as no_of_exemption, 0 examining_project
+            FROM  " . $TABLES['fyp_assign'] . " as p 
+            JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . "  as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?)
+            ) as totalResults
+            GROUP By staff_name, staff_id
+            ORDER BY staff_name";
       }     
     
 
-      $query_rsProjectExamining     = "SELECT p.project_id as project_id, student.name as student_name, p1.title as project_name, s.name as staff_name, s.id as staff_id, r.examiner_id as examinerid, examiner_info.name as examiner_name,  r.day as day, r.slot as slot, r.room as room FROM " . $TABLES['fyp_assign'] . " as p 
-            JOIN " .$TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+            $query_rsProjectExaminingCount     = "SELECT r.examiner_id as examinerid, COUNT(p.project_id) as project_count
+              FROM " . $TABLES['fyp_assign'] . " as p 
+              JOIN " .$TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
+              JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+              JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+              JOIN  " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+              WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) 
+              GROUP BY r.examiner_id
+              ORDER BY examiner_info.id";
+
+            $query_supervisingCount = "SELECT DISTINCT s.name as staff_name, s.id as staff_id
+            FROM  " . $TABLES['fyp_assign'] . " as p 
             JOIN " . $TABLES['fyp'] . " as p1 ON p.project_id = p1.project_id 
+            JOIN " . $TABLES['fea_projects'] . " as projects ON p.project_id = projects.project_id
             JOIN " . $TABLES['staff'] . " as s ON p.staff_id = s.id 
-            JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
-            JOIN ". $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
-            JOIN  " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
-            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?) ORDER BY examiner_info.id";
+            LEFT JOIN " . $TABLES['student'] . " as student ON p.student_id = student.student_id 
+            LEFT JOIN " . $TABLES['allocation_result'] . " as r ON r.project_id = p.project_id 
+            LEFT JOIN " . $TABLES['staff'] . " as examiner_info ON r.examiner_id = examiner_info.id 
+            WHERE (projects.examine_sem LIKE ? AND projects.examine_year LIKE ?)";
 
 	try
 	{
@@ -77,23 +179,39 @@
             $stmt_0 = $conn_db_ntu->prepare($query_rsProject);
             $stmt_0->bindParam(1, $filter_ProjectSem); //Search project sem
             $stmt_0->bindParam(2, $filter_ProjectYear); //Search project year
+            $stmt_0->bindParam(3, $filter_ProjectSem); //Search project sem
+            $stmt_0->bindParam(4, $filter_ProjectYear); //Search project year
             $stmt_0->execute();
-		    $projects = $stmt_0->fetchAll(PDO::FETCH_ASSOC);
+            $projects = $stmt_0->fetchAll(PDO::FETCH_ASSOC);
 
             //Get before allocation project count
             $stmt_1 = $conn_db_ntu->prepare($query_rsProjectCount);
             $stmt_1->bindParam(1, $filter_ProjectSem); //Search project sem
             $stmt_1->bindParam(2, $filter_ProjectYear); //Search project year
+            $stmt_1->bindParam(3, $filter_ProjectSem); //Search project sem
+            $stmt_1->bindParam(4, $filter_ProjectYear); //Search project year
+            $stmt_1->bindParam(5, $filter_ProjectSem); //Search project sem
+            $stmt_1->bindParam(6, $filter_ProjectYear); //Search project year
             $stmt_1->execute();
             $projectsCount = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
             $totalRowCount = count($projectsCount);
 
-            //Get after allocation examining project 
-            $stmt_2 = $conn_db_ntu->prepare($query_rsProjectExamining);
-            $stmt_2->bindParam(1, $filter_ProjectSem); //Search project sem
-            $stmt_2->bindParam(2, $filter_ProjectYear); //Search project year
-            $stmt_2->execute();
-            $examiningProjects = $stmt_2->fetchAll(PDO::FETCH_ASSOC);
+
+
+            //Get after examining project count
+            $stmt_3 = $conn_db_ntu->prepare($query_rsProjectExaminingCount);
+            $stmt_3->bindParam(1, $filter_ProjectSem); //Search project sem
+            $stmt_3->bindParam(2, $filter_ProjectYear); //Search project year
+            $stmt_3->execute();
+            $examiningProjectsCount = $stmt_3->fetchAll(PDO::FETCH_ASSOC);
+
+
+            //Get supervising project count 
+            $stmt_4 = $conn_db_ntu->prepare($query_supervisingCount);
+            $stmt_4->bindParam(1, $filter_ProjectSem); //Search project sem
+            $stmt_4->bindParam(2, $filter_ProjectYear); //Search project year
+            $stmt_4->execute();
+            $supervisingProjectsCount = $stmt_4->fetchAll(PDO::FETCH_ASSOC);
 	}
 	catch (PDOException $e)
 	{
@@ -155,100 +273,119 @@
     $previousCellColumn;
     $details = "";
     foreach($projects as $value){
-        if($rowcount > 1){
-        // when the staffid is the same as the previous record
-            if(strcmp($previousRecord, $value['staff_id']) == 0){
-                $previousCellColumn++;
-                $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
-                $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'startColor' => array( 'rgb' => 'CCFFCC' )));
-                $previousRecord = $value['staff_id'];
-                $count++;
-                $staffProjectCount++; 
-            }
-            if(strcmp($previousRecord, $value['staff_id']) != 0){
-                // to cater the first row
-                if($rowcount == 2){
-                    $exemptionCount = $projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count'];
-                    /* if($exemptionCount > 30){ //restriction to max 30
-                        $exemptionCount = 30;
-                    }*/
-                    for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                        $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
-                    } 
-                    $rowCountExcel++;
-                }
-                elseif($rowcount >=3){
-                    $exemptionCount =  $projectsCount[$rowcount-2]['no_of_exemption'] - $projectsCount[$rowcount-2]['project_count'];
+        if(is_null($value['examinerid'])){
+            $count++;
+        }
 
-                    /* if($exemptionCount > 30){ //restriction to max 30
-                        $exemptionCount = 30;
-                    }*/
-                    for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                        $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
+        else{
+            if($rowcount > 1){
+            // when the staffid is the same as the previous record
+                if(strcmp($previousRecord, $value['staff_id']) == 0){
+                    $previousCellColumn++;
+                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
+                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startColor' => array( 'rgb' => 'CCFFCC' )));
+                    $previousRecord = $value['staff_id'];
+                    $count++;
+                    $staffProjectCount++; 
+                }
+                if(strcmp($previousRecord, $value['staff_id']) != 0){
+
+                    foreach($projectsCount as $countprojects){
+                          if(strcmp($countprojects['staff_id'], $previousRecord) == 0){
+                                $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                
+                                for($i = 1; $i <= $exemptionCount; $i++){
+                                    $previousCellColumn++;
+                                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'startColor' => array( 'rgb' => 'FFFF99' )));
+                                }   
+                          }
+                          
                     }
                     $rowCountExcel++;
+
+
+                   
+                    $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
+                    $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
+                    foreach($projectsCount as $countprojects){
+                    if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                            $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                        }
+                    }
+                    $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, $exemptionCount);
+                    $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCountExcel, $value['project_id']);
+                    $objPHPExcel->getActiveSheet()->getStyle('D'.$rowCountExcel)->getFill()->applyFromArray(array(
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startColor' => array( 'rgb' => 'CCFFCC' )));
+
+                    $previousCellColumn = 'D';
+
+                    if($rowcount == count($supervisingProjectsCount)){
+                        foreach($projectsCount as $countprojects){
+                            if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
+                                $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                            }
+                        }
+                        for($i = 1; $i <= $exemptionCount; $i++){
+                            $previousCellColumn++;
+                             $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                            $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                            //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                            'startColor' => array( 'rgb' => 'FFFF99' )));
+                        }
+                    }
+
+                    
+                    $previousRecord = $value['staff_id'];
+                    $rowcount++;
+                    $count++;
+                    $staffProjectCount = 0; 
+                    
+
+
+
+
                 }
+
+                  
+
+            }
+                
+            elseif($rowcount == 1){
                 $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
                 $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
-                $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, ($projectsCount[$rowcount-1]['no_of_exemption'] - $projectsCount[$rowcount-1]['project_count']));
+                foreach($projectsCount as $countprojects){
+                    if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                        $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                    }
+                }
+                $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, $exemptionCount);
                 $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCountExcel, $value['project_id']);
                 $objPHPExcel->getActiveSheet()->getStyle('D'.$rowCountExcel)->getFill()->applyFromArray(array(
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 //'type' => PHPExcel_Style_Fill::FILL_SOLID,
                 'startColor' => array( 'rgb' => 'CCFFCC' )));
-                $previousRecord = $value['staff_id'];
                 $rowcount++;
                 $count++;
-                $staffProjectCount = 0; 
+                $staffProjectCount++;
+                $previousRecord = $value['staff_id'];
                 $previousCellColumn = 'D';
             }
 
-              // to close off the last row
-              if($count == count($projects)){
-                     $exemptionCount = $projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count'];
-                     /* if($exemptionCount > 30){ //restriction to max 30
-                            $exemptionCount = 30;
-                     }*/
-                    for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                         $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
-                    }
-              }
 
         }
-            
-        elseif($rowcount == 1){
-            $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
-            $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, ($projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count']));
-            $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCountExcel, $value['project_id']);
-            $objPHPExcel->getActiveSheet()->getStyle('D'.$rowCountExcel)->getFill()->applyFromArray(array(
-            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-            //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-            'startColor' => array( 'rgb' => 'CCFFCC' )));
-            $rowcount++;
-            $count++;
-            $staffProjectCount++;
-            $previousRecord = $value['staff_id'];
-            $previousCellColumn = 'D';
-        }
+
+
+        
     }
     //Autosize Sheet 1
     autosize_currentSheet();
@@ -277,138 +414,280 @@
     $previousRecord;
     $previousCellColumn;
     $details = "";
+    $exemptionList = array();
     foreach($projects as $value){
-        if($rowcount > 1){
-        // when the staffid is the same as the previous record
-            if(strcmp($previousRecord, $value['staff_id']) == 0){
-                $previousCellColumn++;
-                $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
-                $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'startColor' => array( 'rgb' => 'CCFFCC' )));
-                $previousRecord = $value['staff_id'];
-                $count++;
-                $staffProjectCount++; 
-            }
-            if(strcmp($previousRecord, $value['staff_id']) != 0){
-                // to cater the first row
-                if($rowcount == 2){
-                    $exemptionCount = $projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count'];
-                    /* if($exemptionCount > 30){ //restriction to max 30
-                        $exemptionCount = 30;
-                    }*/
-                    for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                        $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
-                    } 
-                    foreach($examiningProjects as $examiner){
-                        if(strcmp($examiner['examinerid'], $previousRecord) == 0){
-                            $previousCellColumn++;
-                             $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $examiner['project_id']);
-                        }
-                    }
-                    $rowCountExcel++;
-                }
-                elseif($rowcount >=3){
-                    $exemptionCount =  $projectsCount[$rowcount-2]['no_of_exemption'] - $projectsCount[$rowcount-2]['project_count'];
+        if((!is_null($value['examinerid'])) && (is_null($value['supervisor_name']))){
+            if($rowcount > 1){
+                if(strcmp($previousRecord, $value['staff_id']) == 0){
+                    
+                    $previousCellColumn++;
+                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
+                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startColor' => array( 'rgb' => 'CCFFCC' )));
+                    $count++;
+                    $staffProjectCount++;
+                    $previousRecord = $value['staff_id'];
 
-                    /* if($exemptionCount > 30){ //restriction to max 30
-                        $exemptionCount = 30;
-                    }*/
-                    for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                        $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
-                    }
-                    foreach($examiningProjects as $examiner){
-                        if(strcmp($examiner['examinerid'], $previousRecord) == 0){
-                            $previousCellColumn++;
-                             $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $examiner['project_id']);
-                        }
-                    }
-                    $rowCountExcel++;
                 }
+
+                if(strcmp($previousRecord, $value['staff_id']) != 0){
+
+                     if(in_array($previousRecord, $exemptionList) == false){
+
+                        foreach($projectsCount as $countprojects){
+                            if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
+                                $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                
+                                for($i = 1; $i <= $exemptionCount; $i++){
+                                    $previousCellColumn++;
+                                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'startColor' => array( 'rgb' => 'FFFF99' )));
+                                }
+
+                                $exemptionList[$rowcount] = $previousRecord;
+                                  
+                            }
+                        }
+
+                        
+                    }
+
+                    $rowCountExcel++;
+
+                    $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
+                    $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
+                    foreach($projectsCount as $countprojects){
+                        if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                            }
+                    }
+                    $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, $exemptionCount);
+                    $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCountExcel, $value['project_id']);
+                    $objPHPExcel->getActiveSheet()->getStyle('D'.$rowCountExcel)->getFill()->applyFromArray(array(
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startColor' => array( 'rgb' => 'CCFFCC' )));
+                    $rowcount++;
+                    $count++;
+                    $staffProjectCount++;
+                    $previousRecord = $value['staff_id'];
+                    $previousCellColumn = 'D';
+
+                }
+
+                if($count == count($projects)){
+                    foreach($projectsCount as $countprojects){
+                        $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                        for($i = 1; $i <= $exemptionCount; $i++){
+                            echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                        }
+
+                    }
+                    $exemptionList[$rowcount] = $previousRecord;
+                }
+
+
+            }
+            elseif($rowcount == 1){
                 $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
                 $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
-                $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, ($projectsCount[$rowcount-1]['no_of_exemption'] - $projectsCount[$rowcount-1]['project_count']));
+                foreach($projectsCount as $countprojects){
+                    if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                            $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                        }
+                }
+                $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, $exemptionCount);
                 $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCountExcel, $value['project_id']);
                 $objPHPExcel->getActiveSheet()->getStyle('D'.$rowCountExcel)->getFill()->applyFromArray(array(
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 //'type' => PHPExcel_Style_Fill::FILL_SOLID,
                 'startColor' => array( 'rgb' => 'CCFFCC' )));
-                $previousRecord = $value['staff_id'];
                 $rowcount++;
                 $count++;
-                $staffProjectCount = 0; 
+                $staffProjectCount++;
+                $previousRecord = $value['staff_id'];
                 $previousCellColumn = 'D';
-            }
 
-              // to close off the last row
-              if($count == count($projects)){
-                     $exemptionCount = $projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count'];
-                     /* if($exemptionCount > 30){ //restriction to max 30
-                            $exemptionCount = 30;
-                     }*/
-                    for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                         $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
-                    }
-                    foreach($examiningProjects as $examiner){
-                        if(strcmp($examiner['examinerid'], $previousRecord) == 0){
+                if($count == count($projects)){
+                     if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
+                        $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                        
+                        for($i = 1; $i <= $exemptionCount; $i++){
                             $previousCellColumn++;
-                             $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $examiner['project_id']);
+                            $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                            $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                            //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                            'startColor' => array( 'rgb' => 'FFFF99' )));
                         }
-                    }
-              }
-
-        }
-            
-        elseif($rowcount == 1){
-            $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
-            $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, ($projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count']));
-            $objPHPExcel->getActiveSheet()->SetCellValue('D'.$rowCountExcel, $value['project_id']);
-            $objPHPExcel->getActiveSheet()->getStyle('D'.$rowCountExcel)->getFill()->applyFromArray(array(
-            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-            //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-            'startColor' => array( 'rgb' => 'CCFFCC' )));
-            $rowcount++;
-            $count++;
-            $staffProjectCount++;
-            $previousRecord = $value['staff_id'];
-            $previousCellColumn = 'D';
-
-            if($count == count($projects)){
-                $exemptionCount =  $projectsCount[$rowcount-2]['no_of_exemption'] - $projectsCount[$rowcount-2]['project_count'];
-                for($i = 1; $i <= $exemptionCount; $i++){
-                        $previousCellColumn++;
-                         $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
-                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'startColor' => array( 'rgb' => 'FFFF99' )));
-                    }
-                foreach($examiningProjects as $examiner){
-                    if(strcmp($examiner['examinerid'], $previousRecord) == 0){
-                        $previousCellColumn++;
-                         $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $examiner['project_id']);
+                          
                     }
                 }
+            }
+        }
+
+        elseif(is_null($value['examinerid']) && !(is_null($value['supervisor_name']))){
+            if($rowcount>1){
+                if(strcmp($previousRecord, $value['staff_id']) == 0){
+
+                    if(in_array($previousRecord, $exemptionList) == false){
+
+                        foreach($projectsCount as $countprojects){
+                            if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
+                                $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                
+                                for($i = 1; $i <= $exemptionCount; $i++){
+                                    $previousCellColumn++;
+                                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'startColor' => array( 'rgb' => 'FFFF99' )));
+                                }
+
+                                $exemptionList[$rowcount] = $previousRecord;
+                                  
+                            }
+                        }
+
+                        
+                    }
+                    $previousCellColumn++;
+                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
+                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                    'startColor' => array( 'rgb' => 'FFFFFF' )));
+                    $count++;
+                    $staffProjectCount++;
+                    $previousRecord = $value['staff_id'];
+
+                }
+
+                if(strcmp($previousRecord, $value['staff_id']) != 0){
+
+
+                    if(in_array($previousRecord, $exemptionList) == false){
+                        foreach($projectsCount as $countprojects){
+                            if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
+                                if($countprojects['examining_project'] == 0){
+                                    $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                
+                                    for($i = 1; $i <= $exemptionCount; $i++){
+                                        $previousCellColumn++;
+                                        $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                                        $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                        //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                        'startColor' => array( 'rgb' => 'FFFF99' )));
+                                    }
+                                }
+                            }
+                        }
+                        $exemptionList[$rowcount] = $previousRecord;
+                    }
+
+
+                    $rowCountExcel++;
+                    $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
+                    $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
+                    foreach($projectsCount as $countprojects){
+                        if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                            }
+                    }
+                    $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, $exemptionCount);
+                    $previousCellColumn = 'C';
+
+                    //this could be the reason 
+                    if(in_array($value['staff_id'], $exemptionList) == false){
+                    foreach($projectsCount as $countprojects){
+                          if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
+                                $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                            
+                                for($i = 1; $i <= $exemptionCount; $i++){
+                                    $previousCellColumn++;
+                                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'startColor' => array( 'rgb' => 'FFFF99' )));
+                                }
+                          }
+                    }
+
+                    $exemptionList[$rowcount] = $value['staff_id'];
+
+                }
+
+                $previousCellColumn++;
+                $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
+                $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'startColor' => array( 'rgb' => 'FFFFFF' )));
+                $count++;
+                $rowcount++;
+                $staffProjectCount++;
+                $previousRecord = $value['staff_id'];
+
+                }
+
+
+            }
+            elseif($rowcount == 1){
+
+                $objPHPExcel->getActiveSheet()->SetCellValue('A'.$rowCountExcel, $rowcount); //No.
+                $objPHPExcel->getActiveSheet()->SetCellValue('B'.$rowCountExcel, $value['staff_name']);
+                foreach($projectsCount as $countprojects){
+                    if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                            $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                        }
+                }
+                $objPHPExcel->getActiveSheet()->SetCellValue('C'.$rowCountExcel, $exemptionCount);
+
+                $previousCellColumn = 'C';
+
+                if(in_array($value['staff_id'], $exemptionList) == false){
+                    foreach($projectsCount as $countprojects){
+                        if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
+                             
+                                $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                
+                                for($i = 1; $i <= $exemptionCount; $i++){
+                                    $previousCellColumn++;
+                                    $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, 'EXE');
+                                    $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'startColor' => array( 'rgb' => 'FFFF99' )));
+                                } 
+                        }
+                        
+                    }
+                    $exemptionList[$rowcount] = $value['staff_id'];
+                }
+                $previousCellColumn++;
+                $objPHPExcel->getActiveSheet()->SetCellValue($previousCellColumn.$rowCountExcel, $value['project_id']);
+                $objPHPExcel->getActiveSheet()->getStyle($previousCellColumn.$rowCountExcel)->getFill()->applyFromArray(array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                //'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'startColor' => array( 'rgb' => 'FFFFFF' )));
+                $rowcount++;
+                $count++;
+                $staffProjectCount++;
+                $previousRecord = $value['staff_id'];              
 
             }
         }
+        
+
+        
     }
     //Autosize Sheet 2
     autosize_currentSheet();
