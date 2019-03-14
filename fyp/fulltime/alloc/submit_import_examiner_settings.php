@@ -176,10 +176,13 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath, $Exempti
                 $DBOBJ_Result->execute();
                 $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
 
+                $temp = (int)substr($year, -2);
+                $acadyear = (int)((string)$temp . (string)($temp + 1));
+
 
                 // count the number of projects in the selected year and sem
                 // only updates if there is project for the selected year and semester.
-                $stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE acad_year = '%s' AND sem = '%s'", $TABLES["fyp"], $year, 1);
+                $stmt2 = sprintf("SELECT COUNT(*) FROM  %s WHERE examine_year = '%s' AND examine_sem = '%s'", $TABLES["fea_projects"], $acadyear, 1);
                 $DBOBJ_Result = $conn_db_ntu->prepare($stmt2);
                 $DBOBJ_Result->execute();
                 $projects = $DBOBJ_Result->fetchColumn();
@@ -188,11 +191,10 @@ function HandleExcelData_ExaminerList($error_code, $InputFile_FullPath, $Exempti
                 //echo '<script> alert("$Total_DataInSheet")</script>';
                 $base = $projects * 4 / $facultySize;
 
-                $temp = (int)substr($year, -2);
-                $acadyear = (int)((string)$temp . (string)($temp + 1));
+
 
                 // calculate staff's contribution in sem 1
-                $stmt3 = sprintf("SELECT COUNT(*) FROM %s LEFT JOIN %s ON staff.id = fyp_assign.staff_id WHERE fyp_assign.year = %d AND fyp_assign.sem = '%s' AND staff.id = '%s'", $TABLES["staff"], $TABLES["fyp_assign"], $acadyear, 1, $EXCEL_StaffID);
+                $stmt3 = sprintf("SELECT COUNT(*) FROM %s LEFT JOIN %s ON fyp_assign.project_id = fea_projects.project_id WHERE fea_projects.examine_year = %d AND fea_projects.examine_sem = %d AND staff_id = '%s'", $TABLES["fyp_assign"], $TABLES["fea_projects"], $acadyear, 1, $EXCEL_StaffID);
                 $DBOBJ_Result = $conn_db_ntu->prepare($stmt3);
                 $DBOBJ_Result->execute();
                 $contribution = $DBOBJ_Result->fetchColumn();
