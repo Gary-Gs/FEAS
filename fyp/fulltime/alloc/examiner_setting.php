@@ -33,7 +33,7 @@ if (isset($_REQUEST['search'])) {
 }
 
 // retrieve sem 2 exemption value
-if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
+if ((isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2)) {
     $query_rsStaff = "SELECT id, email, name, name2, exemptionS2 , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
     $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE examine = 1";
 }
@@ -242,6 +242,7 @@ $conn_db_ntu = null;
                                         if (isset($_REQUEST["filter_Year"]) && $_REQUEST["filter_Year"] == $i) {
                                             echo "<option selected value='" . $i . "'>" . $i . "</option>";
                                         }
+                                        if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
                                         else if (isset($_SESSION["year"]) && $_SESSION["year"] == $i) {
                                             echo "<option selected value='". $i ."'>" . $i . "</option>";
                                             unset($_SESSION["year"]);
@@ -256,7 +257,8 @@ $conn_db_ntu = null;
                         </tr>
 
                         <tr><?php
-                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2)
+                            if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2 ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2))
                                 echo "<td colspan='5'>Please select <b><u>examiner list,</u></b> <b><u>exemption</u></b> and <b><u>master</u></b> files to upload:</td>";
                             else
                                 echo "<td colspan='5'>Please select <b><u>examiner list</u></b> file to upload: </td>"
@@ -265,7 +267,8 @@ $conn_db_ntu = null;
                         </tr>
                         <tr>
                             <?php
-                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2)
+                            if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2 || (isset($_SESSION["semester"]) && $_SESSION["semester"] == 2) )
                                 echo "<td colspan='5'>File Name format: <b>examiner_list.xlsx</b>, <b>exemption.xlsx</b> & <b>master.xlsx</b></td>";
 
                             else
@@ -569,16 +572,19 @@ $conn_db_ntu = null;
 
                             echo "<td>";
 
-                            // display sem 2 staffs' exemptions.
-                            if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
-                                echo ($row_rsStaff['exemptionS2'] != null) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' required />" :
-                                    "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='0' required />";
-                            }
+                            if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+
+
+                            // display sem 1 or sem 2 staffs' exemptions.
+                                echo (isset($row_rsStaff['exemptionS2'])) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' required />" :
+                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />";
+
                             // display sem 1 staffs' exemptions.
-                            else {
+                           /* else {
                                 echo ($row_rsStaff['exemption'] != null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />" :
                                     "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' required />";
-                            }
+                                unset($_SESSION["semester"]);
+                            }*/
                             echo "</td>";
                             echo "<td>";
                             echo ($row_rsStaff['examine']) ? "<input type='checkbox' class='chk' id='examine_" . $staffid . "' name='examine_" . $staffid . "' checked />" :
@@ -673,12 +679,15 @@ $conn_db_ntu = null;
                         $("#deleteEntry").click(function deleteRow() {
                             var sTable = document.getElementById("staffTable");
                             var selectedRowsIndex = getHighlightedRows();
-                            var r = confirm("Delete the selected staff(s)?");
-                            if (r == true){
-                                for (var i = 0; i < selectedRowsIndex.length; i++) {
+                            if (selectedRowsIndex === undefined || selectedRowsIndex.length == 0)
+                                alert("Select at least one staff to delete. Click anywhere on the row to select.");
+                            else {
+                                var r = confirm("Delete the selected staff(s)?");
+                                if (r == true) {
+                                    for (var i = 0; i < selectedRowsIndex.length; i++) {
                                         sTable.deleteRow(selectedRowsIndex[i]);
+                                    }
                                 }
-
                             }
                         })
                     });
@@ -706,6 +715,10 @@ $conn_db_ntu = null;
                         $('<input />').attr('type', 'hidden')
                             .attr('name', "sem")
                             .attr('value', $('#filter_Sem :selected').text())
+                            .appendTo('#examiner_form');
+                        $('<input />').attr('type', 'hidden')
+                            .attr('name', "year")
+                            .attr('value', $('#filter_Year :selected').text())
                             .appendTo('#examiner_form');
                         return true;
                     });

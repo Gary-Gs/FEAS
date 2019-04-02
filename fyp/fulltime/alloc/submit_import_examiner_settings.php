@@ -302,7 +302,7 @@ function getFacultySize($ExaminerFile_FullPath) {
 
 }
 
-// finds
+// finds missing examiners in exemption file to prompt
 function findExaminersInExemption($ExemptionFile_FullPath,$staffName,$staffEmail,&$missingExaminerInExemption) {
 
     $PHPExcelObj = \PhpOffice\PhpSpreadsheet\IOFactory::load($ExemptionFile_FullPath);

@@ -38,29 +38,34 @@ foreach ($rsStaff as $curStaff) {
         $email = GetSQLValueString($email, "text");
         $id = GetSQLValueString($id, "text");
 
-       /* $values[] = sprintf("(%s, %s, %s, %s, %d, %d)",
-            $id, $email, $name, $name2, $exemption, $canExamine);
-       */
+        /* $values[] = sprintf("(%s, %s, %s, %s, %d, %d)",
+             $id, $email, $name, $name2, $exemption, $canExamine);
+        */
 
         if (isset($_REQUEST["sem"]) && $_REQUEST["sem"] == 1) {
-            $exemption = GetSQLValueString(trim($_REQUEST['exemption_' . $staffid]), "int");
-            if ($exemption === "NULL") $exemption = 0;
 
-            echo $exemption;
-            if (trim($_REQUEST['name_' . $staffid]) != $curStaff['name'] || trim($_REQUEST['name2_' . $staffid]) != $curStaff['name2'] || $canExamine != $curStaff['examine'] || $exemption != $curStaff['exemption']) {
-                $query_Update = sprintf("UPDATE %s SET name=%s, name2=%s, examine=%d, exemption=%d where id =%s", $TABLES["staff"], $name, $name2, $canExamine, $exemption, $id);
-                $DBOBJ_Result = $conn_db_ntu->prepare($query_Update);
-                $DBOBJ_Result->execute();
+            if (isset($_REQUEST['exemption_' . $staffid])) {
+                $exemption = GetSQLValueString(trim($_REQUEST['exemption_' . $staffid]), "int");
+                if ($exemption === "NULL") $exemption = 0;
+
+                if (trim($_REQUEST['name_' . $staffid]) != $curStaff['name'] || trim($_REQUEST['name2_' . $staffid]) != $curStaff['name2'] || $canExamine != $curStaff['examine'] || $exemption != $curStaff['exemption']) {
+                    $query_Update = sprintf("UPDATE %s SET name=%s, name2=%s, examine=%d, exemption=%d where id =%s", $TABLES["staff"], $name, $name2, $canExamine, $exemption, $id);
+                    $DBOBJ_Result = $conn_db_ntu->prepare($query_Update);
+                    $DBOBJ_Result->execute();
+                }
             }
-        }
-        else if (isset($_REQUEST["sem"]) && $_REQUEST["sem"] == 2) {
-            $exemptionS2 = GetSQLValueString(trim($_REQUEST['exemptionS2_' . $staffid]), "int");
-            if ($exemptionS2 === "NULL") $exemptionS2 = 0;
+        } else if (isset($_REQUEST["sem"]) && $_REQUEST["sem"] == 2) {
 
-            if (trim($_REQUEST['name_' . $staffid]) != $curStaff['name'] || trim($_REQUEST['name2_' . $staffid]) != $curStaff['name2'] || $canExamine != $curStaff['examine'] || $exemptionS2 != $curStaff['exemptionS2']) {
-                $query_Update = sprintf("UPDATE %s SET name=%s, name2=%s, examine=%d, exemptionS2=%d where id =%s", $TABLES["staff"], $name, $name2, $canExamine, $exemptionS2, $id);
-                $DBOBJ_Result = $conn_db_ntu->prepare($query_Update);
-                $DBOBJ_Result->execute();
+            if (isset($_REQUEST['exemptionS2_' . $staffid])) {
+                $exemptionS2 = GetSQLValueString(trim($_REQUEST['exemptionS2_' . $staffid]), "int");
+                if ($exemptionS2 === "NULL") $exemptionS2 = 0;
+
+                if (trim($_REQUEST['name_' . $staffid]) != $curStaff['name'] || trim($_REQUEST['name2_' . $staffid]) != $curStaff['name2'] || $canExamine != $curStaff['examine'] || $exemptionS2 != $curStaff['exemptionS2']) {
+                    $query_Update = sprintf("UPDATE %s SET name=%s, name2=%s, examine=%d, exemptionS2=%d where id =%s", $TABLES["staff"], $name, $name2, $canExamine, $exemptionS2, $id);
+                    $DBOBJ_Result = $conn_db_ntu->prepare($query_Update);
+                    $DBOBJ_Result->execute();
+
+                }
             }
         }
     }
@@ -100,7 +105,12 @@ unset($rsStaff);
 unset($delete);
 unset($c);
 
+if (session_status() !==PHP_SESSION_ACTIVE) { session_start();}
+$_SESSION["semester"] = $_REQUEST["sem"];
+$_SESSION["year"] = $_REQUEST["year"];
+
 if (isset ($_REQUEST['validate'])) {
+
     header("location:examiner_setting.php?validate=1");
 } else {
     header("location:examiner_setting.php?save=1");
