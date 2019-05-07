@@ -19,7 +19,11 @@
 	
 	$_REQUEST['validate'] =$csrf->cfmRequest();
 	
-	
+	if(isset($_POST['save']))
+	{
+	  setcookie("submit_status","save");
+
+  }
 	
 	if(isset($_REQUEST['start_date']) && isset($_REQUEST['end_date'])) {
 	
@@ -68,7 +72,7 @@
 	
 <?php
 	if (isset ($_REQUEST['validate'])) {
-		header("location:staffpref_setting.php?validate=1");
+		header("location:staffpref_setting.php?");
 	}
 	else if (isset ($error_code)) {
 		
@@ -76,7 +80,7 @@
 		
 	}
 	else {
-		header("location:staffpref_setting.php?save=1");
+		header("location:staffpref_setting.php?");
 	}
 	exit;
 	?>

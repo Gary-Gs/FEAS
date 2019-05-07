@@ -630,6 +630,16 @@
         return false;
       }
       
+    function clearChanges(e)
+    {
+     if (confirm("Clear changes?"))
+     {
+       //return true here to clear
+       $("input[name=clear]").val("true");
+     } 
+    }
+
+      
 	</script>
 </head>
 
@@ -714,7 +724,7 @@
 					
 					<form action="submitpref.php" method="post" onsubmit="return saveChanges();">
 						<?php $csrf->echoInputField();?>
-						<input type="hidden" name ='save' value='false'/>
+						<input type ='hidden' name ='save' value='false'/>
 						<input name="staffid" id="staffID" type="text" value="<?php echo $staffid; ?>" style="display:none;" />
 			  
 						<!-- TABS -->

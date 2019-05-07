@@ -177,7 +177,9 @@
 		
 		$(document).ready(function(){
 			exceptionCount = <?php echo $exceptionCount; ?>;
-			
+			$.post('<?php $_SERVER['PHP_SELF']; ?>', {}, function(data){
+  			
+			});
 		});
 		
 		function addException(val)
@@ -226,15 +228,14 @@
 			<?php require_once('../../nav.php'); ?>
 				<div class="container-fluid">
 					<h3>Timeslot Exception for Full Time Projects</h3>
-
-					<?php 
-						if(isset($_REQUEST['save']))
+					<?php  
+						if(isset($_COOKIE['submit_status']) && $_COOKIE['submit_status'] == "save")
 							echo "<p class='success'> Timeslot exception settings saved.</p>";
-						if(isset($_REQUEST['clear']))
-							echo "<p class='warn'> Timeslot exceptions changes cleared.</p>";
-						if(isset($_REQUEST['call']))
+						if(isset($_COOKIE['submit_status']) && $_COOKIE['submit_status'] == "clear")
+  						echo "<p class='warn'> Timeslot exceptions changes cleared.</p>";
+						if(isset($_COOKIE['call']))
 							echo "<p class='warn'> All timeslot exceptions cleared.</p>";
-						if (isset($_REQUEST['validate']) || isset($_REQUEST['csrf'])) {
+						if (isset($_COOKIE['submit_status']) && $_COOKIE['submit_status'] == "csrf") {
 							    echo "<p class='warn'> CSRF validation failed.</p>";
 						}
 						else  {
@@ -242,6 +243,7 @@
 
 					<form action="submit_savete.php" method="post">
 						<?php $csrf->echoInputField();?>
+						<input type="hidden" name="clear" value="1"/>
 						<table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
 							<col width="40%" />
 							<col width="20%" />
@@ -266,8 +268,8 @@
 						 
 						<div style="float:right; padding-top:25px;">
 							
-							<a href="timeslot_exception.php?clear=1" class="btn bg-dark text-white" title="Clear all changes" style="font-size:12px">Clear Changes</a>
-							<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
+							<input type="submit" class="btn bg-dark text-white btn_clear" title="Clear all changes" style="font-size:12px" value="Clear Changes" name="btn_clear" />
+							<input type="submit" name="btn_submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
 						</div>
 					</form>
 					<?php } ?>

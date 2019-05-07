@@ -7,7 +7,18 @@
 	
 	$_REQUEST['validate'] = $csrf->cfmRequest();
 	
-	
+	if(isset($_POST['save']))
+	  setcookie("submit_status","save");
+		
+  if(isset($_POST['btn_clear']))
+		 if($_POST['clear'] == 1)
+		   setcookie("submit_status","clear");
+  
+  if(isset($_POST['call'])){
+    setcookie("submit_status","csrf");
+    setcookie("submit_status","call");
+  }
+		 
 	
 	//Set Values (Timeslot Exceptions)
 	try
@@ -71,10 +82,14 @@
 
 <?php
 	if (isset ($_REQUEST['validate'])) {
-		header("location:timeslot_exception.php?validate=1");
+		header("location:timeslot_exception.php");
 	}
 	else {
-		header("location:timeslot_exception.php?save=1");
+  	if($_POST['btn_clear']){
+  	  header('location:timeslot_exception.php');
+    }else{
+		  header("location:timeslot_exception.php");
 		}
+  }
 	exit;
 ?>

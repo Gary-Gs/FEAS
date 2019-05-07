@@ -1,15 +1,25 @@
 <?php
+ function requestedByTheSameDomain() {
+    $myDomain       = $_SERVER['155.69.100.32'];
+    $requestsSource = $_SERVER['HTTP_REFERER'];
+
+    return parse_url($myDomain, PHP_URL_HOST) === parse_url($requestsSource, PHP_URL_HOST);
+    }  
+?>
+<?php
    session_start();
+   
    // users who are able to access all modules
    $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178"];
-
-   if (isset ($_SESSION['login']) && isset($username)){
+   session_regenerate_id (true);// it regenerate id and delete old id on machine
+   //to check if the domain if is ours
+  
+   if(isset($_SESSION['login']) && isset($username)){
 	   if (in_array($username, $verifiedUsers)) {
-		header("location: index.php");
-	   }
-	   else {
+      header("location: index.php");
+	   }else {
 		   header("location: pref/nav.php");
-	 }
+	   }
 	   exit;
    }     
 

@@ -7,7 +7,7 @@ else {
 	
 	
 	$hostname_db_ntu = "localhost";
-	$database_db_ntu = "ntu_fyp";
+	$database_db_ntu = "ntu_fyp5";
 	$username_db_ntu = "root"; 
 	$password_db_ntu = "";
 	$port_db_ntu = 3306;
