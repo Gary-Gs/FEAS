@@ -1,4 +1,4 @@
-FDS21<?php require_once('../../../Connections/db_ntu.php');
+<?php require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 
