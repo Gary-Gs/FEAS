@@ -3,7 +3,18 @@
 	  require_once('../../../Utility.php');?>
 
 <?php
+	/* to be used for server */
 	
+	if($_SERVER['HTTP_REFERER'] != null && ((strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php') != 0)
+	|| (strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php') != 0))){
+	throw new Exception("Invalid referer");
+	}
+
+	/* this is for testing in localhost */
+	/*if($_SERVER['HTTP_REFERER'] != null && strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/staffpref_setting.php') != 0){
+		throw new Exception("Invalid referer");
+	}*/
+
 	$csrf = new CSRFProtection();
 	
 	$_REQUEST['validate'] =$csrf->cfmRequest();

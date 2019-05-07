@@ -5,6 +5,32 @@ require_once('../../../Utility.php');
 
 $csrf = new CSRFProtection();
 
+/* Prevent XSS input */
+foreach ($_GET as $name => $value) {
+    $name = htmlentities($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $value = strip_tags($value);
+}
+$_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+
+if($_SERVER['HTTP_REFERER'] != null){
+	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
+	$foldername = $urlString[3]; 
+	$entireUrlString = $_SERVER['HTTP_REFERER'];
+
+	// for server codes
+	if((strcmp($foldername, "fyp") != 0) && ((strcmp($entireUrlString, "https://155.69.100.32/fyp/fulltime/gen/faculty.php") != 0) ||
+	(strcmp($entireUrlString, "https://155.69.100.32/fyp/fulltime/gen/faculty.php") != 0))){
+		throw new Exception("Invalid referer");
+	}
+
+	// for localhost codes
+	/*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){
+		throw new Exception("Invalid referer");
+	}*/
+}
+
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 $filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
 $filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : '') ."%";
