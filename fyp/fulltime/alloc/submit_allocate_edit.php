@@ -60,7 +60,7 @@ if($_SERVER['HTTP_REFERER'] != null &&
 		if ($projectData)	//Valid Project
 		{
 			
-			$examinerID = (isset($_POST['examiner'])) ?  preg_replace('/[^a-zA-Z0-9.\-_]/', "",$_POST['examiner']) : -1;
+			$examinerID = (isset($_POST['examiner'])) ?  preg_replace('/[^a-zA-Z0-9._\s\-]/', "",$_POST['examiner']) : -1;
 			if ($examinerID == "") $examinerID = -1;
 
 			$exam_day =  (isset($_POST['exam_day'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_day']) : -1;

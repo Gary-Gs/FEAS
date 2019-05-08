@@ -42,7 +42,7 @@ $filter_ProjectYear 	= "%". (isset($_POST['filter_ProjectYear']) && !empty($_POS
 $filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_ProjectSem']) : '') ."%";
 $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
-        preg_replace('/[^a-zA-Z.\s\-]/','',$_POST['filter_Supervisor']) : '') ."%";
+        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : '') ."%";
 
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];
@@ -271,7 +271,7 @@ $conn_db_ntu = null;
 								<?php
 								foreach ($AL_Staff as $key => $value) {
 								    if(isset($_POST["filter_Supervisor"])) {
-	                                    $StaffID_Filter = preg_replace('/[^a-zA-Z.\s\-]/','',$_POST['filter_Supervisor']);
+	                                    $StaffID_Filter = preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']);
 	                                } else {
 	                                    $StaffID_Filter = null;
 	                                }
@@ -419,7 +419,7 @@ $conn_db_ntu = null;
                     let supervisor = $('#filter_Supervisor option:selected');
                     let search = $('#filter_Search');
                     search.val(search.val().replace(/[^a-zA-Z0-9\s\-()]/gi, ""));
-                    supervisor.val(supervisor.val().replace(/[^a-zA-Z.\s\-]/gi, ""));
+                    supervisor.val(supervisor.val().replace(/[^a-zA-Z._\s\-]/gi, ""));
                     sem.val(sem.val().replace(/[^0-9]/gi, ""));
                     year.val(year.val().replace(/[^0-9]/gi, ""));
                 });
