@@ -21,9 +21,9 @@ if (isset($_GET['pageNum_rsStaff'])) {
 $startRow_rsStaff = $pageNum_rsStaff * $maxRows_rsStaff;
 
 
-if (isset($_REQUEST['search'])) {
+if (isset($_POST['search'])) {
     $maxRows_rsStaff = 1000;
-    $search = $_REQUEST['search'];
+    $search = $_POST['search'];
     $searchWildcard = '%' . $search . '%';
     $query_rsStaff = "SELECT id, email, name, name2, exemption , examine  FROM " . $TABLES['staff'] . " WHERE id LIKE ? OR name LIKE ? OR name2 LIKE ? ORDER BY name ASC";
     $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE (id LIKE ? OR name LIKE ? OR name2 LIKE ?)  AND examine = 1";
@@ -33,7 +33,7 @@ if (isset($_REQUEST['search'])) {
 }
 
 // retrieve sem 2 exemption value
-if ((isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2)) {
+if ((isset($_POST['filter_Sem']) && $_POST["filter_Sem"] == 2) ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2)) {
     $query_rsStaff = "SELECT id, email, name, name2, exemptionS2 , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
     $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE examine = 1";
 }
@@ -258,7 +258,7 @@ $conn_db_ntu = null;
 
                         <tr><?php
                             if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
-                            if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == 2 ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2))
+                            if (isset($_POST["filter_Sem"]) && $_POST["filter_Sem"] == 2 ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2))
                                 echo "<td colspan='5'>Please select <b><u>examiner list,</u></b> <b><u>exemption</u></b> and <b><u>master</u></b> files to upload:</td>";
                             else
                                 echo "<td colspan='5'>Please select <b><u>examiner list</u></b> file to upload: </td>"

@@ -3,31 +3,47 @@ require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
-$referer = "";
-if ($_SERVER['HTTP_REFERER'] != null) {
-    $referer_Arr = explode("?", strval($_SERVER['HTTP_REFERER']));
-    $referer = $referer_Arr[0];
-}
 
-// change to school full address when hosted to school server
-if($_SERVER['HTTP_REFERER'] != null &&
-    strcmp($referer, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
-    throw new Exception("Invalid referer");
+if ($_SERVER['HTTP_REFERER'] != null) {
+    $urlString = explode('/', $_SERVER['HTTP_REFERER']);
+    $foldername = $urlString[3];
+    $entireUrlArr = explode("?", strval($_SERVER['HTTP_REFERER']));
+    $entireUrlString = $entireUrlArr[0];
+
+
+    // to be used for localhost
+    if((strcmp($foldername, 'fyp') != 0) && strcmp($entireUrlString, 'http://localhost/fyp/fulltime/gen/project.php') != 0) {
+        throw new Exception("Invalid referer");
+    }
+
+
+
+// to be used for school server
+  /*  if((strcmp($foldername,"fyp") != 0) ||
+        strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+        throw new Exception("Invalid referer");
+    }
+  */
+
 }
 $csrf = new CSRFProtection();
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 
-// whitelisting against XSS
-function cleanData($searchParam) {
-    return preg_replace('/[^a-zA-Z0-9\s\-()]/', "", $searchParam);
-}
 
+global $TABLES;
 
-$filter_Search 			= "%". (isset($_POST['search']) && !empty($_POST['search']) ? cleanData($_POST['search']) : '') ."%";
-$filter_ProjectYear 	= "%". (isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear']) ? cleanData($_POST['filter_ProjectYear']) : '') ."%";
-$filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem']) ? cleanData($_POST['filter_ProjectSem']) : '') ."%";
-$filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ? cleanData($_POST['filter_Supervisor']) : '') ."%";
+$cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
+        preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
+$filter_Search 			= "%". $cleanedSearch . "%";
+
+$filter_ProjectYear 	= "%". (isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear']) ?
+        preg_replace('/[^0-9]/','',$_POST['filter_ProjectYear']) : '') ."%";
+$filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem']) ?
+        preg_replace('/[^0-9]/','',$_POST['filter_ProjectSem']) : '') ."%";
+$filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
+        preg_replace('/[^a-zA-Z.\s\-]/','',$_POST['filter_Supervisor']) : '') ."%";
+
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];
 $query_rsProject 			= "SELECT * FROM " .
@@ -255,7 +271,7 @@ $conn_db_ntu = null;
 								<?php
 								foreach ($AL_Staff as $key => $value) {
 								    if(isset($_POST["filter_Supervisor"])) {
-	                                    $StaffID_Filter = cleanData($_POST["filter_Supervisor"]);
+	                                    $StaffID_Filter = preg_replace('/[^a-zA-Z.\s\-]/','',$_POST['filter_Supervisor']);
 	                                } else {
 	                                    $StaffID_Filter = null;
 	                                }
@@ -275,7 +291,7 @@ $conn_db_ntu = null;
 							</select>
 						</td>
 						<td colspan="2" style="text-align:right;">
-							<input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  cleanData($_POST['search']) : '' ?>" />
+							<input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" />
 							<input type="submit" value="Search" title="Search for a project" class="bt"/>
 						</td>
 					</tr>
@@ -403,9 +419,9 @@ $conn_db_ntu = null;
                     let supervisor = $('#filter_Supervisor option:selected');
                     let search = $('#filter_Search');
                     search.val(search.val().replace(/[^a-zA-Z0-9\s\-()]/gi, ""));
-                    supervisor.val(supervisor.val().replace(/[^a-zA-Z0-9\s]/gi, ""));
-                    sem.val(sem.val().replace(/[^a-zA-Z0-9\s]/gi, ""));
-                    year.val(year.val().replace(/[^a-zA-Z0-9\s]/gi, ""));
+                    supervisor.val(supervisor.val().replace(/[^a-zA-Z.\s\-]/gi, ""));
+                    sem.val(sem.val().replace(/[^0-9]/gi, ""));
+                    year.val(year.val().replace(/[^0-9]/gi, ""));
                 });
 
 			</script>

@@ -4,17 +4,24 @@
 	
 <?php
 
-$referer = "";
-if ($_SERVER['HTTP_REFERER'] != null) {
-	$referer_Arr = explode("?", strval($_SERVER['HTTP_REFERER']));
-	$referer = $referer_Arr[0];
-}
 
-// change to school full address when hosted to the school server
+
+
+
+
+// to be used for localhost
 if($_SERVER['HTTP_REFERER'] != null &&
-	strcmp($referer, 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
+	strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_edit.php') != 0){
 	throw new Exception("Invalid referer");
 }
+
+// to be used for school server
+/*
+if($_SERVER['HTTP_REFERER'] != null &&
+	strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
+	throw new Exception("Invalid referer");
+}
+*/
 
 	$csrf = new CSRFProtection();
 
@@ -24,6 +31,8 @@ if($_SERVER['HTTP_REFERER'] != null &&
 	//Set Values (General)
 	$error_code = -1;
 	$projectID = null;
+
+	global $TABLES;
 	
 	if(isset($_POST['user_id']) && isset($_POST['project_id']))
 	{
