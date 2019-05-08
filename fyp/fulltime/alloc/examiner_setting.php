@@ -25,34 +25,29 @@ if (isset($_REQUEST['search'])) {
     $maxRows_rsStaff = 1000;
     $search = $_REQUEST['search'];
     $searchWildcard = '%' . $search . '%';
-    $query_rsStaff = "SELECT id, email, name, name, exemption , examine  FROM " . $TABLES['staff'] . " WHERE id LIKE ? OR name LIKE ? OR name LIKE ? ORDER BY name ASC";
-    $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE (id LIKE ? OR name LIKE ? OR name LIKE ?)  AND examine = 1";
+    $query_rsStaff = "SELECT id, email, name, name2, exemption , examine  FROM " . $TABLES['staff'] . " WHERE id LIKE ? OR name LIKE ? OR name2 LIKE ? ORDER BY name ASC";
+    $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE (id LIKE ? OR name LIKE ? OR name2 LIKE ?)  AND examine = 1";
 } else {
-    $query_rsStaff = "SELECT id, email, name, name, exemption , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
+    $query_rsStaff = "SELECT id, email, name, name2, exemption , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
     $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE examine = 1";
 }
 
 // retrieve sem 2 exemption value
-<<<<<<< Updated upstream
 if ((isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) ||(isset($_SESSION["semester"]) && $_SESSION["semester"] == 2)) {
     $query_rsStaff = "SELECT id, email, name, name2, exemptionS2 , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
-=======
-if (isset($_REQUEST['filter_Sem']) && $_REQUEST["filter_Sem"] == 2) {
-    $query_rsStaff = "SELECT id, email, name, exemptionS2 , examine FROM " . $TABLES['staff'] . " ORDER BY name ASC";
->>>>>>> Stashed changes
     $query_ExaminableStaffCount = "SELECT count(*) FROM " . $TABLES['staff'] . " WHERE examine = 1";
 }
 
 
 try {
     // $rsStaff = $conn_db_ntu->query($query_rsStaff)->fetchAll();
-    $stmt = $conn_db_ntu->prepare(addslashes($query_rsStaff));
+    $stmt = $conn_db_ntu->prepare($query_rsStaff);
     $stmt->bindParam(1, $searchWildcard);
     $stmt->bindParam(2, $searchWildcard);
     $stmt->bindParam(3, $searchWildcard);
     $stmt->execute();
     $rsStaff = $stmt->fetchAll();
-    $stmt = $conn_db_ntu->prepare(addslashes($query_ExaminableStaffCount));
+    $stmt = $conn_db_ntu->prepare($query_ExaminableStaffCount);
     $stmt->bindParam(1, $searchWildcard);
     $stmt->bindParam(2, $searchWildcard);
     $stmt->bindParam(3, $searchWildcard);
