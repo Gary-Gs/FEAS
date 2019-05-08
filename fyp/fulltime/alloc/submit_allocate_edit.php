@@ -3,7 +3,19 @@
 	  require_once('../../../Utility.php');?>
 	
 <?php
-    
+
+$referer = "";
+if ($_SERVER['HTTP_REFERER'] != null) {
+	$referer_Arr = explode("?", strval($_SERVER['HTTP_REFERER']));
+	$referer = $referer_Arr[0];
+}
+
+// change to school full address when hosted to the school server
+if($_SERVER['HTTP_REFERER'] != null &&
+	strcmp($referer, 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
+	throw new Exception("Invalid referer");
+}
+
 	$csrf = new CSRFProtection();
 
 	$_REQUEST['validate']=$csrf->cfmRequest();

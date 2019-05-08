@@ -3,6 +3,17 @@ require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
+$referer = "";
+if ($_SERVER['HTTP_REFERER'] != null) {
+    $referer_Arr = explode("?", strval($_SERVER['HTTP_REFERER']));
+    $referer = $referer_Arr[0];
+}
+
+// change to school full address when hosted to school server
+if($_SERVER['HTTP_REFERER'] != null &&
+    strcmp($referer, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+    throw new Exception("Invalid referer");
+}
 $csrf = new CSRFProtection();
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
