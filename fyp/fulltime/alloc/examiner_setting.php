@@ -105,7 +105,7 @@ $conn_db_ntu = null;
                             echo "<br/>";
                             echo "<br/>";
                             echo "<b>Staff Name 2 </b>";
-                            echo "<input type='text' name='mnameList[]' required/>";
+                            echo "<input type='text' name='mname2List[]' required/>";
                             echo "<br/>";
                             echo "<br/>";
                             echo "<b>Staff Email </b>";
@@ -125,30 +125,30 @@ $conn_db_ntu = null;
                             }
                         }
                     }
-                    if (isset($_SESSION["newExaminerWithoutname"])) {
+                    if (isset($_SESSION["newExaminerWithoutName2"])) {
                         echo "<hr>";
-                        for($i=0;$i<sizeof($_SESSION["newExaminerWithoutname"]);$i++) {
-                            echo "<h4>New examiners without name</h4>";
+                        for($i=0;$i<sizeof($_SESSION["newExaminerWithoutName2"]);$i++) {
+                            echo "<h4>New examiners without name2</h4>";
                             echo "<br/>";
                             echo "<b>Staff Name </b>";
-                            echo "<input type='text' name='nameList[]' value='" . $_SESSION["newExaminerWithoutname"][$i]["name"] . "' required/>";
+                            echo "<input type='text' name='nameList[]' value='" . $_SESSION["newExaminerWithoutName2"][$i]["name"] . "' required/>";
                             echo "<br/>";
                             echo "<br/>";
                             echo "<b>Staff Name 2 </b>";
-                            echo "<input type='text' name='nameList[]' required/>";
+                            echo "<input type='text' name='name2List[]' required/>";
                             echo "<br/>";
                             echo "<br/>";
                             echo "<b>Staff Email </b>";
-                            echo "<input type='email' name='emailList[]' value='" . $_SESSION["newExaminerWithoutname"][$i]["email"] . "'  required/>";
+                            echo "<input type='email' name='emailList[]' value='" . $_SESSION["newExaminerWithoutName2"][$i]["email"] . "'  required/>";
 
                             echo "<br/>";
                             echo "<br/>";
                            // echo "<b>Exemption </b>";
-                            // echo "<input type='number' name='exemptionList[]' value='" . $_SESSION["newExaminerWithoutname"][$i]["exemption"] . "' min='0' max='100' value='0' required/>";
+                            // echo "<input type='number' name='exemptionList[]' value='" . $_SESSION["newExaminerWithoutName2"][$i]["exemption"] . "' min='0' max='100' value='0' required/>";
                             echo "<b>Examine </b>";
                             echo "<input type='checkbox' name='examineList[]' checked />";
                             echo "<br/>";
-                            if ($i != (sizeof($_SESSION["newExaminerWithoutname"]) - 1)) {
+                            if ($i != (sizeof($_SESSION["newExaminerWithoutName2"]) - 1)) {
                                 echo "<hr>";
                             }
                         }
@@ -538,7 +538,7 @@ $conn_db_ntu = null;
 
                         <tr class="bg-dark text-white text-center">
                             <td>Staff Name</td>
-                            <td>Staff name</td>
+                            <td>Staff Name2</td>
                             <td>Staff Email</td>
                             <td>Exemption</td>
                             <td>Can Examine</td>
@@ -562,8 +562,8 @@ $conn_db_ntu = null;
                                 "<input type='text'  name='name_" . $staffid . "'  required />";
                             echo "</td>";
                             echo "<td>";
-                            echo ($row_rsStaff['name'] != null) ? "<input type='text' id='name_" . $staffid . "' name='name_" . $staffid . "'  value='" . $row_rsStaff['name'] . "' required />" :
-                                "<input type='text' id='name_" . $staffid . "' name='name_" . $staffid . "' required />";
+                            echo ($row_rsStaff['name2'] != null) ? "<input type='text' id='name2_" . $staffid . "' name='name2_" . $staffid . "'  value='" . $row_rsStaff['name2'] . "' required />" :
+                                "<input type='text' id='name2_" . $staffid . "' name='name2_" . $staffid . "' required />";
                             echo "</td>";
                             echo "<td>";
                             echo ($row_rsStaff['email'] != null) ? "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "'  value='" . $row_rsStaff['email'] . "' required />" :
@@ -619,13 +619,13 @@ $conn_db_ntu = null;
                         let tr = table.insertRow(-1);
                         tr.className = "text-center";
                         let name = tr.insertCell(0);
-                        let name = tr.insertCell(1);
+                        let name2 = tr.insertCell(1);
                         let email = tr.insertCell(2);
                         let exemption = tr.insertCell(3);
                         let examine = tr.insertCell(4);
 
                         name.innerHTML = "<input type='text' name='newName[]' required />";
-                        name.innerHTML = "<input type='text' name='newname[]' required />";
+                        name2.innerHTML = "<input type='text' name='newName2[]' required />";
                         email.innerHTML = "<input type='email' name='newEmail[]' required />";
                         exemption.innerHTML = "<input type='number' name='newExemption[]' min='0' max='100' value='0' required />";
                         examine.innerHTML = "<input type='checkbox' name='newExamine[]' class='chk'/>"
@@ -701,7 +701,7 @@ $conn_db_ntu = null;
                             if (inputs[i].id == null || inputs[i].id == "" || inputs[i].id == undefined) {
                                 if (inputs[i].type.toLowerCase() == 'text') {
                                     inputs[i].id = "newName_" + (counter.toString());
-                                    inputs[i + 1].id = "newname_" + (counter.toString());
+                                    inputs[i + 1].id = "newName2_" + (counter.toString());
                                     inputs[i + 2].id = "newEmail_" + (counter.toString());
                                     inputs[i + 3].id = "newExemption_" + (counter.toString());
                                     inputs[i + 4].id = "newExamine_" + (counter.toString());
