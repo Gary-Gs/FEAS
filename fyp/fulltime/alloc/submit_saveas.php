@@ -13,8 +13,7 @@ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
 
-if($_SERVER['HTTP_REFERER'] != null && ((strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0) 
-	|| (strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0))){
+if($_SERVER['HTTP_REFERER'] != null && ((strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0))){
 	throw new Exception($_SERVER['HTTP_REFERER']);
 }
 
