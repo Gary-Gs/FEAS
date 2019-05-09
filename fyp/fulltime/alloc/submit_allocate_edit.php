@@ -3,23 +3,45 @@
 	  require_once('../../../Utility.php');?>
 	
 <?php
-    
+
+
+
+
+
+
+// to be used for localhost
+if($_SERVER['HTTP_REFERER'] != null &&
+	strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_edit.php') != 0){
+	throw new Exception("Invalid referer");
+}
+
+// to be used for school server
+/*
+if($_SERVER['HTTP_REFERER'] != null &&
+	strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
+	throw new Exception("Invalid referer");
+}
+*/
+
 	$csrf = new CSRFProtection();
 
 	$_REQUEST['validate']=$csrf->cfmRequest();
+
 	
 	//Set Values (General)
 	$error_code = -1;
 	$projectID = null;
+
+	global $TABLES;
 	
-	if(isset($_REQUEST['user_id']) && isset($_REQUEST['project_id']))
+	if(isset($_POST['user_id']) && isset($_POST['project_id']))
 	{
-		$user = $_REQUEST['user_id'];
-		$projectID = $_REQUEST['project_id'];
+		$user = $_POST['user_id'];
+		$projectID = $_POST['project_id'];
 		
 		
 		$query_rsProjectAssign	= "SELECT * FROM ".$TABLES['allocation_result'] . " WHERE project_id = ?";
-		
+
 		try
 		{	$stmt = $conn_db_ntu->prepare ($query_rsProjectAssign);
 		    $stmt->bindParam(1, $projectID);
@@ -31,23 +53,27 @@
 		catch (PDOException $e)
 		{
 			
-			die("1. ".$e->getMessage());
+			//die("1. ".$e->getMessage());
+			die("Sorry, system ran into some error");
 		}
 		
 		if ($projectData)	//Valid Project
 		{
 			
-			$examinerID = (isset($_REQUEST['examiner'])) ? $_REQUEST['examiner'] : -2;
-			
-			
-			$exam_day =  (isset($_REQUEST['exam_day'])) ? $_REQUEST['exam_day'] : -2;
-			
-			
-			$exam_slotID =  (isset($_REQUEST['exam_slot'])) ? $_REQUEST['exam_slot'] : -2;
-			
+			$examinerID = (isset($_POST['examiner'])) ?  preg_replace('/[^a-zA-Z0-9._\s\-]/', "",$_POST['examiner']) : -1;
+			if ($examinerID == "") $examinerID = -1;
 
-			$exam_room =  (isset($_REQUEST['exam_room'])) ? $_REQUEST['exam_room'] : -2;
+			$exam_day =  (isset($_POST['exam_day'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_day']) : -1;
+			//TODO check if input is higher than the number of days set in settings or less than 1 set $exam_day as -1
+			if ($exam_day == "") $exam_day = -1;
 			
+			$exam_slotID =  (isset($_POST['exam_slot'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_slot']) : -1;
+			//TODO check if input is higher than the number of slots set in settings or less than 1 set $exam_slotID as -1
+			if ($exam_slotID == "") $exam_slotID = -1;
+
+			$exam_room =  (isset($_POST['exam_room'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_room']) : -1;
+			//TODO check if input is higher than the number of rooms set in settings or less than 1 set $exam_room as -1
+			if ($exam_room == "") $exam_room = -1;
 			
 			$hasEmpty = ($examinerID == -1 || $exam_day == -1 || $exam_slotID == -1 || $exam_room == -1);
 		     
@@ -80,7 +106,8 @@
 				}
 				catch (PDOException $e)
 				{
-					die("2. ".$e->getMessage());
+					//die("2. ".$e->getMessage());
+					die("Sorry, system ran into some error");
 				}
 
 				if ($existExaminer && $examinerID != $projectData['examiner_id'] )	//Valid Examiner and Examiner Changed
@@ -141,7 +168,8 @@
 				}
 				catch (PDOException $e)
 				{
-					die("4. ".$e->getMessage());
+					//die("4. ".$e->getMessage());
+					die("Sorry, system ran into some error");
 				}
 			    
 			
@@ -176,7 +204,8 @@
 				}
 				catch (PDOException $e)
 				{
-					die("5. ".$e->getMessage());
+					//die("5. ".$e->getMessage());
+					die("Sorry, system ran into some error");
 				}
 				
 				if ($existRoom && $exam_room != $projectData['room'] )	//Valid Room and Room Changed

@@ -3,14 +3,47 @@ require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
+
+if ($_SERVER['HTTP_REFERER'] != null) {
+    $urlString = explode('/', $_SERVER['HTTP_REFERER']);
+    $foldername = $urlString[3];
+    $entireUrlArr = explode("?", strval($_SERVER['HTTP_REFERER']));
+    $entireUrlString = $entireUrlArr[0];
+
+
+    // to be used for localhost
+    if((strcmp($foldername, 'fyp') != 0) && strcmp($entireUrlString, 'http://localhost/fyp/fulltime/gen/project.php') != 0) {
+        throw new Exception("Invalid referer");
+    }
+
+
+
+// to be used for school server
+  /*  if((strcmp($foldername,"fyp") != 0) ||
+        strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+        throw new Exception("Invalid referer");
+    }
+  */
+
+}
 $csrf = new CSRFProtection();
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 
-$filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
-$filter_ProjectYear 	= "%". (isset($_REQUEST['filter_ProjectYear']) && !empty($_REQUEST['filter_ProjectYear']) ? $_REQUEST['filter_ProjectYear'] : '') ."%";
-$filter_ProjectSem 		= "%". (isset($_REQUEST['filter_ProjectSem']) && !empty($_REQUEST['filter_ProjectSem']) ? $_REQUEST['filter_ProjectSem'] : '') ."%";
-$filter_Supervisor  	= "%". (isset($_REQUEST['filter_Supervisor']) && !empty($_REQUEST['filter_Supervisor']) ? $_REQUEST['filter_Supervisor'] : '') ."%";
+
+global $TABLES;
+
+$cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
+        preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
+$filter_Search 			= "%". $cleanedSearch . "%";
+
+$filter_ProjectYear 	= "%". (isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear']) ?
+        preg_replace('/[^0-9]/','',$_POST['filter_ProjectYear']) : '') ."%";
+$filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem']) ?
+        preg_replace('/[^0-9]/','',$_POST['filter_ProjectSem']) : '') ."%";
+$filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
+        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : '') ."%";
+
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];
 $query_rsProject 			= "SELECT * FROM " .
@@ -96,8 +129,8 @@ $conn_db_ntu = null;
 				}
 
 				else {
-					if (isset ($_REQUEST['error_code'])) {
-						$error_code = $_REQUEST['error_code'];
+					if (isset ($_GET['error_code'])) {
+						$error_code = $_GET['error_code'];
 						switch ($error_code) {
 						case 1:
 						echo "<p class='warn'> Uploaded file has no file name!</p>";
@@ -164,7 +197,7 @@ $conn_db_ntu = null;
 				<?php $csrf->echoInputField();?>
 			</form>
 			<br/>
-			<form name="searchbox" action="project.php" method="post" >
+			<form id="filterParams" name="searchbox" action="project.php" method="post" >
 				<table id="Table_Filter_ProjectList" width="100%" >
 					<colgroup>
 						<col width="20%" >
@@ -189,7 +222,7 @@ $conn_db_ntu = null;
 								foreach ( range( $LastestYear, $EarlistYear ) as $i ) {
 									$i = sprintf("%02d", substr($i, -2)) . (sprintf("%02d", (substr($i, -2)+1)));
 
-									if(isset($_REQUEST["filter_ProjectYear"]) && $_REQUEST["filter_ProjectYear"] == $i){
+									if(isset($_POST["filter_ProjectYear"]) && $_POST["filter_ProjectYear"] == $i){
 										echo "<option selected value='".$i."'>".$i."</option>";
 									}else{
 										echo "<option value='".$i."'>".$i."</option>";
@@ -217,7 +250,7 @@ $conn_db_ntu = null;
 								<option value="">SELECT</option>
 								<?php
 								for($index = 1; $index<3; $index++){
-									if(isset($_REQUEST["filter_ProjectSem"]) && $_REQUEST["filter_ProjectSem"] == $index){
+									if(isset($_POST["filter_ProjectSem"]) && $_POST["filter_ProjectSem"] == $index){
 										echo "<option selected value='".$index."'>".$index."</option>";
 									}else{
 										echo "<option value='".$index."'>".$index."</option>";
@@ -237,8 +270,8 @@ $conn_db_ntu = null;
 								<option value="" selected>SELECT</option>
 								<?php
 								foreach ($AL_Staff as $key => $value) {
-								    if(isset($_REQUEST["filter_Supervisor"])) {
-	                                    $StaffID_Filter = $_REQUEST["filter_Supervisor"];
+								    if(isset($_POST["filter_Supervisor"])) {
+	                                    $StaffID_Filter = preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']);
 	                                } else {
 	                                    $StaffID_Filter = null;
 	                                }
@@ -258,7 +291,7 @@ $conn_db_ntu = null;
 							</select>
 						</td>
 						<td colspan="2" style="text-align:right;">
-							<input type="search" name="search" value="<?php echo isset($_POST['search']) ?  $_POST['search'] : '' ?>" />
+							<input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" />
 							<input type="submit" value="Search" title="Search for a project" class="bt"/>
 						</td>
 					</tr>
@@ -356,12 +389,12 @@ $conn_db_ntu = null;
 		                    success: function (data) {
 		                    	console.log(data);
 		                    	/* original codes */
-		                    	//console.log("File uploaded. Server Responded!");
-		                    	//_('status').innerHTML = "File uploaded. Server Responded!";
+		                    	console.log("File uploaded. Server Responded!");
+		                    	_('status').innerHTML = "File uploaded. Server Responded!";
 		                    	/* editted by xm */
-		                    	console.log("Incorrect data format! Please upload the correct excel!");
+		                    	/*console.log("Incorrect data format! Please upload the correct excel!");
 		                    	_('status').innerHTML = "Incorrect data format! Please upload the correct excel!";
-		                    	_('status').setAttribute("class", "error");
+		                    	_('status').setAttribute("class", "error");*/
 		                    	/* end of edits */
 		                    	_("progressbardiv").style.display  = "none";
 		                    	_("loadingdiv").style.display  = "none";
@@ -378,6 +411,19 @@ $conn_db_ntu = null;
 
 					}
 				}
+
+				$('#filterParams').submit(function(event)
+                {
+                    let year = $('#filter_ProjectYear option:selected');
+                    let sem = $('#filter_ProjectSem option:selected');
+                    let supervisor = $('#filter_Supervisor option:selected');
+                    let search = $('#filter_Search');
+                    search.val(search.val().replace(/[^a-zA-Z0-9\s\-()]/gi, ""));
+                    supervisor.val(supervisor.val().replace(/[^a-zA-Z._\s\-]/gi, ""));
+                    sem.val(sem.val().replace(/[^0-9]/gi, ""));
+                    year.val(year.val().replace(/[^0-9]/gi, ""));
+                });
+
 			</script>
 	    
 

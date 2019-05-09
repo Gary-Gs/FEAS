@@ -13,6 +13,9 @@ $csrf = new CSRFProtection();
 
 $_REQUEST['validate'] = $csrf->cfmRequest();
 
+// initialise variables for file read
+$target_dir = "../../../uploaded_files/";
+
 
 
 $c = 0;
