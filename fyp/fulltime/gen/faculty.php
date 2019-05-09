@@ -25,7 +25,7 @@ if($_SERVER['HTTP_REFERER'] != null){
 			throw new Exception($_SERVER['Invalid referer']);
 		}
 	}
-	elseif((strcmp($foldername, "fyp") != 0) && (strcmp($foldername,'http:') == 0)){
+	elseif((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader,'http:') == 0)){
 		if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/gen/faculty.php') != 0){
 			throw new Exception($_SERVER['Invalid referer']);
 		}
