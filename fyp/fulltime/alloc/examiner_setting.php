@@ -476,7 +476,7 @@ $conn_db_ntu = null;
                     }
                 </script>
                 <br/>
-                <form name="searchbox" action="" method="post">
+                <form name="searchbox" method="post">
                     <table style="width: 100%;">
                         <colgroup>
                             <col width="20%"/>
