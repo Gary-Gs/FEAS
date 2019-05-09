@@ -541,7 +541,7 @@
                                           echo '<td>';
                                           echo '<table border=1>';
                                           echo '<tr>';
-                                          echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id']. '">' . $value['project_id']. count($supervisingProjectsCount) . '</a></td>'; 
+                                          echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id']. '">' . $value['project_id'] . '</a></td>'; 
                                           //echo '</tr>';
                                           $rowcount++;
                                           $count++;
@@ -649,7 +649,7 @@
                                                       echo '<td>';
                                                       echo '<table border=1>';
                                                       echo '<tr>';
-                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a> ' . $count .
+                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a> ' .
                                                       '</td>';
                                                       $previousRecord = $value['staff_id'];
                                                       $rowcount++;
@@ -692,7 +692,7 @@
                                                 echo '<td>';
                                                 echo '<table border=1>';
                                                 echo '<tr>';
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id']. '">' . $value['project_id']. '</a> ' . $count . '</td>'; 
+                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id']. '">' . $value['project_id']. '</a></td>'; 
                                                 //echo '</tr>';
                                                 $rowcount++;
                                                 $count++;
