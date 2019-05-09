@@ -12,7 +12,7 @@ foreach ($_GET as $name => $value) {
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-
+/* for server */
 if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[0];

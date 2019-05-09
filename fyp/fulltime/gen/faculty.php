@@ -18,12 +18,19 @@ if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[3]; 
 	$entireUrlString = $_SERVER['HTTP_REFERER'];
+	$httpheader = $urlString[0];
 
-	// for server codes
-	if((strcmp($foldername, "fyp") != 0) && ((strcmp($entireUrlString, "https://155.69.100.32/fyp/fulltime/gen/faculty.php") != 0) ||
-	(strcmp($entireUrlString, "https://155.69.100.32/fyp/fulltime/gen/faculty.php") != 0))){
-		throw new Exception("Invalid referer");
+	if((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader, 'https:') == 0)){
+		if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/gen/faculty.php') != 0){
+			throw new Exception($_SERVER['Invalid referer']);
+		}
 	}
+	elseif((strcmp($foldername, "fyp") != 0) && (strcmp($foldername,'http:') == 0)){
+		if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/gen/faculty.php') != 0){
+			throw new Exception($_SERVER['Invalid referer']);
+		}
+	}
+}
 
 	// for localhost codes
 	/*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){
