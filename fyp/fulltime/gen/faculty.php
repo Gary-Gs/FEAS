@@ -36,7 +36,7 @@ if($_SERVER['HTTP_REFERER'] != null){
 	/*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){
 		throw new Exception("Invalid referer");
 	}*/
-}
+
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 $filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
