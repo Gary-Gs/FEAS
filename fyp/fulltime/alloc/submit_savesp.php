@@ -9,12 +9,26 @@
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[0];
 		if(strcmp($foldername, 'https:') == 0){
-			if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php') != 0){
+			if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php?') == 0)
+			{
+				//no error
+			}
+			elseif(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php') == 0){
+				//no error
+			}
+			else{
 				throw new Exception($_SERVER['Invalid referer']);
 			}
 		}
 		elseif(strcmp($foldername,'http:') == 0){
-			if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php') != 0){
+			if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php?') == 0)
+			{
+				//no error
+			}
+			elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/staffpref_setting.php') == 0){
+				//no error
+			}
+			else{
 				throw new Exception($_SERVER['Invalid referer']);
 			}
 		}
