@@ -10,18 +10,37 @@
 
 
 // to be used for localhost
-if($_SERVER['HTTP_REFERER'] != null &&
+/*if($_SERVER['HTTP_REFERER'] != null &&
 	strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_edit.php') != 0){
 	throw new Exception("Invalid referer");
 }
+*/
 
 // to be used for school server
-/*
-if($_SERVER['HTTP_REFERER'] != null &&
-	strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
-	throw new Exception("Invalid referer");
+if($_SERVER['HTTP_REFERER'] != null) {
+	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
+	$entireUrlArr = explode("?", $_SERVER['HTTP_REFERER']);
+	$entireUrlString = $entireUrlArr[0];
+	$httpheader = $urlString[0];
+
+
+	if(strcmp($httpheader, 'https:') == 0){
+		if(strcmp($entireUrlString, 'https://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
+			throw new Exception($_SERVER['Invalid referer']);
+		}
+	}
+
+
+	elseif(strcmp($httpheader,'http:') == 0){
+		if(strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
+			throw new Exception($_SERVER['Invalid referer']);
+		}
+	}
+
+
+
 }
-*/
+
 
 	$csrf = new CSRFProtection();
 
