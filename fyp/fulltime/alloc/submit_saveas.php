@@ -15,7 +15,7 @@ $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
 if($_SERVER['HTTP_REFERER'] != null && ((strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0) 
 	|| (strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0))){
-	throw new Exception("Invalid referer");
+	throw new Exception($_SERVER['HTTP_REFERER']);
 }
 
 /* this is for testing in localhost 
