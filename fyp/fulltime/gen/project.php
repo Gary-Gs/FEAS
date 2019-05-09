@@ -7,13 +7,27 @@ require_once('../../../Utility.php');
 if ($_SERVER['HTTP_REFERER'] != null) {
     $urlString = explode('/', $_SERVER['HTTP_REFERER']);
     $foldername = $urlString[3];
-    $entireUrlArr = explode("?", strval($_SERVER['HTTP_REFERER']));
+    $entireUrlArr = explode("?", $_SERVER['HTTP_REFERER']);
     $entireUrlString = $entireUrlArr[0];
+    $httpheader = $urlString[0];
 
 
     // to be used for localhost
-    if((strcmp($foldername, 'fyp') != 0) && strcmp($entireUrlString, 'http://localhost/fyp/fulltime/gen/project.php') != 0) {
+   /* if((strcmp($foldername, 'fyp') != 0)
+        && strcmp($entireUrlString, 'http://localhost/fyp/fulltime/gen/project.php') != 0) {
         throw new Exception("Invalid referer");
+    }
+
+   */
+    if((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader, 'https:') == 0)){
+        if(strcmp($entireUrlString, 'https://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+            throw new Exception($_SERVER['Invalid referer']);
+        }
+    }
+    elseif((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader,'http:') == 0)){
+        if(strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+            throw new Exception($_SERVER['Invalid referer']);
+        }
     }
 
 
