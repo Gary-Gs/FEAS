@@ -10,6 +10,7 @@ foreach ($_GET as $name => $value) {
 }
 
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+$_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
 /* for server */
@@ -17,21 +18,42 @@ if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[0];
 	if(strcmp($foldername, 'https:') == 0){
-		if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0){
+
+		if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') == 0){
+			//no error
+		}
+		elseif(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php?save=1') == 0){
+			//no error
+		}
+		else{
 			throw new Exception($_SERVER['Invalid referer']);
 		}
 	}
 	elseif(strcmp($foldername,'http:') == 0){
-		if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') != 0){
+		if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php') == 0){
+			//no error
+		}
+		elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/alloc/allocation_setting.php?save=1') == 0){
+			//no error
+		}
+		else{
 			throw new Exception($_SERVER['Invalid referer']);
 		}
 	}
 }
 
-/* this is for testing in localhost 
-if($_SERVER['HTTP_REFERER'] != null && strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_setting.php') != 0){
-	throw new Exception("Invalid referer");
-} */
+/* this is for testing in localhost */
+/*if($_SERVER['HTTP_REFERER'] != null){
+	if(strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_setting.php') == 0){
+		// no error
+	}
+	elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_setting.php?save=1') == 0){
+		// no error
+	}
+	else{
+		throw new Exception($_SERVER['Invalid referer']);
+	}
+}*/
 
 $_REQUEST['validate'] = $csrf->cfmRequest();
 try {
@@ -59,6 +81,7 @@ if (isset($_REQUEST['exam_sem'])) {
 }
 if (isset($_REQUEST['number_of_days'])) {
 	$noOfDays = $_REQUEST['number_of_days'];
+	$i = 0;
 	$id = $i + 1;
 
 	$stmt = $conn_db_ntu->prepare("UPDATE " . $TABLES['allocation_settings_others'] . " SET alloc_days= ? " . "WHERE type= 'FT'");
@@ -306,7 +329,7 @@ while (isset($_REQUEST['room1_' . $i])) {
 	if (empty($roomName)) {
 		echo "Empty1";
 	} else {
-		$roomDay1Array[$i] = $roomName;
+		$roomDay1Array[$i] = htmlspecialchars($roomName);
 	}
 	$i++;
 }
@@ -317,7 +340,7 @@ while (isset($_REQUEST['room2_' . $i])) {
 	if (empty($roomName2))
 		echo "Empty2";
 	else {
-		$roomDay2Array[$i] = $roomName2;
+		$roomDay2Array[$i] = htmlspecialchars($roomName2);
 	}
 	$i++;
 }
@@ -328,7 +351,7 @@ while (isset($_REQUEST['room3_' . $i])) {
 	if (empty($roomName3))
 		echo "Empty3";
 	else {
-		$roomDay3Array[$i] = $roomName3;
+		$roomDay3Array[$i] = htmlspecialchars($roomName3);
 	}
 	$i++;
 }
@@ -424,8 +447,11 @@ $conn_db_ntu = null;
 <?php
 if (isset ($_REQUEST['validate'])) {
 	header("location:allocation_setting.php?validate=1");
-} else {
-	header("location:allocation_setting.php?save=1");
+}
+else {
+	$_SESSION['allocate_setting_msg'] = "save";
+	echo '<script> location.href="allocation_setting.php?save=1";</script>';
+	//header("location:allocation_setting.php?save=1");
 }
 exit;
 ?>

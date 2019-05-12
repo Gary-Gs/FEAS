@@ -233,7 +233,7 @@
 					
 						$rooms_table = retrieveRooms($actualDay, "allocation_result_room");
 						$NO_OF_ROOMS = count($rooms_table);
-						echo 	'<br/><h3>Day '.($actualDay).' - '.getActualDate($actualDay).'</h3><br/>';
+						echo 	'<br/><h3>Day '.($actualDay).' - '.getActualDate($actualDay).'</h3>';
 						echo 	'<table border=1 >';
 						echo	'<tr>';
 						
@@ -278,7 +278,7 @@
 									else {
 										$details = "";
 									}
-								$cell_info[] = '<a href="allocation_edit.php?project='.$data->getID().'">'.$data->getID()."</a>";
+								$cell_info[] = '<a id="' . $data->getID() . '" class="to_allocate_edit">' . $data->getID() . '</a>';
 								}
 							}
 							if (count($cell_info) > 1)		//Clashing projects
@@ -314,7 +314,7 @@
 					$i = 0;
 					foreach ($unallocated_projects as $project)
 					{
-						echo (++$i).') <a href="allocation_edit.php?project='.$project->getID().'">'.$project->getID().'</a><br/>';
+						echo (++$i) . ') <a id="' . $project->getID() . '" class="to_allocate_edit">' . $project->getID() . '</a></br>';
 					}
 				}
 				//Statistics
@@ -343,6 +343,15 @@
     </div>
 		
 	<?php require_once('../../../footer.php'); ?>
+
+
+	<script type="text/javascript">
+	$('.to_allocate_edit').click(function () {
+		document.cookie = "temp_pid=" + this.id;
+		document.location.href = 'allocation_edit.php';
+	});
+</script>
+
 </body>
 
 </html>

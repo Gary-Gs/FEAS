@@ -3,64 +3,23 @@
 	  require_once('../../../Utility.php');?>
 	
 <?php
-
-
-
-
-
-
-// to be used for localhost
-/*if($_SERVER['HTTP_REFERER'] != null &&
-	strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_edit.php') != 0){
-	throw new Exception("Invalid referer");
-}
-*/
-
-// to be used for school server
-if($_SERVER['HTTP_REFERER'] != null) {
-	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
-	$entireUrlArr = explode("?", $_SERVER['HTTP_REFERER']);
-	$entireUrlString = $entireUrlArr[0];
-	$httpheader = $urlString[0];
-
-
-	if(strcmp($httpheader, 'https:') == 0){
-		if(strcmp($entireUrlString, 'https://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
-			throw new Exception($_SERVER['Invalid referer']);
-		}
-	}
-
-
-	elseif(strcmp($httpheader,'http:') == 0){
-		if(strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/alloc/allocation_edit.php') != 0){
-			throw new Exception($_SERVER['Invalid referer']);
-		}
-	}
-
-
-
-}
-
-
+    
 	$csrf = new CSRFProtection();
 
 	$_REQUEST['validate']=$csrf->cfmRequest();
-
 	
 	//Set Values (General)
 	$error_code = -1;
 	$projectID = null;
-
-	global $TABLES;
 	
-	if(isset($_POST['user_id']) && isset($_POST['project_id']))
+	if(isset($_REQUEST['user_id']) && isset($_REQUEST['project_id']))
 	{
-		$user = $_POST['user_id'];
-		$projectID = $_POST['project_id'];
+		$user = $_REQUEST['user_id'];
+		$projectID = $_REQUEST['project_id'];
 		
 		
 		$query_rsProjectAssign	= "SELECT * FROM ".$TABLES['allocation_result'] . " WHERE project_id = ?";
-
+		
 		try
 		{	$stmt = $conn_db_ntu->prepare ($query_rsProjectAssign);
 		    $stmt->bindParam(1, $projectID);
@@ -72,27 +31,23 @@ if($_SERVER['HTTP_REFERER'] != null) {
 		catch (PDOException $e)
 		{
 			
-			//die("1. ".$e->getMessage());
-			die("Sorry, system ran into some error");
+			die("1. ".$e->getMessage());
 		}
 		
 		if ($projectData)	//Valid Project
 		{
 			
-			$examinerID = (isset($_POST['examiner'])) ?  preg_replace('/[^a-zA-Z0-9._\s\-]/', "",$_POST['examiner']) : -1;
-			if ($examinerID == "") $examinerID = -1;
-
-			$exam_day =  (isset($_POST['exam_day'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_day']) : -1;
-			//TODO check if input is higher than the number of days set in settings or less than 1 set $exam_day as -1
-			if ($exam_day == "") $exam_day = -1;
+			$examinerID = (isset($_REQUEST['examiner'])) ? $_REQUEST['examiner'] : -2;
 			
-			$exam_slotID =  (isset($_POST['exam_slot'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_slot']) : -1;
-			//TODO check if input is higher than the number of slots set in settings or less than 1 set $exam_slotID as -1
-			if ($exam_slotID == "") $exam_slotID = -1;
+			
+			$exam_day =  (isset($_REQUEST['exam_day'])) ? $_REQUEST['exam_day'] : -2;
+			
+			
+			$exam_slotID =  (isset($_REQUEST['exam_slot'])) ? $_REQUEST['exam_slot'] : -2;
+			
 
-			$exam_room =  (isset($_POST['exam_room'])) ? preg_replace('/[^0-9]/', "",$_POST['exam_room']) : -1;
-			//TODO check if input is higher than the number of rooms set in settings or less than 1 set $exam_room as -1
-			if ($exam_room == "") $exam_room = -1;
+			$exam_room =  (isset($_REQUEST['exam_room'])) ? $_REQUEST['exam_room'] : -2;
+			
 			
 			$hasEmpty = ($examinerID == -1 || $exam_day == -1 || $exam_slotID == -1 || $exam_room == -1);
 		     
@@ -125,8 +80,7 @@ if($_SERVER['HTTP_REFERER'] != null) {
 				}
 				catch (PDOException $e)
 				{
-					//die("2. ".$e->getMessage());
-					die("Sorry, system ran into some error");
+					die("2. ".$e->getMessage());
 				}
 
 				if ($existExaminer && $examinerID != $projectData['examiner_id'] )	//Valid Examiner and Examiner Changed
@@ -187,8 +141,7 @@ if($_SERVER['HTTP_REFERER'] != null) {
 				}
 				catch (PDOException $e)
 				{
-					//die("4. ".$e->getMessage());
-					die("Sorry, system ran into some error");
+					die("4. ".$e->getMessage());
 				}
 			    
 			
@@ -223,8 +176,7 @@ if($_SERVER['HTTP_REFERER'] != null) {
 				}
 				catch (PDOException $e)
 				{
-					//die("5. ".$e->getMessage());
-					die("Sorry, system ran into some error");
+					die("5. ".$e->getMessage());
 				}
 				
 				if ($existRoom && $exam_room != $projectData['room'] )	//Valid Room and Room Changed
@@ -284,26 +236,15 @@ if($_SERVER['HTTP_REFERER'] != null) {
 	
 	$conn_db_ntu = null;
 ?>
-	
-
-	<?php
-	    if(isset ($_REQUEST['validate'])) {
-		   header("location:examiner_setting.php?validate=1");
-		  
-	    }
-		else if ($projectID != null)
-		{
-			if ($error_code == 1) {
-				header("location:allocation_edit.php?project=".$projectID."&warn=1");	//Has clashes
-				}
-			else {
-				
-				header("location:allocation_edit.php?project=".$projectID."&save=1");
-			}
-			
-		}
-		else {
-			header("location:allocation.php");
-		}
-        exit;		
-	?>
+<?php
+if (isset ($_REQUEST['validate'])) {
+	header("location:examiner_setting.php?validate=1");
+} else if ($projectID != null) {
+	$_SESSION['allocate_edit_project'] = $projectID;
+	$_SESSION['allocate_edit_msg'] = ($error_code == 1) ? "warn" : "save";
+	header("location:allocation_edit.php");
+} else {
+	header("location:allocation.php");
+}
+exit;
+?>

@@ -14,8 +14,16 @@
 		
 	}
 	
-	$projectID = $_REQUEST['project'];
-	
+	if ($_COOKIE['temp_pid']) {
+		echo $_COOKIE['temp_pid'];
+		$projectID = $_COOKIE['temp_pid'];
+		unset($_COOKIE['temp_pid']);
+		$_SESSION['allocate_edit_project'] = $projectID;
+	}
+	else if (isset($_SESSION['allocate_edit_project'])) {
+		$projectID = $_SESSION['allocate_edit_project'];
+	}
+
 	if($projectID == null || empty($projectID))
 	{
 		$error_code = 1;
@@ -98,7 +106,7 @@
 			}
 		
 	}
-	if (isset ($_REQUEST['dayTime'])) {
+	if (isset ($_REQUEST['dayTime'])) { 
 		$day = $_REQUEST['dayTime'];
 		return generateTimeSelect('exam_slot',NULL,$day );
 	}
@@ -182,8 +190,8 @@
 		/*$(document).ready(function(){
 			//Copy time selection
 			var day = 0;
-		*/
-		//	timeslots[0] = '<?php generateTimeSelect('exam_slot', NULL, NULL); ?>';
+		
+		//	timeslots[0] = '<?php generateTimeSelect('exam_slot', NULL, NULL); ?>';		
 					
 			//Undefined Fix
 			
@@ -288,15 +296,23 @@
 				?>
 				<h4><?php echo ($projData['ptitle'] != null) ? $projData['ptitle']: "-"; ?></h4>
 					<?php
-						if(isset($_REQUEST['save']))
-							echo "<p class='success'> Allocation saved.</p>";
-						if(isset($_REQUEST['warn']))
-							echo "<p class='warn'> Allocation saved. Clashes detected.</p>";
-						if(isset($_REQUEST['clear']))
-							echo "<p class='warn'> Allocation changes cleared.</p>";
-						
+						if (isset($_SESSION['allocate_edit_msg'])) {
+							switch ($_SESSION['allocate_edit_msg']) {
+								case "save":
+									echo "<p class='success'> Allocation saved.</p>";
+								break;
+								case "warn":
+									echo "<p class='warn'> Allocation saved. Clashes detected.</p>";
+								break;
+								case "clear":
+									echo "<p class='warn'> Allocation changes cleared.</p>";
+								break;
+							}
+						unset($_SESSION['allocate_edit_msg']);
+						}
 						echo '';
 					?>
+
 					<p><a href="allocation.php" class="btn bg-dark text-white" style="font-size: 12px;" title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
 					<form action="submit_allocate_edit.php" method="post">
 					<?php $csrf->echoInputField();?>

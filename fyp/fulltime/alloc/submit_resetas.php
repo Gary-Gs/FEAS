@@ -105,12 +105,13 @@ unset($values);*/
 
 $conn_db_ntu = null;
 ?>
-
 <?php
 if (isset ($_REQUEST['validate'])) {
-	header("location:allocation_setting.php?validate = 1");
+	header("location:allocation_setting.php?validate=1");
 } else {
-	header("location:allocation_setting.php?reset = 1");
+	$_SESSION['allocate_setting_msg'] = "reset";
+	echo '<script> location.href="allocation_setting.php?reset=1";</script>';
+	//header("location:allocation_setting.php?reset = 1");
 }
 exit;
 ?>

@@ -13,7 +13,7 @@ foreach ($_GET as $name => $value) {
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-
+/* to be used for server */
 if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[3]; 
@@ -32,11 +32,10 @@ if($_SERVER['HTTP_REFERER'] != null){
 	}
 }
 
-	// for localhost codes
-	/*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){
-		throw new Exception("Invalid referer");
-	}*/
-
+// for localhost codes
+/*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){
+	throw new Exception("Invalid referer");
+}*/
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 $filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
