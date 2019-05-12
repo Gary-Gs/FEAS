@@ -82,14 +82,10 @@
 
 <?php
 	if (isset ($_REQUEST['validate'])) {
-		header("location:timeslot_exception.php");
+				header("location:timeslot_exception.php?validate=1");
 	}
 	else {
-  	if($_POST['btn_clear']){
-  	  header('location:timeslot_exception.php');
-    }else{
-		  header("location:timeslot_exception.php");
-		}
+  			header("location:timeslot_exception.php?save=1");
   }
 	exit;
 ?>
