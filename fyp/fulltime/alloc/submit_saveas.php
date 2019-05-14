@@ -1,7 +1,6 @@
 <?php require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
-
 <?php
 $csrf = new CSRFProtection();
 /* Prevent XSS input */
@@ -12,6 +11,7 @@ foreach ($_GET as $name => $value) {
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
 
 /* for server */
 if($_SERVER['HTTP_REFERER'] != null){
@@ -81,8 +81,7 @@ if (isset($_REQUEST['exam_sem'])) {
 }
 if (isset($_REQUEST['number_of_days'])) {
 	$noOfDays = $_REQUEST['number_of_days'];
-	$i = 0;
-	$id = $i + 1;
+//	$id = $i + 1;
 
 	$stmt = $conn_db_ntu->prepare("UPDATE " . $TABLES['allocation_settings_others'] . " SET alloc_days= ? " . "WHERE type= 'FT'");
 	$stmt->bindParam(1, $noOfDays);
@@ -327,9 +326,9 @@ $roomDay3Array = array();
 while (isset($_REQUEST['room1_' . $i])) {
 	$roomName = $_REQUEST['room1_' . $i];
 	if (empty($roomName)) {
-		echo "Empty1";
+//		echo "Empty1";
 	} else {
-		$roomDay1Array[$i] = htmlspecialchars($roomName);
+		$roomDay1Array[$i] = $roomName;
 	}
 	$i++;
 }
@@ -337,10 +336,10 @@ while (isset($_REQUEST['room1_' . $i])) {
 $i = 1;
 while (isset($_REQUEST['room2_' . $i])) {
 	$roomName2 = $_REQUEST['room2_' . $i];
-	if (empty($roomName2))
-		echo "Empty2";
-	else {
-		$roomDay2Array[$i] = htmlspecialchars($roomName2);
+	if (empty($roomName2)) {
+//		echo "Empty2";
+	} else {
+		$roomDay2Array[$i] = $roomName2;
 	}
 	$i++;
 }
@@ -348,10 +347,10 @@ while (isset($_REQUEST['room2_' . $i])) {
 $i = 1;
 while (isset($_REQUEST['room3_' . $i])) {
 	$roomName3 = $_REQUEST['room3_' . $i];
-	if (empty($roomName3))
-		echo "Empty3";
-	else {
-		$roomDay3Array[$i] = htmlspecialchars($roomName3);
+	if (empty($roomName3)) {
+//		echo "Empty3";
+	} else {
+		$roomDay3Array[$i] = $roomName3;
 	}
 	$i++;
 }
@@ -446,12 +445,12 @@ $conn_db_ntu = null;
 ?>
 <?php
 if (isset ($_REQUEST['validate'])) {
-	header("location:allocation_setting.php?validate=1");
-}
-else {
+	$_SESSION['allocate_setting_msg'] = "validate";
+	header("location:allocation_setting.php");
+} else {
 	$_SESSION['allocate_setting_msg'] = "save";
-	//echo '<script> location.href="allocation_setting.php?save=1";</script>';
-	header("location:allocation_setting.php?save=1");
+	header("location:allocation_setting.php");
+//	header("location:allocation_setting.php?save=1");
 }
 exit;
 ?>
