@@ -450,8 +450,8 @@ if (isset ($_REQUEST['validate'])) {
 }
 else {
 	$_SESSION['allocate_setting_msg'] = "save";
-	echo '<script> location.href="allocation_setting.php?save=1";</script>';
-	//header("location:allocation_setting.php?save=1");
+	//echo '<script> location.href="allocation_setting.php?save=1";</script>';
+	header("location:allocation_setting.php?save=1");
 }
 exit;
 ?>
