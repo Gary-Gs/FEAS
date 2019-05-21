@@ -10,7 +10,7 @@
    session_start();
    
    // users who are able to access all modules
-   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178"];
+   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh"];
    session_regenerate_id (true);// it regenerate id and delete old id on machine
    //to check if the domain if is ours
   
