@@ -17,16 +17,16 @@ if(isset($_SERVER['HTTP_REFERER'])){
   if(strcmp($foldername, 'https:') == 0){
     if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/') == 0){
       //no error
-      echo "Here";
+      //echo "Here";
     }
     elseif(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/login.php') == 0){
       //no error
-      echo "Here 2";
+      //echo "Here 2";
     }
     // After logout, redirect to login
     elseif(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/logout.php') == 0){
       // no error
-      echo "Here3";
+      //echo "Here3";
     }
     else{
       throw new Exception($_SERVER['Invalid referer']);
@@ -35,16 +35,16 @@ if(isset($_SERVER['HTTP_REFERER'])){
   elseif(strcmp($foldername,'http:') == 0){
     if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/') == 0){
       //no error
-      echo "THere";
+      //echo "THere";
     }
     elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/login.php') == 0){
       //no error
-      echo "THere2";
+      //echo "THere2";
     }
     // After logout, redirect to login
     elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/logout.php') == 0){
       // no error
-      echo "THere3";
+      //echo "THere3";
     }
     else{
       throw new Exception($_SERVER['Invalid referer']);
