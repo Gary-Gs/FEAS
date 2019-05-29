@@ -204,7 +204,8 @@ unset($_POST["examineList"]);
 if (isset ($_REQUEST['validate'])) {
     header("location:examiner_setting.php?validate=1");
 } else {
-    header("location:examiner_setting.php?verified=1");
+    header("location:examiner_setting.php");
+    //header("location:examiner_setting.php?verified=1");
 }
 
 
@@ -214,6 +215,3 @@ if (isset ($_REQUEST['validate'])) {
  * Date: 14/2/2019
  * Time: 9:55 AM
  */
-
-
-
