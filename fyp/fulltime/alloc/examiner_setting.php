@@ -280,7 +280,7 @@ $conn_db_ntu = null;
                         <tr>
                             <td colspan="2">
                                 <input type="file" id="FileToUpload_ExaminerSettings"
-                                       name="FileToUpload_ExaminerSettings[]" multiple="multiple"/>
+                                       name="FileToUpload_ExaminerSettings[]"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple="multiple"/>
                             </td>
                             <td colspan="3">
                                 <ul id="FileToUpload_FileList"></ul>
@@ -311,7 +311,7 @@ $conn_db_ntu = null;
                     <?php $csrf->echoInputField(); ?>
                 </form>
                 <script type="text/javascript">
-                    var IsValidFileUpload = true;
+                    var IsValidFileUpload = false;
                     // To list all the selected files
                     $("#FileToUpload_ExaminerSettings").change(function () {
                         var FileToUpload_ExaminerSettings = _("FileToUpload_ExaminerSettings");
@@ -339,11 +339,13 @@ $conn_db_ntu = null;
                                 var li = document.createElement('li');
                                 li.innerHTML = 'File ' + (FileIndex + 1) + ':  ' + FileToUpload_ExaminerSettings.files[FileIndex].name;
                                 Filename = FileToUpload_ExaminerSettings.files[FileIndex].name.substr(0, FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.'));
+                                FileExtension = FileToUpload_ExaminerSettings.files[FileIndex].name.substr(FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.'));
 
-                                if (Filename.toLowerCase() == "examiner_list") {
+                                if (Filename.toLowerCase() == "examiner_list" && (FileExtension.toLowerCase() == ".xlsx" || FileExtension.toLowerCase() == ".xls" || FileExtension.toLowerCase() == ".csv")) {
                                     li.innerHTML += " (Valid)";
                                     li.setAttribute("style", "list-style-type: none; color: green;");
-                                } else if ((selected == "2" && Filename.toLowerCase() == "exemption") || (selected =="2" && Filename.toLowerCase() == "master")) {
+                                } else if ((selected == "2" && Filename.toLowerCase() == "exemption" && (FileExtension.toLowerCase() == ".xlsx" || FileExtension.toLowerCase() == ".xls" || FileExtension.toLowerCase() == ".csv")) || (selected =="2" && Filename.toLowerCase() == "master"
+                                && (FileExtension.toLowerCase() == ".xlsx" || FileExtension.toLowerCase() == ".xls" || FileExtension.toLowerCase() == ".csv"))) {
                                     li.innerHTML += " (Valid)";
                                     li.setAttribute("style", "list-style-type: none; color: green;");
                                 } else {
@@ -353,6 +355,30 @@ $conn_db_ntu = null;
                                 FileToUpload_FileList.append(li);
                             }
 
+                            // Rewrite codes to include checking of file extension, original code is below
+                            if (selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") && FileToUpload_ExaminerSettings.files.length == 1
+                            && (FileToUpload_ExaminerSettings.files[0].name.substr(FileToUpload_ExaminerSettings.files[0].name.indexOf('.')) == ".xlsx" || FileToUpload_ExaminerSettings.files[0].name.substr(FileToUpload_ExaminerSettings.files[0].name.indexOf('.')) == ".xls"
+                            || FileToUpload_ExaminerSettings.files[0].name.substr(FileToUpload_ExaminerSettings.files[0].name.indexOf('.')) == ".csv")) {
+                                IsValidFileUpload = true;
+                            }
+                            else if (selected == "2" && FileToUpload_ExaminerSettings.files.length == 3) {
+                               // Check if the 3 files uploaded are the correct files
+                               for (var FileIndex = 0; FileIndex < FileToUpload_ExaminerSettings.files.length; FileIndex++) {
+
+                                  // Get file name
+                                  UploadFileName = FileToUpload_ExaminerSettings.files[FileIndex].name.toLowerCase();
+                                  UploadFileExtension = FileToUpload_ExaminerSettings.files[FileIndex].name.substr(FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.'));
+
+                                  if ((UploadFileName.includes("examiner_list") || UploadFileName.includes("master") || UploadFileName.includes("exemption")) && (UploadFileExtension.toLowerCase() == ".xlsx" || UploadFileExtension.toLowerCase() == ".xls" || UploadFileExtension.toLowerCase() == ".csv")) {
+                                      IsValidFileUpload = true;
+                                  }
+                                  else {
+                                      IsValidFileUpload = false;
+                                 }
+                               }
+                            }
+
+                            /* Original Codes
                             if (selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") && FileToUpload_ExaminerSettings.files.length == 1) {
                                 IsValidFileUpload = true;
                             }
@@ -361,6 +387,9 @@ $conn_db_ntu = null;
                                 && (FileToUpload_ExaminerSettings.files[2].name.toLowerCase().includes("examiner_list") || FileToUpload_ExaminerSettings.files[2].name.toLowerCase().includes("master") || FileToUpload_ExaminerSettings.files[2].name.toLowerCase().includes("exemption")))) {
                                 IsValidFileUpload = true;
                             }
+                            // Original Codes stop here
+                            */
+
                             /*if((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list")) || ((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list"))
                                 && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list") ))){
                                 IsValidFileUpload=true;

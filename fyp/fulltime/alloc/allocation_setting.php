@@ -3,7 +3,7 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 <?php
 /* this code is for restricting access, can uncomment it later */
-/* 
+/*
 if($_SESSION['index'] == "true"){
 
 }
@@ -14,7 +14,7 @@ else{
 $csrf = new CSRFProtection();
 /* Prevent XSS input */
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);										 						 
+$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 $MIN_ROOMS = 10;
 
 $query_rsSettings = "SELECT * FROM " . $TABLES['allocation_settings_general'] . " as g";
@@ -649,7 +649,7 @@ function enoughSlots() {
 					echo "<p class = 'warn'> CSRF validation failed.</p>";
 				} else { ?>
                     <div id="topcon">
-                        <form action="submit_saveas.php" method="get">
+                        <form action="submit_saveas.php" method="post">
 							<?php $csrf->echoInputField(); ?>
                             <table id="settings_table" border="0" style="margin-top:15px;">
                                 <tr>

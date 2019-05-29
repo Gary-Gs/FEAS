@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
@@ -61,7 +61,7 @@ $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];
 $query_rsProject 			= "SELECT * FROM " .
-$TABLES['fea_projects'] . " as p1 LEFT JOIN " . 
+$TABLES['fea_projects'] . " as p1 LEFT JOIN " .
 $TABLES['fyp_assign'] 	. " as p2 ON p1.project_id 	= p2.project_id LEFT JOIN "	.
 $TABLES['fyp']			. " as p3 ON p2.project_id 	= p3.project_id LEFT JOIN "	.
 $TABLES['staff']		. " as p4 ON p2.staff_id 	= p4.id "					.
@@ -81,7 +81,7 @@ try
 
 	// GET Project data
 	$stmt 				= $conn_db_ntu->prepare($query_rsProject);
-	$stmt->bindParam(1, $filter_Search);				// Search project id 
+	$stmt->bindParam(1, $filter_Search);				// Search project id
 	$stmt->bindParam(2, $filter_Search);				// Search project title
 	$stmt->bindParam(3, $filter_ProjectYear);			// Search project year
 	$stmt->bindParam(4, $filter_ProjectSem);			// Search project sem
@@ -108,38 +108,38 @@ $conn_db_ntu = null;
 	<title>Full Time Project List</title>
 	<style>
             @media only screen and (max-width: 800px) {
-            .floatWrapper {float:none!important;}       
+            .floatWrapper {float:none!important;}
             .float-panel {position:static!important;}
             .main-content {padding:20px;margin-right:0px;}
         }
 
-        
+
     </style>
-	
+
 </head>
 
 <body>
-	<?php require_once('../../../php_css/headerwnav.php'); ?> 
+	<?php require_once('../../../php_css/headerwnav.php'); ?>
 
     <div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif"/>
 		<p>Uploading projects...</p>
-	</div> 
-	
+	</div>
+
 <div style="margin-left: -15px;">
 	<div class="container-fluid">
-		 <?php require_once('../../nav.php'); ?> 
+		 <?php require_once('../../nav.php'); ?>
 
 		 <!-- Page Content Holder -->
 	    <div class="container-fluid">
 
-	    	<!-- for going back to top --> 
+	    	<!-- for going back to top -->
 	    	<div id="backtop"></div>
 	    	<h3>Full Time Project List</h3>
 
-	    	<?php 
+	    	<?php
 	    		if (isset ($_REQUEST['csrf']) ||isset ($_REQUEST['validate'])) {
-					echo "<p class='warn'> CSRF validation failed.</p>";	
+					echo "<p class='warn'> CSRF validation failed.</p>";
 				}
 
 				else {
@@ -167,7 +167,7 @@ $conn_db_ntu = null;
 				}
 
 				if (isset ($_REQUEST['import_project'])){
-				echo "<p class='success'> Project List uploaded successfully.</p>";	
+				echo "<p class='success'> Project List uploaded successfully.</p>";
 				}
 	    	?>
 
@@ -189,10 +189,10 @@ $conn_db_ntu = null;
 							<input type="submit" value="Import" name="submit" class="btn btn-xs btn-success" >
 						</td>
 					</tr>
-					
+
 					<tr>
 						<td colspan="5">
-							<input type="file" id="FileToUpload_ProjectList" name="file" >
+							<input type="file" id="FileToUpload_ProjectList" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file" >
 						</td>
 					</tr>
 					<tr>
@@ -246,7 +246,7 @@ $conn_db_ntu = null;
 							</select>
 						</td>
 						<td style="float: right;">
-							<?php 
+							<?php
 							if( $Total_RowCount > 1){
 								echo $Total_RowCount . " records";
 							}else{
@@ -294,7 +294,7 @@ $conn_db_ntu = null;
 									if($StaffID_Filter == $StaffID){
 										echo "<option value=" . $StaffID . " selected>";
 										echo $StaffName;
-										echo "</option>";	
+										echo "</option>";
 									}else{
 										echo "<option value=" . $StaffID . ">";
 										echo $StaffName;
@@ -349,13 +349,13 @@ $conn_db_ntu = null;
 
 			<br/>
 		</div>
-		
+
 			<script type="text/javascript">
 				$("#FORM_FileToUpload_ProjectList").submit(function( event ) {
-					// start of xm edits 
+					// start of xm edits
 					//this for displaying to show that the data format for excel uploaded is wrong, somehow it worked but dont understand why
 		            //window.location.href = ("project.php?error_code=5");
-		            // end of xm edits 
+		            // end of xm edits
 					uploadFile();
 					event.preventDefault();
 				});
@@ -371,7 +371,7 @@ $conn_db_ntu = null;
 						var csrfToken = _("CSRF_token").value;
 						console.log(file_data.name + ", "+ file_data.size +", "+ file_data.type);
 						var formData = new FormData();
-						
+
 						formData.append("file", file_data);
 						formData.append("csrf__",csrfToken );
 						_("loadingdiv").style.display  = "block";
@@ -415,7 +415,6 @@ $conn_db_ntu = null;
 		                    	$("#progressbar").text(0 + "%");
 		                    	$("#progressbar").css('width', 0 + "%");
 		                    	window.location.href = ("project.php?" + data);
-
 		                    },
 		                    error: function(data){
 		                    	console.log("File upload failed!");
@@ -439,7 +438,7 @@ $conn_db_ntu = null;
                 });
 
 			</script>
-	    
+
 
 	    <div class="container col-sm-1 col-md-1 col-lg-1">
 	    	<div class="float-panel">
@@ -448,15 +447,15 @@ $conn_db_ntu = null;
             		<a href="#tobottom"><img src="../../../images/tobottom.png" width="40%" height="40%" /></a><br/>
 	    	</div>
 
-	    </div> 
-	    
-	    
+	    </div>
+
+
 		 <!-- closing navigation div in nav.php -->
 	 </div>
-	 
+
 	</div>
 </div>
-	<!-- for going back to bottom --> 
+	<!-- for going back to bottom -->
 	<div id="tobottom"></div>
 
 <?php require_once('../../../footer.php'); ?>

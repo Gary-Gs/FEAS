@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
@@ -16,7 +16,7 @@ $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 /* to be used for server */
 if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
-	$foldername = $urlString[3]; 
+	$foldername = $urlString[3];
 	$entireUrlString = $_SERVER['HTTP_REFERER'];
 	$httpheader = $urlString[0];
 
@@ -98,45 +98,45 @@ $conn_db_ntu = null;
 	<title>Faculty List</title>
 	<style>
             @media only screen and (max-width: 800px) {
-            .floatWrapper {float:none!important;}       
+            .floatWrapper {float:none!important;}
             .float-panel {position:static!important;}
             .main-content {padding:20px;margin-right:0px;}
         }
 
-        
+
     </style>
 </head>
 
 
 <body>
-	<?php require_once('../../../php_css/headerwnav.php'); ?> 
+	<?php require_once('../../../php_css/headerwnav.php'); ?>
 
     <div id="loadingdiv" class="loadingdiv">
 		<img id="loadinggif" src="../../../images/loading.gif"/>
 		<p>Uploading staff list...</p>
-	</div> 
+	</div>
 
-	
+
 	<div style="margin-left: -15px;">
 
 		<div class="container-fluid">
-			 <?php require_once('../../nav.php'); ?> 
+			 <?php require_once('../../nav.php'); ?>
 
 			 <!-- Page Content Holder -->
             <div class="container-fluid">
-            	<!-- for going back to top --> 
+            	<!-- for going back to top -->
             	<div id="backtop"></div>
             	<h3>Faculty List for Full Time Projects</h3>
 
-            	<?php  
+            	<?php
 					if (isset ($_REQUEST['csrf']) || isset ($_REQUEST['validate'])) {
-						echo "<p class='warn'> CSRF validation failed.</p>";	
+						echo "<p class='warn'> CSRF validation failed.</p>";
 					}
 
 					else {
-						
+
 						if (isset ($_REQUEST['import_examiner'])){
-							echo "<p class='success'> Faculty List uploaded successfully.</p>";	
+							echo "<p class='success'> Faculty List uploaded successfully.</p>";
 						}
 						if (isset ($_REQUEST['error_code'])) {
 							$error_code = $_REQUEST['error_code'];
@@ -179,7 +179,7 @@ $conn_db_ntu = null;
 						</tr>
 						<tr>
 							<td colspan="5">
-								<input type="file" id="FileToUpload_FacultyList" name="file" >
+								<input type="file" id="FileToUpload_FacultyList" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file" >
 							</td>
 						</tr>
 						<tr>
@@ -209,7 +209,7 @@ $conn_db_ntu = null;
 						</colgroup>
 						<tr>
 							<td colspan="5" style="text-align: right;">
-								<?php 
+								<?php
 								if( $Total_RowCount > 1){
 									echo $Total_RowCount . " records";
 								}else{
@@ -238,7 +238,7 @@ $conn_db_ntu = null;
 										if($StaffID_Filter == $StaffID){
 											echo "<option value=" . $StaffID . " selected>";
 											echo $StaffName;
-											echo "</option>";	
+											echo "</option>";
 										}else{
 											echo "<option value=" . $StaffID . ">";
 											echo $StaffName;
@@ -253,11 +253,11 @@ $conn_db_ntu = null;
 								<input type="submit" value="Search" title="Search for a project" class="bt"/>
 							</td>
 						</tr>
-						
+
 					</table>
 				</form>
 				<br/>
-				
+
 				<table width="100%" border="1">
 					<col width="20%" />
 					<col width="20%" />
@@ -271,7 +271,7 @@ $conn_db_ntu = null;
 						<td>Area Preference</td>
 					</tr>
 					<?php
-					
+
 					foreach ($AL_Staff_Filter as $key => $AL_Staff_value) {
 						$StaffID 	= $AL_Staff_value['id'];
 
@@ -382,13 +382,13 @@ $conn_db_ntu = null;
             <!-- page content closing div -->
             </div>
 
-            
+
 		<!-- closing navigation div in nav.php -->
          </div>
 
 
     </div>
-			
+
 </div>
 
 

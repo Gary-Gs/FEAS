@@ -9,67 +9,31 @@
 ?>
 
 <?php
-/* for server */
-// Check if HTTP_REFERER is set by User Agent because not all user agent will set this
-if(isset($_SERVER['HTTP_REFERER'])){
-  $urlString = explode('/', $_SERVER['HTTP_REFERER']);
-  $foldername = $urlString[0];
-  if(strcmp($foldername, 'https:') == 0){
-    if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/') == 0){
-      //no error
-      //echo "Here";
-    }
-    elseif(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/login.php') == 0){
-      //no error
-      //echo "Here 2";
-    }
-    // After logout, redirect to login
-    elseif(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/logout.php') == 0){
-      // no error
-      //echo "Here3";
-    }
-    else{
-      throw new Exception($_SERVER['Invalid referer']);
-    }
+// this is for checking server
+$domain1 = 'http://155.69.100.32';
+$domain2 = 'https://155.69.100.32';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  if ((strpos($_SERVER['HTTP_REFERER'], $domain1) !== false) || (strpos($_SERVER['HTTP_REFERER'], $domain2) !== false)) {
+      echo '<script>console.log('.strpos($_SERVER['HTTP_REFERER'], $domain1).')</script>';
+      echo '<script>console.log('.strpos($_SERVER['HTTP_REFERER'], $domain2).')</script>';
   }
-  elseif(strcmp($foldername,'http:') == 0){
-    if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/') == 0){
-      //no error
-      //echo "THere";
-    }
-    elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/login.php') == 0){
-      //no error
-      //echo "THere2";
-    }
-    // After logout, redirect to login
-    elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/logout.php') == 0){
-      // no error
-      //echo "THere3";
-    }
-    else{
+  else{
       throw new Exception($_SERVER['Invalid referer']);
-    }
   }
 }
 
+
 /* this is for testing in localhost */
-// Check if HTTP_REFERER is set by User Agent because not all user agent will set this
-/* if(isset($_SERVER['HTTP_REFERER'])) {
-  if(strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/') == 0){
-    // no error
-  }
-  elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/login.php') == 0){
-    // no error
-  }
-  // After logout, redirect to login
-  elseif(strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/logout.php') == 0){
-    // no error
+/* Check if HTTP_REFERER is set by User Agent because not all user agent will set this
+$domain1 = 'http://localhost';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  if (strpos($_SERVER['HTTP_REFERER'], $domain1) !== false) {
+      echo '<script>console.log('.strpos($_SERVER['HTTP_REFERER'], $domain1).')</script>';
   }
   else{
-    throw new Exception($_SERVER['Invalid referer']);
+      throw new Exception($_SERVER['Invalid referer']);
   }
-}
-*/
+} */
 ?>
 
 <?php
@@ -77,7 +41,7 @@ if(isset($_SERVER['HTTP_REFERER'])){
 
    // users who are able to access all modules
    $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh"];
-   session_regenerate_id(true);// it regenerate id and delete old id on machine
+   //session_regenerate_id(true);// it regenerate id and delete old id on machine
    //to check if the domain if is ours
 
    if(isset($_SESSION['login']) && isset($username)){
