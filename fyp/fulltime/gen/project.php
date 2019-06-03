@@ -4,13 +4,18 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+    header('Location: '.$_SERVER['PHP_SELF']);
+}
+
+/*
 if ($_SERVER['HTTP_REFERER'] != null) {
     $urlString = explode('/', $_SERVER['HTTP_REFERER']);
     $foldername = $urlString[3];
     $entireUrlArr = explode("?", $_SERVER['HTTP_REFERER']);
     $entireUrlString = $entireUrlArr[0];
     $httpheader = $urlString[0];
-
+*/
 
     // to be used for localhost
    /* if((strcmp($foldername, 'fyp') != 0)
@@ -19,6 +24,7 @@ if ($_SERVER['HTTP_REFERER'] != null) {
     }
 
    */
+   /*
     if((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader, 'https:') == 0)){
         if(strcmp($entireUrlString, 'https://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
             throw new Exception($_SERVER['Invalid referer']);
@@ -29,7 +35,7 @@ if ($_SERVER['HTTP_REFERER'] != null) {
             throw new Exception($_SERVER['Invalid referer']);
         }
     }
-
+*/
 
 
 // to be used for school server
@@ -38,8 +44,29 @@ if ($_SERVER['HTTP_REFERER'] != null) {
         throw new Exception("Invalid referer");
     }
   */
+//}
 
+
+$localHostDomain = 'http://localhost';
+$ServerDomainHTTP = 'http://155.69.100.32';
+$ServerDomainHTTPS = 'https://155.69.100.32';
+$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  try {
+      // If referer is correct
+      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+      }
+      else {
+          throw new Exception($_SERVER['Invalid Referer']);
+          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+      }
+  }
+  catch (Exception $e) {
+      die ("Invalid Referer.");
+  }
 }
+
 $csrf = new CSRFProtection();
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
@@ -143,8 +170,8 @@ $conn_db_ntu = null;
 				}
 
 				else {
-					if (isset ($_GET['error_code'])) {
-						$error_code = $_GET['error_code'];
+					if (isset($_SESSION['import_project_error'])) {
+						$error_code = $_SESSION['import_project_error'];
 						switch ($error_code) {
 						case 1:
 						echo "<p class='warn'> Uploaded file has no file name!</p>";
@@ -162,7 +189,7 @@ $conn_db_ntu = null;
 						echo "<p class='error'> Incorrect Data Format! Please upload the correct excel!</p>";
 						break;
 						}
-
+            unset($_SESSION['import_project_error']);
 					}
 				}
 

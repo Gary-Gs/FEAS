@@ -3,6 +3,10 @@ require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+    header('Location: '.$_SERVER['PHP_SELF']);
+}
+
 $csrf = new CSRFProtection();
 
 /* Prevent XSS input */
@@ -13,7 +17,27 @@ foreach ($_GET as $name => $value) {
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-/* to be used for server */
+$localHostDomain = 'http://localhost';
+$ServerDomainHTTP = 'http://155.69.100.32';
+$ServerDomainHTTPS = 'https://155.69.100.32';
+$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  try {
+      // If referer is correct
+      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+      }
+      else {
+          throw new Exception($_SERVER['Invalid Referer']);
+          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+      }
+  }
+  catch (Exception $e) {
+      die ("Invalid Referer.");
+  }
+}
+
+/* to be used for server
 if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[3];
@@ -31,6 +55,7 @@ if($_SERVER['HTTP_REFERER'] != null){
 		}
 	}
 }
+*/
 
 // for localhost codes
 /*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){

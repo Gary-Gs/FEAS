@@ -12,8 +12,7 @@ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-
-/* for server */
+/* for server
 if($_SERVER['HTTP_REFERER'] != null){
 	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
 	$foldername = $urlString[0];
@@ -41,9 +40,10 @@ if($_SERVER['HTTP_REFERER'] != null){
 		}
 	}
 }
+*/
 
-/* this is for testing in localhost */
-/*if($_SERVER['HTTP_REFERER'] != null){
+/* this is for testing in localhost
+if($_SERVER['HTTP_REFERER'] != null){
 	if(strcmp($_SERVER['HTTP_REFERER'], 'http://localhost/fyp/fulltime/alloc/allocation_setting.php') == 0){
 		// no error
 	}
@@ -54,6 +54,27 @@ if($_SERVER['HTTP_REFERER'] != null){
 		throw new Exception($_SERVER['Invalid referer']);
 	}
 }*/
+
+
+	$localHostDomain = 'http://localhost';
+	$ServerDomainHTTP = 'http://155.69.100.32';
+	$ServerDomainHTTPS = 'https://155.69.100.32';
+	$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+	if(isset($_SERVER['HTTP_REFERER'])) {
+	  try {
+	      // If referer is correct
+	      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+	          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+	      }
+	      else {
+	          throw new Exception($_SERVER['Invalid Referer']);
+	          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+	      }
+	  }
+	  catch (Exception $e) {
+	      die ("Invalid Referer.");
+	  }
+	}
 
 $_REQUEST['validate'] = $csrf->cfmRequest();
 try {

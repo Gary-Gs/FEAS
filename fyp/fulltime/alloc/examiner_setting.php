@@ -4,6 +4,12 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 
 <?php
+  if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+      header('Location:' . $_SERVER['PHP_SELF']);
+  }
+?>
+
+<?php
 $csrf = new CSRFProtection();
 
 
@@ -196,7 +202,10 @@ $conn_db_ntu = null;
             <div id="backtop"></div>
             <h3>Faculty Settings for Full Time Projects</h3>
             <?php
-            if (isset($_REQUEST['save'])) echo "<p class='success'> Faculty settings saved.</p>";
+            if (isset($_SESSION['examiner_setting_msg'])) {
+              echo "<p class='success'> Faculty settings saved.</p>";
+              unset($_SESSION['examiner_setting_msg']);
+            }
             if (isset($_REQUEST['examiner_setting'])) {
                 echo "<p class='success'> Faculty settings uploaded successfully.</p>";
             }

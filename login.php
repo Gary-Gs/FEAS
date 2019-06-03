@@ -9,31 +9,29 @@
 ?>
 
 <?php
-// this is for checking server
-$domain1 = 'http://155.69.100.32';
-$domain2 = 'https://155.69.100.32';
+$localHostDomain = 'http://localhost';
+$ServerDomainHTTP = 'http://155.69.100.32';
+$ServerDomainHTTPS = 'https://155.69.100.32';
+$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
 if(isset($_SERVER['HTTP_REFERER'])) {
-  if ((strpos($_SERVER['HTTP_REFERER'], $domain1) !== false) || (strpos($_SERVER['HTTP_REFERER'], $domain2) !== false)) {
-      echo '<script>console.log('.strpos($_SERVER['HTTP_REFERER'], $domain1).')</script>';
-      echo '<script>console.log('.strpos($_SERVER['HTTP_REFERER'], $domain2).')</script>';
+  try {
+      // If referer is correct
+      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+      }
+      else {
+          throw new Exception($_SERVER['Invalid Referer']);
+          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+      }
   }
-  else{
-      throw new Exception($_SERVER['Invalid referer']);
+  catch (Exception $e) {
+      die ("Invalid Referer.");
   }
 }
 
-
-/* this is for testing in localhost */
-/* Check if HTTP_REFERER is set by User Agent because not all user agent will set this
-$domain1 = 'http://localhost';
-if(isset($_SERVER['HTTP_REFERER'])) {
-  if (strpos($_SERVER['HTTP_REFERER'], $domain1) !== false) {
-      echo '<script>console.log('.strpos($_SERVER['HTTP_REFERER'], $domain1).')</script>';
-  }
-  else{
-      throw new Exception($_SERVER['Invalid referer']);
-  }
-} */
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+    header('Location:' . $_SERVER['PHP_SELF']);
+}
 ?>
 
 <?php
