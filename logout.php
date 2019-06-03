@@ -1,12 +1,12 @@
 <?php
 session_start();
 
-//clear session from globals
-$_SESSION = array();
-
 //remove PHPSESSID from browser
 if (isset($_COOKIE[session_name()]))
 	setcookie(session_name(), “”, time()-7200);
+
+//clear session from globals
+$_SESSION = array();
 
 //clear session from disk
 session_destroy();
