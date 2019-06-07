@@ -4,8 +4,9 @@
 
 <?php
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
     header('Location: staffpref_setting.php');
+    exit;
 }
 else {
 	/* to be used for server
@@ -128,15 +129,18 @@ else {
 
 <?php
 	if (isset ($_REQUEST['validate'])) {
-		header("location:staffpref_setting.php?");
+		header("location:staffpref_setting.php");
+		exit;
 	}
 	else if (isset ($error_code)) {
 
 		header("location:staffpref_setting.php?error=$error_code");
+		exit;
 
 	}
 	else {
-		header("location:staffpref_setting.php?");
+		header("location:staffpref_setting.php");
+		exit;
 	}
 	exit;
 	?>

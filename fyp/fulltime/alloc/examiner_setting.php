@@ -4,7 +4,7 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 
 <?php
-  if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
       header('Location:' . $_SERVER['PHP_SELF']);
   }
 ?>
@@ -21,8 +21,8 @@ $maxRows_rsStaff = 15;
 $pageNum_rsStaff = 0;
 
 
-if (isset($_GET['pageNum_rsStaff'])) {
-    $pageNum_rsStaff = $_GET['pageNum_rsStaff'];
+if (isset($_POST['pageNum_rsStaff'])) {
+    $pageNum_rsStaff = $_POST['pageNum_rsStaff'];
 }
 $startRow_rsStaff = $pageNum_rsStaff * $maxRows_rsStaff;
 
@@ -217,7 +217,7 @@ $conn_db_ntu = null;
                 ?>
 
                 <?php require_once('../../../upload_head.php'); ?>
-                <form id="FORM_FileToUpload_ExaminerSettings" class="form-inline" enctype="multipart/form-data"
+                <form id="FORM_FileToUpload_ExaminerSettings" method="post" class="form-inline" enctype="multipart/form-data"
                       role="form">
                     <table style="text-align: left; width: 100%;">
                         <col width="50%"/>

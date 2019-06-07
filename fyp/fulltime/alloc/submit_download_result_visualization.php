@@ -9,13 +9,17 @@
 <?php
 	$csrf = new CSRFProtection();
 	$FILENAME = "ResultVisualizationOutput_" . date('d_M_Y'). ".xlsx";
-    $filter_ProjectSem;
+	$filter_ProjectSem = $_POST["filter_ProjectSem"];
+	$filter_ProjectYear = $_POST["filter_ProjectYear"];
+
+	/*
 	if(isset($_REQUEST['filter_ProjectSem']) && !empty($_REQUEST['filter_ProjectSem'])){
             $filter_ProjectSem = $_REQUEST['filter_ProjectSem'];
     }
     if(isset($_REQUEST['filter_ProjectYear']) && !empty($_REQUEST['filter_ProjectYear'])){
             $filter_ProjectYear = $_REQUEST['filter_ProjectYear'];
     }
+	*/
     if($filter_ProjectSem == 1){
           // you need to order them in this order so that you will get the supervising slot first then examining slot
             $query_rsProject = "SELECT DISTINCT staff_name, staff_id, project_id, student_name, project_name, no_of_exemption, examinerid, examiner_name, day, slot, room, supervisor_name

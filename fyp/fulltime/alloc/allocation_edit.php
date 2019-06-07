@@ -292,7 +292,7 @@ function generateTimeSelect($id, $selected, $day) {
 			?>
             <p><a href="allocation.php" class="btn bg-dark text-white" style="font-size: 12px;"
                   title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
-            <form action="submit_allocate_edit.php" method="get">
+            <form action="submit_allocate_edit.php" method="post">
 				<?php $csrf->echoInputField(); ?>
                 <input type="hidden" id="user_id" name="user_id" value="<?php echo $_SESSION['id']; ?>"/>
                 <input type="hidden" id="project_id" name="project_id" value="<?php echo $projectID; ?>"/>

@@ -7,7 +7,7 @@ require_once('../../Utility.php');?>
 
 	$_REQUEST['validate'] =	$csrf->cfmRequest();
 	
-	$staffid = $_REQUEST['staffid'];
+	$staffid = $_POST['staffid'];
 	
 	try
 	{
@@ -89,11 +89,21 @@ require_once('../../Utility.php');?>
 ?>
 <?php
 if(isset ($_REQUEST['validate'])){
-	header("location:staffpref_fulltime.php?validate=1");
+	echo "<script type='text/javascript'>
+		alert('CSRF validation failed.');
+		location.href='staffpref_fulltime.php';
+		</script>";
+	//header("location:staffpref_fulltime.php?validate=1");
+	//exit;
 	}
 else{
-	echo '<script> location.href="staffpref_fulltime.php?save=1"; </script>';
+	//echo '<script> location.href="staffpref_fulltime.php?save=1"; </script>';
+	echo "<script type='text/javascript'>
+		alert('Preferences saved.');
+		location.href='staffpref_fulltime.php';
+		</script>";
 	//header("location:staffpref_fulltime.php?save=1");
+	//exit;
 	}
 	exit;
 ?>

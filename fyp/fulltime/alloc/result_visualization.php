@@ -4,7 +4,7 @@
         require_once('../../../Utility.php');?>
 
 <?php
-  if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
       header('Location: '.$_SERVER['PHP_SELF']);
   }
 ?>
@@ -415,6 +415,7 @@
                                                 }
                                                 ?>
                                           </select>
+
                                     </td>
                               </tr>
                         </table>
@@ -914,12 +915,12 @@
 
 
                         <div style="float:left;">
-                              <?php
-                                    $urlLink = 'submit_download_result_visualization.php?filter_ProjectSem='.$filter_ProjectSem. '&filter_ProjectYear='.$filter_ProjectYear;
 
-                                    echo '<a href=' . $urlLink . ' class="btn bg-dark text-white text-center" title="Download Results Visualization">Download Visualization</a>';
-
-                              ?>
+                            <form method="post" action="submit_download_result_visualization.php">
+                                <input type="hidden" id="sub_filter_ProjectSem" name="filter_ProjectSem" value="<?php echo $filter_ProjectSem ?>">
+                                <input type="hidden" id="sub_filter_ProjectYear" name="filter_ProjectYear" value="<?php echo $filter_ProjectYear ?>">
+                                <input type="submit" value="Download Visualization" class="btn bg-dark text-white text-center" title="Download Results Visualization">
+                            </form>
 
                         </div>
                         <br/><br/><br/>

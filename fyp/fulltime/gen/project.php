@@ -4,8 +4,9 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
     header('Location: '.$_SERVER['PHP_SELF']);
+    exit;
 }
 
 /*
@@ -201,7 +202,7 @@ $conn_db_ntu = null;
 	    		<?php require_once('../../../upload_head.php'); ?>
 
 
-	    		<form id="FORM_FileToUpload_ProjectList" enctype="multipart/form-data">
+	    		<form id="FORM_FileToUpload_ProjectList" method="post" enctype="multipart/form-data">
 				<table style="text-align: left; width: 100%;">
 					<col width="20%">
 					<col width="20%">

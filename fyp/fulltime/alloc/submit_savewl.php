@@ -4,8 +4,9 @@ require_once('../../../Utility.php'); ?>
 
 <?php
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
     header('Location: examiner_setting.php');
+    exit;
 }
 else {
     $csrf = new CSRFProtection();
@@ -111,9 +112,11 @@ else {
 
     if (isset ($_REQUEST['validate'])) {
         header("location:examiner_setting.php?validate=1");
+        exit;
     } else {
         $_SESSION['examiner_setting_msg'] = "save";
         header("location:examiner_setting.php");
+        exit;
     }
 }
 ?>

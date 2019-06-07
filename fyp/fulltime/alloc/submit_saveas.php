@@ -4,7 +4,7 @@ require_once('../../../Utility.php'); ?>
 <?php
 $csrf = new CSRFProtection();
 /* Prevent XSS input */
-foreach ($_GET as $name => $value) {
+foreach ($_POST as $name => $value) {
     $name = htmlentities($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
@@ -468,10 +468,12 @@ $conn_db_ntu = null;
 if (isset ($_REQUEST['validate'])) {
 	$_SESSION['allocate_setting_msg'] = "validate";
 	header("location:allocation_setting.php");
+	exit;
 } else {
 	$_SESSION['allocate_setting_msg'] = "save";
 	header("location:allocation_setting.php");
 //	header("location:allocation_setting.php?save=1");
+	exit;
 }
 exit;
 ?>
