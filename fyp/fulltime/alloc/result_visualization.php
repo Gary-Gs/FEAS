@@ -4,9 +4,29 @@
         require_once('../../../Utility.php');?>
 
 <?php
-  if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
-      header('Location: '.$_SERVER['PHP_SELF']);
+$localHostDomain = 'http://localhost';
+$ServerDomainHTTP = 'http://155.69.100.32';
+$ServerDomainHTTPS = 'https://155.69.100.32';
+$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  try {
+      // If referer is correct
+      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+      }
+      else {
+          throw new Exception($_SERVER['Invalid Referer']);
+          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+      }
   }
+  catch (Exception $e) {
+      die ("Invalid Referer.");
+  }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+    header('Location: '.$_SERVER['PHP_SELF']);
+}
 ?>
 
 <?php
@@ -307,6 +327,14 @@
             color: #FF0000;
             font-weight: bold;
       }
+
+      input[type=submit] {
+        background-color: transparent;
+        border: none;
+      }
+      input[type=submit]:hover {
+        font-weight: bold;
+      }
       </style>
 </head>
 
@@ -465,7 +493,10 @@
                                                 "\n Title : " . $value['project_name'] .
                                                 "\n Student : " . $value["student_name"] .
                                                 "\n Examiner: ". $value['examiner_name'];
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a></td>';
+                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                    <form method="post" action="allocation_edit.php">
+                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                    </form>';
                                                 $previousRecord = $value['staff_id'];
                                                 $count++;
                                                 $staffProjectCount++;
@@ -506,7 +537,10 @@
                                                 echo '<td>';
                                                 echo '<table border=1>';
                                                 echo '<tr>';
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a></td>';
+                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                    <form method="post" action="allocation_edit.php">
+                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                    </form>';
 
                                                 if($rowcount == count($supervisingProjectsCount)){
                                                        foreach($projectsCount as $countprojects){
@@ -549,7 +583,10 @@
                                           echo '<td>';
                                           echo '<table border=1>';
                                           echo '<tr>';
-                                          echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id']. '">' . $value['project_id'] . '</a></td>';
+                                          echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                              <form method="post" action="allocation_edit.php">
+                                                  <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                              </form>';
                                           //echo '</tr>';
                                           $rowcount++;
                                           $count++;
@@ -613,7 +650,10 @@
                                                       $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
                                                       "\n Student : " . $value["student_name"] .
                                                       "\n Examiner: ". $value['examiner_name'];
-                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a></td>';
+                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                          <form method="post" action="allocation_edit.php">
+                                                              <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                          </form>';
                                                       $previousRecord = $value['staff_id'];
                                                       $count++;
                                                       $staffProjectCount++;
@@ -657,7 +697,10 @@
                                                       echo '<td>';
                                                       echo '<table border=1>';
                                                       echo '<tr>';
-                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a> ' .
+                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                          <form method="post" action="allocation_edit.php">
+                                                              <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                          </form>';
                                                       '</td>';
                                                       $previousRecord = $value['staff_id'];
                                                       $rowcount++;
@@ -700,7 +743,10 @@
                                                 echo '<td>';
                                                 echo '<table border=1>';
                                                 echo '<tr>';
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id']. '">' . $value['project_id']. '</a></td>';
+                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                      <form method="post" action="allocation_edit.php">
+                                                          <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                      </form>';
                                                 //echo '</tr>';
                                                 $rowcount++;
                                                 $count++;
@@ -751,7 +797,10 @@
                                                 "\n Title : " . $value['project_name'] .
                                                 "\n Student : " . $value["student_name"] .
                                                 "\n Examiner: ". $value['staff_name'];
-                                                echo '<td width="65px" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a></td>';
+                                                echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
+                                                    <form method="post" action="allocation_edit.php">
+                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                    </form>';
                                                 $previousRecord = $value['staff_id'];
                                                 $count++;
                                                 $staffProjectCount++;
@@ -819,7 +868,10 @@
                                                             $exemptionList[$rowcount] = $value['staff_id'];
 
                                                       }
-                                                     echo '<td width="65px" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a></td>';
+                                                     echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
+                                                         <form method="post" action="allocation_edit.php">
+                                                             <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                         </form>';
 
                                                 }
 
@@ -885,7 +937,10 @@
                                                             $exemptionList[$rowcount] = $value['staff_id'];
 
                                                 }
-                                                echo '<td width="65px" style="padding: 2px;" title="' .$details .'"><a href="allocation_edit.php?project='. $value['project_id'].'">' . $value['project_id']. '</a></td>';
+                                                echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
+                                                    <form method="post" action="allocation_edit.php">
+                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                    </form>';
                                                 //echo '</tr>';
                                                 $rowcount++;
                                                 $count++;

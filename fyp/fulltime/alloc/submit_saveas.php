@@ -1,6 +1,33 @@
 <?php require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
+
+<?php 
+$localHostDomain = 'http://localhost';
+$ServerDomainHTTP = 'http://155.69.100.32';
+$ServerDomainHTTPS = 'https://155.69.100.32';
+$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  try {
+      // If referer is correct
+      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+      }
+      else {
+          throw new Exception($_SERVER['Invalid Referer']);
+          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+      }
+  }
+  catch (Exception $e) {
+      die ("Invalid Referer.");
+  }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
+    header('Location:' . $_SERVER['PHP_SELF']);
+}
+?>
+
 <?php
 $csrf = new CSRFProtection();
 /* Prevent XSS input */
@@ -54,27 +81,6 @@ if($_SERVER['HTTP_REFERER'] != null){
 		throw new Exception($_SERVER['Invalid referer']);
 	}
 }*/
-
-
-	$localHostDomain = 'http://localhost';
-	$ServerDomainHTTP = 'http://155.69.100.32';
-	$ServerDomainHTTPS = 'https://155.69.100.32';
-	$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
-	if(isset($_SERVER['HTTP_REFERER'])) {
-	  try {
-	      // If referer is correct
-	      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
-	          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
-	      }
-	      else {
-	          throw new Exception($_SERVER['Invalid Referer']);
-	          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
-	      }
-	  }
-	  catch (Exception $e) {
-	      die ("Invalid Referer.");
-	  }
-	}
 
 $_REQUEST['validate'] = $csrf->cfmRequest();
 try {

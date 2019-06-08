@@ -7,13 +7,13 @@
 </head>
 
 <body style="background: url('images/background2.png'); background-size: 100% 100%;">
-	<?php require_once('php_css/headerwonav.php');?> 
-	
+	<?php require_once('php_css/headerwonav.php');?>
+
 	<div class="container-fluid pt-5">
       <div class="row">
 
 		<div class="col-sm-2 col-md-2 col-lg-2">
-			
+
 		</div>
 
 		<div class="col-sm-10 col-md-10 col-lg-10">
@@ -27,9 +27,6 @@
 						</div>
 						<a href="/fyp/fyp.php"><img class="card-img-top img-fluid" src="images/examiner_mod_bw.png" alt="Examiner Allocation Module"/></a>
 						<div class="card-body">
-							<!-- <h4 class="card-title">
-								<a href="/fyp/fyp.php">Examiner Allocation Module</a>
-							</h4> -->
 							<div class="card">
 								<div class="card-header text-white" style="background-color: #336699;">
 									1. General
@@ -38,7 +35,7 @@
 									<p>
 										- Project List<br/>
 										- Faculty List
-										
+
 									</p>
 								</div>
 							</div>
@@ -66,11 +63,11 @@
 										- Allocation Settings<br/>
 										- Allocation System<br/>
 										- View Allocation Plan
-										
+
 									</p>
 								</div>
 							</div>
-								
+
 						</div>
 					</div>
 				</div>
@@ -100,9 +97,9 @@
 			</div>
 		</div>
 
-	</div> 
+	</div>
 	<br/><br/><br/>
-	
+
 </div>
 
 <?php require_once('footer.php'); ?>

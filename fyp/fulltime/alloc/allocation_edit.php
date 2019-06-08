@@ -13,7 +13,10 @@ if (isset ($_REQUEST['dayRoom'])) {
 	return generateRoomSelect('exam_room', NULL, $day);
 }
 
-if ($_COOKIE['temp_pid']) {
+if (isset($_POST['allocate_edit_project_id'])) {
+	$projectID = $_POST['allocate_edit_project_id'];
+}
+else if ($_COOKIE['temp_pid']) {
 	//echo $_COOKIE['temp_pid'];
 	$projectID = $_COOKIE['temp_pid'];
 	unset($_COOKIE['temp_pid']);
@@ -292,7 +295,7 @@ function generateTimeSelect($id, $selected, $day) {
 			?>
             <p><a href="allocation.php" class="btn bg-dark text-white" style="font-size: 12px;"
                   title="< Back to Allocations">&#60;&#60; Back to Allocations</a></p>
-            <form action="submit_allocate_edit.php" method="post">
+            <form action="submit_allocate_edit.php" method="get">
 				<?php $csrf->echoInputField(); ?>
                 <input type="hidden" id="user_id" name="user_id" value="<?php echo $_SESSION['id']; ?>"/>
                 <input type="hidden" id="project_id" name="project_id" value="<?php echo $projectID; ?>"/>

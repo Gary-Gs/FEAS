@@ -4,7 +4,27 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
+$localHostDomain = 'http://localhost';
+$ServerDomainHTTP = 'http://155.69.100.32';
+$ServerDomainHTTPS = 'https://155.69.100.32';
+$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+if(isset($_SERVER['HTTP_REFERER'])) {
+  try {
+      // If referer is correct
+      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+      }
+      else {
+          throw new Exception($_SERVER['Invalid Referer']);
+          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+      }
+  }
+  catch (Exception $e) {
+      die ("Invalid Referer.");
+  }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
     header('Location: '.$_SERVER['PHP_SELF']);
     exit;
 }
@@ -46,27 +66,6 @@ if ($_SERVER['HTTP_REFERER'] != null) {
     }
   */
 //}
-
-
-$localHostDomain = 'http://localhost';
-$ServerDomainHTTP = 'http://155.69.100.32';
-$ServerDomainHTTPS = 'https://155.69.100.32';
-$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
-if(isset($_SERVER['HTTP_REFERER'])) {
-  try {
-      // If referer is correct
-      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
-          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
-      }
-      else {
-          throw new Exception($_SERVER['Invalid Referer']);
-          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
-      }
-  }
-  catch (Exception $e) {
-      die ("Invalid Referer.");
-  }
-}
 
 $csrf = new CSRFProtection();
 
@@ -442,7 +441,7 @@ $conn_db_ntu = null;
 		                    	_("loadingdiv").style.display  = "none";
 		                    	$("#progressbar").text(0 + "%");
 		                    	$("#progressbar").css('width', 0 + "%");
-		                    	window.location.href = ("project.php?" + data);
+		                    	window.location.href = ("project.php");
 		                    },
 		                    error: function(data){
 		                    	console.log("File upload failed!");
