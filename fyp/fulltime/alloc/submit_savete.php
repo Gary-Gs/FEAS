@@ -3,7 +3,7 @@
 	require_once('../../../Utility.php');?>
 
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
 		header('Location: timeslot_exception.php');
 		exit;
 }
@@ -89,17 +89,14 @@ else {
 <?php
 	if (isset ($_REQUEST['validate'])) {
 				header("location:timeslot_exception.php?validate=1");
-				exit;
 	}
 	else if (isset($_POST['clear'])) {
 				$_SESSION['clear'] = 'clear';
 				unset($_SESSION['savete_msg']);
   			header("location:timeslot_exception.php");
-  			exit;
   }
 	else {
 		header("location:timeslot_exception.php");
-		exit;
 	}
 
 	exit;

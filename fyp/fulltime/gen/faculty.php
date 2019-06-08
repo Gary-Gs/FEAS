@@ -3,7 +3,7 @@ require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
     header('Location: '.$_SERVER['PHP_SELF']);
     exit;
 }
@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['QUERY_STRING'])) {
 $csrf = new CSRFProtection();
 
 /* Prevent XSS input */
-foreach ($_POST as $name => $value) {
+foreach ($_GET as $name => $value) {
     $name = htmlentities($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $value = strip_tags($value);
 }
