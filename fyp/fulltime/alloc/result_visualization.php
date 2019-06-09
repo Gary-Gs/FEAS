@@ -328,11 +328,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
             font-weight: bold;
       }
 
-      input[type=submit] {
+      .EditAllocationtBtn {
         background-color: transparent;
         border: none;
+        height: 3em;
+        white-space: normal;
       }
-      input[type=submit]:hover {
+
+      .EditAllocationtBtn:hover {
         font-weight: bold;
       }
       </style>
@@ -495,7 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                 "\n Examiner: ". $value['examiner_name'];
                                                 echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                                     <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                     </form>';
                                                 $previousRecord = $value['staff_id'];
                                                 $count++;
@@ -539,7 +542,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                 echo '<tr>';
                                                 echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                                     <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                     </form>';
 
                                                 if($rowcount == count($supervisingProjectsCount)){
@@ -585,7 +588,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                           echo '<tr>';
                                           echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                               <form method="post" action="allocation_edit.php">
-                                                  <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                  <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                               </form>';
                                           //echo '</tr>';
                                           $rowcount++;
@@ -652,7 +655,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                       "\n Examiner: ". $value['examiner_name'];
                                                       echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                                           <form method="post" action="allocation_edit.php">
-                                                              <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                              <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                           </form>';
                                                       $previousRecord = $value['staff_id'];
                                                       $count++;
@@ -699,7 +702,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                       echo '<tr>';
                                                       echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                                           <form method="post" action="allocation_edit.php">
-                                                              <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                              <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                           </form>';
                                                       '</td>';
                                                       $previousRecord = $value['staff_id'];
@@ -745,7 +748,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                 echo '<tr>';
                                                 echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                                       <form method="post" action="allocation_edit.php">
-                                                          <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                          <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                       </form>';
                                                 //echo '</tr>';
                                                 $rowcount++;
@@ -799,7 +802,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                 "\n Examiner: ". $value['staff_name'];
                                                 echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
                                                     <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                     </form>';
                                                 $previousRecord = $value['staff_id'];
                                                 $count++;
@@ -870,7 +873,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                       }
                                                      echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
                                                          <form method="post" action="allocation_edit.php">
-                                                             <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                             <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                          </form>';
 
                                                 }
@@ -939,7 +942,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                                                 }
                                                 echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
                                                     <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                     </form>';
                                                 //echo '</tr>';
                                                 $rowcount++;
