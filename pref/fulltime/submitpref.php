@@ -19,12 +19,14 @@ require_once('../../Utility.php');?>
 				}
 		}
 		catch (Exception $e) {
+				header("HTTP/1.1 400 Bad Request");
 				die ("Invalid Referer.");
 		}
 	}
 
 	if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
-			header('location: staffpref_fulltime.php');
+			header("HTTP/1.1 400 Bad Request");
+			exit("Bad Request");
 	}
 
 	$csrf = new CSRFProtection();
