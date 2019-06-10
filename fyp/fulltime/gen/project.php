@@ -194,8 +194,9 @@ $conn_db_ntu = null;
 					}
 				}
 
-				if (isset ($_REQUEST['import_project'])){
-				echo "<p class='success'> Project List uploaded successfully.</p>";
+				if (isset ($_SESSION['import_project'])){
+				      echo "<p class='success'> Project List uploaded successfully.</p>";
+              unset($_SESSION['import_project']);
 				}
 	    	?>
 

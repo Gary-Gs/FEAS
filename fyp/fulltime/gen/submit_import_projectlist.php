@@ -64,7 +64,8 @@ if (isset ($_REQUEST['validate'])) {
 else if($redirect){
 	$_SESSION['import_project_error'] = $error_code;
 	//header("Location: fyp/fulltime/gen/project.php?$error_code=". $error_code);
-	echo ($error_code != 0) ? "error_code=$error_code" : "import_project=1";
+	//echo ($error_code != 0) ? "error_code=$error_code" : "import_project=1";
+	echo ($error_code != 0) ? $_SESSION['import_project_error'] = $error_code : $_SESSION["import_project"] = "import_project";
 }
 exit;
 

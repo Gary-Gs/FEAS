@@ -182,11 +182,12 @@ $conn_db_ntu = null;
 
 					else {
 
-						if (isset ($_REQUEST['import_examiner'])){
+						if (isset ($_SESSION['import_examiner'])){
 							echo "<p class='success'> Faculty List uploaded successfully.</p>";
+							unset($_SESSION['import_examiner']);
 						}
-						if (isset ($_REQUEST['error_code'])) {
-							$error_code = $_REQUEST['error_code'];
+						if (isset ($_SESSION['error_code'])) {
+							$error_code = $_SESSION['error_code'];
 							switch ($error_code) {
 								case 1:
 								echo "<p class='warn'> Uploaded file has no file name!</p>";
@@ -201,6 +202,7 @@ $conn_db_ntu = null;
 								echo "<p class='error'> Cannot load excel file. Please contact system admin!</p>";
 								break;
 							}
+							unset($_SESSION['error_code']);
 						}
 					}
 				?>
@@ -409,7 +411,8 @@ $conn_db_ntu = null;
 			                    	_("loadingdiv").style.display  = "none";
 			                    	$("#progressbar").text(0 + '%');
 			                    	$("#progressbar").css('width', 0 + '%');
-			                    	window.location.href = ("faculty.php?" + data);
+
+			                    	window.location.href = ("faculty.php");
 			                    },
 			                    error: function(data){
 			                    	console.log("File upload failed!");
