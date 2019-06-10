@@ -2,7 +2,7 @@
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 
-<?php 
+<?php
 $localHostDomain = 'http://localhost';
 $ServerDomainHTTP = 'http://155.69.100.32';
 $ServerDomainHTTPS = 'https://155.69.100.32';
@@ -19,12 +19,14 @@ if(isset($_SERVER['HTTP_REFERER'])) {
       }
   }
   catch (Exception $e) {
+      header("HTTP/1.1 400 Bad Request");
       die ("Invalid Referer.");
   }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
-    header('Location:' . $_SERVER['PHP_SELF']);
+    header("HTTP/1.1 400 Bad Request");
+    exit("Bad Request");
 }
 ?>
 
