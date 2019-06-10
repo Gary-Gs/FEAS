@@ -20,13 +20,14 @@ if(isset($_SERVER['HTTP_REFERER'])) {
       }
   }
   catch (Exception $e) {
+      header("HTTP/1.1 400 Bad Request");
       die ("Invalid Referer.");
   }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
-    header('Location: '.$_SERVER['PHP_SELF']);
-    exit;
+    header("HTTP/1.1 400 Bad Request");
+    exit("Bad Request");
 }
 
 /*
