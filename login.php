@@ -20,11 +20,9 @@ if(isset($_SERVER['HTTP_REFERER'])) {
   try {
       // If referer is correct
       if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
-          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
       }
       else {
           throw new Exception($_SERVER['Invalid Referer']);
-          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
       }
   }
   catch (Exception $e) {
@@ -37,9 +35,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
     header("HTTP/1.1 400 Bad Request");
     exit("Bad Request");
 }
+
+ foreach ($_POST as $name => $value) {
+     $name = htmlentities($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+     $value = strip_tags($value);
+ }
+ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_ENCODED);
+ $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
 ?>
 
 <?php
+
    session_start();
 
    // users who are able to access all modules
