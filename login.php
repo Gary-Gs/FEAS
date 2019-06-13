@@ -31,6 +31,13 @@ if(isset($_SERVER['HTTP_REFERER'])) {
   }
 }
 
+if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
+    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    header('HTTP/1.1 301 Moved Permanently');
+    header('Location: https://155.69.100.32');
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
     header("HTTP/1.1 400 Bad Request");
     exit("Bad Request");
