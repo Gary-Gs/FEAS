@@ -31,7 +31,7 @@ if(isset($_SERVER['HTTP_REFERER'])) {
   }
 }
 
-if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") {
+if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") && $_SERVER['HTTP_HOST'] === "155.69.100.32") {
     $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://155.69.100.32');
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
    session_start();
 
    // users who are able to access all modules
-   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh"];
+   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh", "c170098", "teew0007"];
 
    //to check if the domain if is ours
    if(isset($_SESSION['login']) && isset($username)){
