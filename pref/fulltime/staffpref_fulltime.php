@@ -702,35 +702,37 @@
 					<!-- Supervising Projects -->
 					<h4><u>Supervising Projects</u></h4>
 					<p>You are currently supervising the following projects (to be examined in this semester):</p>
-					<table border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-						<col width="10%" />
-						<col width="10%" />
-						<col width="10%" />
-						<col width="10%" />
-						<col width="10%" />
-						<col width="50%" />
+					<div class="table-responsive">
+						<table border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
+							<col width="10%" />
+							<col width="10%" />
+							<col width="10%" />
+							<col width="10%" />
+							<col width="10%" />
+							<col width="50%" />
 
-						<tr>
-							<td class="bg-dark text-white text-center">Project ID</td>
-							<td class="bg-dark text-white text-center">Year</td>
-							<td class="bg-dark text-white text-center">Semester</td>
-							<td class="bg-dark text-white text-center">Exam Year</td>
-							<td class="bg-dark text-white text-center">Semester</td>
-							<td class="bg-dark text-white text-center">Project Title</td>
+							<tr>
+								<td class="bg-dark text-white text-center">Project ID</td>
+								<td class="bg-dark text-white text-center">Year</td>
+								<td class="bg-dark text-white text-center">Semester</td>
+								<td class="bg-dark text-white text-center">Exam Year</td>
+								<td class="bg-dark text-white text-center">Semester</td>
+								<td class="bg-dark text-white text-center">Project Title</td>
 
-						</tr>
-						<?php foreach ($rsSupervisingProject as $row_rsProject) { ?>
-						<tr>
-							<td class="text-center"><?php echo $row_rsProject['project_id']; ?></td>
-							<td class="text-center"><?php echo $row_rsProject['year']; ?></td>
-							<td class="text-center"><?php echo $row_rsProject['sem']; ?></td>
-							<td class="text-center"><?php echo $row_rsProject['examine_year']; ?></td>
-							<td class="text-center"><?php echo $row_rsProject['examine_sem']; ?></td>
-							<td class="text-center"><?php echo $row_rsProject['title']; ?></td>
+							</tr>
+							<?php foreach ($rsSupervisingProject as $row_rsProject) { ?>
+							<tr>
+								<td class="text-center"><?php echo $row_rsProject['project_id']; ?></td>
+								<td class="text-center"><?php echo $row_rsProject['year']; ?></td>
+								<td class="text-center"><?php echo $row_rsProject['sem']; ?></td>
+								<td class="text-center"><?php echo $row_rsProject['examine_year']; ?></td>
+								<td class="text-center"><?php echo $row_rsProject['examine_sem']; ?></td>
+								<td class="text-center"><?php echo $row_rsProject['title']; ?></td>
 
-						</tr>
-						<?php } ?>
-					</table>
+							</tr>
+							<?php } ?>
+						</table>
+					</div>
 					<hr/>
 
 					<h4><u>Preference Selection</u></h4>
@@ -762,80 +764,84 @@
 						<div class="tab-content">
 							<!--Project Preference-->
 							<div class="tab-pane active" id="tab-table1">
-								<table id="proj_frame" border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-								<col width="48%" />
-								<col width="4%" />
-								<col width="48%" />
+								<div class="table-responsive">
+									<table id="proj_frame" border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
+									<col width="48%" />
+									<col width="4%" />
+									<col width="48%" />
 
-								<tr class="bg-dark text-white text-center">
-								   <td>Available Projects</td>
-								   <td></td>
-								   <td>Selected Projects</td>
-								</tr>
+									<tr class="bg-dark text-white text-center">
+									   <td>Available Projects</td>
+									   <td></td>
+									   <td>Selected Projects</td>
+									</tr>
 
-								<td class="table_cell">
-									<table id="proj_table" class="table table-bordered pref_table" cellspacing="0"  width="100%">
-										<col width="40%" />
-										<col width="45%" />
-										<col width="43%" />
+									<td class="table_cell">
+										<table id="proj_table" class="table table-bordered pref_table" cellspacing="0"  width="100%">
+											<col width="40%" />
+											<col width="45%" />
+											<col width="43%" />
 
-										<thead>
-											<tr>
-												<th class="bg-dark text-white text-center">Project ID</th>
-												<th class="bg-dark text-white text-center">Supervisor</th>
-												<th class="bg-dark text-white text-center">Title</th>
-											</tr>
-											<tr>
-											<th class="bg-dark text-white text-center"></th>
-											<th class="bg-dark text-white text-center"></th>
-											<th class="bg-dark text-white text-center"></th>
+											<thead>
+												<tr>
+													<th class="bg-dark text-white text-center">Project ID</th>
+													<th class="bg-dark text-white text-center">Supervisor</th>
+													<th class="bg-dark text-white text-center">Title</th>
+												</tr>
+												<tr>
+												<th class="bg-dark text-white text-center"></th>
+												<th class="bg-dark text-white text-center"></th>
+												<th class="bg-dark text-white text-center"></th>
 
-											</tr>
-										</thead>
+												</tr>
+											</thead>
 
-										<tbody>
-											<?php foreach ($projectList as $project) { ?>
-											<tr>
-												<td ><?php echo $project->getID(); ?></td>
-												<td><?php echo getStaff($project->getStaff()); ?></td>
-												<td><?php echo $project->getTitle(); ?></td>
-											</tr>
-											<?php } ?>
-										</tbody>
+											<tbody>
+												<?php foreach ($projectList as $project) { ?>
+												<tr>
+													<td ><?php echo $project->getID(); ?></td>
+													<td><?php echo getStaff($project->getStaff()); ?></td>
+													<td><?php echo $project->getTitle(); ?></td>
+												</tr>
+												<?php } ?>
+											</tbody>
+										</table>
+									</td>
+
+									<td class="text-center">
+										<a id="addProjectBtn" class="bt selbtn" title="Add To Selection" style="width:50%;">&gt;&gt;</a><br/><br/>
+										<a id="removeProjectBtn" class="bt selbtn" title="Remove From Selection" style="width:50%;">&lt;&lt;</a>
+									</td>
+
+									<td class="table_cell" width="100%">
+										<div class="table-responsive">
+											<table id="selected_proj_table" class="table table-bordered editor" cellspacing="0" style="width:100%">
+												<col width="10%"/>
+												<col width="25%"/>
+												<col width="30%"/>
+												<col width="35%"/>
+
+												<thead>
+													<tr>
+														<th class="bg-dark text-white text-center" width="10%">No</th>
+														<th class="bg-dark text-white text-center" width="25%">Project ID</th>
+														<th class="bg-dark text-white text-center" width="30%">Supervisor</th>
+														<th class="bg-dark text-white text-center" width="35%">Title</th>
+													</tr>
+												</thead>
+
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+									</td>
+
 									</table>
-								</td>
-
-								<td class="text-center">
-									<a id="addProjectBtn" class="bt selbtn" title="Add To Selection" style="width:50%;">&gt;&gt;</a><br/><br/>
-									<a id="removeProjectBtn" class="bt selbtn" title="Remove From Selection" style="width:50%;">&lt;&lt;</a>
-								</td>
-
-								<td class="table_cell" width="100%">
-									<table id="selected_proj_table" class="table table-bordered editor" cellspacing="0" style="width:100%">
-										<col width="10%"/>
-										<col width="25%"/>
-										<col width="30%"/>
-										<col width="35%"/>
-
-										<thead>
-											<tr>
-												<th class="bg-dark text-white text-center" width="10%">No</th>
-												<th class="bg-dark text-white text-center" width="25%">Project ID</th>
-												<th class="bg-dark text-white text-center" width="30%">Supervisor</th>
-												<th class="bg-dark text-white text-center" width="35%">Title</th>
-											</tr>
-										</thead>
-
-										<tbody>
-										</tbody>
-									</table>
-								</td>
-
-								</table>
+								</div>
 							</div>
 
 							<!--Area Preference-->
-							<div class="tab-pane" id="tab-table2">
+							<div class="tab-pane" id="tab-table2" class="table-responsive">
 								<table id="area_frame" border="1" cellpadding="0" cellspacing="0" width="100%" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
 								<col width="48%" />
 								<col width="4%" />
@@ -848,27 +854,29 @@
 								</tr>
 
 								<td class="table_cell">
-									<table id="area_table" class="table table-bordered pref_table" cellspacing="0">
-										<thead>
-											<tr>
-												<th class="thCol hidden">Area ID</th>
-												<th class="bg-dark text-white text-center">Area</th>
-											</tr>
-											<tr>
-												<th class="thCol hidden"></th>
-												<th class="bg-dark text-white text-center"></th>
-											</tr>
-										</thead>
+									<div class="table-responsive">
+										<table id="area_table" class="table table-bordered pref_table" cellspacing="0">
+											<thead>
+												<tr>
+													<th class="thCol hidden">Area ID</th>
+													<th class="bg-dark text-white text-center">Area</th>
+												</tr>
+												<tr>
+													<th class="thCol hidden"></th>
+													<th class="bg-dark text-white text-center"></th>
+												</tr>
+											</thead>
 
-										<tbody>
-											<?php foreach ($areaList as $area) { ?>
-											<tr>
-												<td class="hidden"><?php echo $area->getID(); ?></td>
-												<td><?php echo $area->getTitle(); ?></td>
-											</tr>
-											<?php } ?>
-										</tbody>
-									</table>
+											<tbody>
+												<?php foreach ($areaList as $area) { ?>
+												<tr>
+													<td class="hidden"><?php echo $area->getID(); ?></td>
+													<td><?php echo $area->getTitle(); ?></td>
+												</tr>
+												<?php } ?>
+											</tbody>
+										</table>
+									</div>
 								</td>
 
 								<td class="text-center">

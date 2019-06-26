@@ -455,524 +455,522 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
                   </form>
                   <br/>
                   <h4><u>1) Before Allocation</u></h4>
-                   <?php
-                        $maxColumn = getMaxColumnCount();
-                        $width = ($maxColumn * 65) + 120;
-                        echo '<table border=1 width="' . $width . 'px">'
-                  ?>
-                        <tr class="bg-dark text-white text-center" >
-                              <td width="10px"  style="padding: 7px;">No.</td>
-                              <td width="100px">Staff Name</td>
-                              <td width="10px" style="padding: 7px;">EXE</td>
-                              <?php
-                                    $maxColumn = getMaxColumnCount();
-                                    $width = ($maxColumn * 65);
-                                    echo '<td ';
-                                    echo 'width ="' . $width . 'px">Projects</td>';
-                              ?>
-                        </tr>
-                        <?php
-                              $exemptionCount = 0;
-                              $staffProjectCount = 0;
-                              $rowcount = 1;
-                              //to cater situation when there is only 2 row
-                              if(count($projects) == 2){
-                                    $count = 0;
-                              }
-                              else{
-                                    $count = 1;
-                              }
+                  <div class="table-responsive">
+                     <?php
+                          $maxColumn = getMaxColumnCount();
+                          $width = ($maxColumn * 65) + 120;
+                          echo '<table border=1 width="' . $width . 'px">'
+                    ?>
+                          <tr class="bg-dark text-white text-center" >
+                                <td width="10px"  style="padding: 7px;">No.</td>
+                                <td width="100px">Staff Name</td>
+                                <td width="10px" style="padding: 7px;">EXE</td>
+                                <?php
+                                      $maxColumn = getMaxColumnCount();
+                                      $width = ($maxColumn * 65);
+                                      echo '<td ';
+                                      echo 'width ="' . $width . 'px">Projects</td>';
+                                ?>
+                          </tr>
+                          <?php
+                                $exemptionCount = 0;
+                                $staffProjectCount = 0;
+                                $rowcount = 1;
+                                //to cater situation when there is only 2 row
+                                if(count($projects) == 2){
+                                      $count = 0;
+                                }
+                                else{
+                                      $count = 1;
+                                }
 
-                              $previousRecord;
-                              $details = "";
-                              foreach($projects as $value){
-                                    if(is_null($value['examinerid'])){
-                                          $count++;
-                                    }
-                                    else{
-                                    //if(!is_null($value['examinerid'])){
-                                          if($rowcount > 1){
-                                          // when the staffid is the same as the previous record
-                                          if(strcmp($previousRecord, $value['staff_id']) == 0){
-                                                $details = "Supervisor : ". $value['staff_name'] .
-                                                "\n Title : " . $value['project_name'] .
-                                                "\n Student : " . $value["student_name"] .
-                                                "\n Examiner: ". $value['examiner_name'];
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
-                                                    <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                    </form>';
-                                                $previousRecord = $value['staff_id'];
-                                                $count++;
-                                                $staffProjectCount++;
-                                          }
-                                          if(strcmp($previousRecord, $value['staff_id']) != 0){
-                                                $details = "Supervisor : ". $value['staff_name'] .
-                                                "\n Title : " . $value['project_name'] .
-                                                "\n Student : " . $value["student_name"] .
-                                                "\n Examiner: ". $value['examiner_name'];
-                                               // to cater the first row
-                                                foreach($projectsCount as $countprojects){
-                                                      if(strcmp($countprojects['staff_id'], $previousRecord) == 0){
-                                                            $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                            if($exemptionCount > 30){ //restriction to max 30
-                                                                  $exemptionCount = 30;
-                                                            }
-                                                            for($i = 1; $i <= $exemptionCount; $i++){
-                                                                  echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                            }
-                                                      }
-
-                                                }
-
-
-
-                                                echo '</tr>';
-                                                echo '</table>';
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                echo '<tr>';
-                                                echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
-                                                echo '<td width="100px" style="padding: 7px;">' . $value['staff_name']. '</td>';
-                                                foreach($projectsCount as $countprojects){
-                                                      if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
-                                                             echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) .'</td>';
-                                                      }
-                                                }
-                                                echo '<td>';
-                                                echo '<table border=1>';
-                                                echo '<tr>';
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
-                                                    <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                    </form>';
-
-                                                if($rowcount == count($supervisingProjectsCount)){
-                                                       foreach($projectsCount as $countprojects){
-                                                            if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
-                                                                  $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                            }
-                                                      }
-
-                                                      for($i = 1; $i <= $exemptionCount; $i++){
-                                                                  echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                      }
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                }
-                                                $previousRecord = $value['staff_id'];
-                                                $rowcount++;
-                                                $count++;
-                                                $staffProjectCount = 0;
-                                          }
-
-
-
-                                    }
-
-
-                                    elseif($rowcount == 1){
-                                           $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
-                                           "\n Student : " . $value["student_name"] .
-                                           "\n Examiner: ". $value['examiner_name'];
-                                          echo '<tr>';
-                                          echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
-                                          echo '<td width="100px style="padding: 7px;">' . $value['staff_name']. '</td>';
-                                          foreach($projectsCount as $countprojects){
-                                                if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
-                                                       echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
-                                                }
-                                          }
-
-                                          echo '<td>';
-                                          echo '<table border=1>';
-                                          echo '<tr>';
-                                          echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
-                                              <form method="post" action="allocation_edit.php">
-                                                  <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                              </form>';
-                                          //echo '</tr>';
-                                          $rowcount++;
-                                          $count++;
-                                          $staffProjectCount++;
-                                          $previousRecord = $value['staff_id'];
-
-                                          if($rowcount == count($supervisingProjectsCount)){
-                                                       foreach($projectsCount as $countprojects){
-                                                            if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
-                                                                  $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                            }
-                                                      }
-
-                                                      for($i = 1; $i <= $exemptionCount; $i++){
-                                                                  echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                      }
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                }
-                                    }
-                                    }
-
-                              }
-
-
-                        ?>
-
-                  </table>
-                  <br/>
-                  <h4><u>2) After Allocation</u></h4>
-                  <?php
-                        $maxColumn = getMaxColumnCount();
-                        $width = ($maxColumn * 65) + 120;
-                        echo '<table border=1 width="' . $width . 'px">'
-                  ?>
-                        <tr class="bg-dark text-white text-center" >
-                              <td width="10px" style="padding: 7px;">No.</td>
-                              <td width="100px">Staff Name</td>
-                              <td width="10px" style="padding: 7px;">EXE</td>
-                              <?php
-                                    $maxColumn = getMaxColumnCount();
-                                    $width = ($maxColumn * 65);
-                                    echo '<td ';
-                                    echo 'width ="' . $width . 'px">Projects</td>';
-                              ?>
-                        </tr>
-                        <?php
-                              $rowcount = 1;
-                              $exemptionCount = 0;
-                              $staffProjectCount = 0;
-                              $count = 0;
-                              $previousRecord;
-                              $details = "";
-                              $exemptionList = array();
-                              foreach($projects as $value){
-                                    if((!is_null($value['examinerid'])) && (is_null($value['supervisor_name']))){
-                                          if($rowcount > 1){
-                                                // when the staffid is the same as the previous record
-                                                if(strcmp($previousRecord, $value['staff_id']) == 0){
-                                                      $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
-                                                      "\n Student : " . $value["student_name"] .
-                                                      "\n Examiner: ". $value['examiner_name'];
-                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
-                                                          <form method="post" action="allocation_edit.php">
-                                                              <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                          </form>';
-                                                      $previousRecord = $value['staff_id'];
-                                                      $count++;
-                                                      $staffProjectCount++;
-                                                }
-                                                if(strcmp($previousRecord, $value['staff_id']) != 0){
-                                                      if(in_array($previousRecord, $exemptionList) == false){
-
-                                                            foreach($projectsCount as $countprojects){
-
-                                                                        if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
-                                                                              if($countprojects['examining_project'] == 0){
-                                                                                    $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                                                    if($exemptionCount > 30){ //restriction to max 30
-                                                                                    $exemptionCount = 30;
-                                                                                    }
-                                                                                    for($i = 1; $i <= $exemptionCount; $i++){
-                                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                                                    }
-                                                                                    $exemptionList[$rowcount] = $previousRecord;
-                                                                              }
-                                                                        }
-                                                            }
-
-                                                      }
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                      echo '</tr>';
-                                                      $details = "Supervisor : ". $value['staff_name'] .
-                                                      "\n Title : " . $value['project_name'] .
-                                                      "\n Student : " . $value["student_name"] .
-                                                      "\n Examiner: ". $value['examiner_name'];
-                                                      echo '<tr>';
-                                                      echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
-                                                      echo '<td width="100px" style="padding: 7px;">' . $value['staff_name']. '</td>';
-                                                      foreach($projectsCount as $countprojects){
-                                                            if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
-                                                                   echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
-                                                            }
-                                                      }
-                                                      echo '<td>';
-                                                      echo '<table border=1>';
-                                                      echo '<tr>';
-                                                      echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
-                                                          <form method="post" action="allocation_edit.php">
-                                                              <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                          </form>';
-                                                      '</td>';
-                                                      $previousRecord = $value['staff_id'];
-                                                      $rowcount++;
-                                                      $count++;
-                                                      $staffProjectCount = 0;
-                                                }
-
-                                                // to close off the last row
-                                                if($count == count($projects)){
-                                                      foreach($projectsCount as $countprojects){
-                                                            if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
-                                                                  $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                            }
-                                                      }
-                                                      if($exemptionCount > 30){ //restriction to max 30
-                                                                  $exemptionCount = 30;
-                                                           }
-                                                            for($i = 1; $i <= $exemptionCount; $i++){
-                                                                  echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                      }
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                }
-
-                                          }
-                                          elseif($rowcount == 1){
-                                                 $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
-                                                 "\n Student : " . $value["student_name"] .
-                                                 "\n Examiner: ". $value['examiner_name'];
-                                                echo '<tr>';
-                                                echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
-                                                echo '<td width="100px style="padding: 7px;">' . $value['staff_name']. '</td>';
-                                                foreach($projectsCount as $countprojects){
-                                                      if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
-                                                            echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
-                                                      }
-                                                }
-
-                                                echo '<td>';
-                                                echo '<table border=1>';
-                                                echo '<tr>';
-                                                echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                $previousRecord;
+                                $details = "";
+                                foreach($projects as $value){
+                                      if(is_null($value['examinerid'])){
+                                            $count++;
+                                      }
+                                      else{
+                                      //if(!is_null($value['examinerid'])){
+                                            if($rowcount > 1){
+                                            // when the staffid is the same as the previous record
+                                            if(strcmp($previousRecord, $value['staff_id']) == 0){
+                                                  $details = "Supervisor : ". $value['staff_name'] .
+                                                  "\n Title : " . $value['project_name'] .
+                                                  "\n Student : " . $value["student_name"] .
+                                                  "\n Examiner: ". $value['examiner_name'];
+                                                  echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
                                                       <form method="post" action="allocation_edit.php">
                                                           <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
                                                       </form>';
-                                                //echo '</tr>';
-                                                $rowcount++;
-                                                $count++;
-                                                $staffProjectCount++;
-                                                $previousRecord = $value['staff_id'];
+                                                  $previousRecord = $value['staff_id'];
+                                                  $count++;
+                                                  $staffProjectCount++;
+                                            }
+                                            if(strcmp($previousRecord, $value['staff_id']) != 0){
+                                                  $details = "Supervisor : ". $value['staff_name'] .
+                                                  "\n Title : " . $value['project_name'] .
+                                                  "\n Student : " . $value["student_name"] .
+                                                  "\n Examiner: ". $value['examiner_name'];
+                                                 // to cater the first row
+                                                  foreach($projectsCount as $countprojects){
+                                                        if(strcmp($countprojects['staff_id'], $previousRecord) == 0){
+                                                              $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                              if($exemptionCount > 30){ //restriction to max 30
+                                                                    $exemptionCount = 30;
+                                                              }
+                                                              for($i = 1; $i <= $exemptionCount; $i++){
+                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                              }
+                                                        }
 
-                                                if($count == count($projects)){
-                                                      $exemptionCount =  $projectsCount[$rowcount-2]['no_of_exemption'] - $projectsCount[$rowcount-2]['project_count'];
-                                                      if($exemptionCount > 30){ //restriction to max 30
-                                                            $exemptionCount = 30;
-                                                      }
-
-                                                      for($i = 1; $i <= $exemptionCount; $i++){
-                                                                  echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                      }
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                }
-                                          }
-                                    }
-                                    elseif(is_null($value['examinerid']) && !(is_null($value['supervisor_name']))){
-
-                                          if($rowcount > 1){
-
-                                          // when the staffid is the same as the previous record
-                                          if(strcmp($previousRecord, $value['staff_id']) == 0){
-                                                if(in_array($value['staff_id'], $exemptionList) == false){
-
-                                                foreach($projectsCount as $countprojects){
-                                                            if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
-                                                                   $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
-                                                                   if($exemptionCount > 30){ //restriction to max 30
-                                                                        $exemptionCount = 30;
-                                                                  }
-
-                                                                  for($i = 1; $i <= $exemptionCount; $i++){
-                                                                        echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                                  }
-                                                            }
-                                                      }
-
-                                                      $exemptionList[$rowcount] = $value['staff_id'];
-
-                                                }
-                                                $details = " Project id: " . $value['project_id'] .
-                                                "\n Supervisor : ". $value['supervisor_name'] .
-                                                "\n Title : " . $value['project_name'] .
-                                                "\n Student : " . $value["student_name"] .
-                                                "\n Examiner: ". $value['staff_name'];
-                                                echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
-                                                    <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                    </form>';
-                                                $previousRecord = $value['staff_id'];
-                                                $count++;
-                                                $staffProjectCount++;
-                                          }
-
-                                          if(strcmp($previousRecord, $value['staff_id']) != 0){
-                                                if(in_array($previousRecord, $exemptionList) == false){
-
-                                                            foreach($projectsCount as $countprojects){
-
-                                                                        if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
-                                                                              if($countprojects['examining_project'] == 0){
-                                                                                    $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                                                    if($exemptionCount > 30){ //restriction to max 30
-                                                                                    $exemptionCount = 30;
-                                                                                    }
-                                                                                    for($i = 1; $i <= $exemptionCount; $i++){
-                                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                                                    }
-                                                                                    $exemptionList[$rowcount] = $previousRecord;
-                                                                              }
-                                                                        }
-                                                            }
-
-                                                      }
+                                                  }
 
 
-                                                if($rowcount >=2){
 
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                      echo '</tr>';
-                                                      echo '<tr>';
-                                                      echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
-                                                      echo '<td width="100px" style="padding: 7px;">' . $value['staff_name']. '</td>';
-                                                      foreach($projectsCount as $countprojects){
-                                                            if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
-                                                                   echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
-                                                            }
-                                                      }
-                                                      $details = "Project id: " . $value['project_id'] .
-                                                      "\n Supervisor : ". $value['supervisor_name'] .
-                                                      "\n Title : " . $value['project_name'] .
-                                                      "\n Student : " . $value["student_name"] .
-                                                      "\n Examiner: ". $value['staff_name'];
-                                                      echo '<td>';
-                                                      echo '<table border=1>';
-                                                      echo '<tr>';
-                                                      if(in_array($value['staff_id'], $exemptionList) == false){
+                                                  echo '</tr>';
+                                                  echo '</table>';
+                                                  echo '</td>';
+                                                  echo '</tr>';
+                                                  echo '<tr>';
+                                                  echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
+                                                  echo '<td width="100px" style="padding: 7px;">' . $value['staff_name']. '</td>';
+                                                  foreach($projectsCount as $countprojects){
+                                                        if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                                               echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) .'</td>';
+                                                        }
+                                                  }
+                                                  echo '<td>';
+                                                  echo '<table border=1>';
+                                                  echo '<tr>';
+                                                  echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                      <form method="post" action="allocation_edit.php">
+                                                          <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                      </form>';
 
-                                                            foreach($projectsCount as $countprojects){
-                                                                  if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
-                                                                         $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
-                                                                         if($exemptionCount > 30){ //restriction to max 30
-                                                                              $exemptionCount = 30;
-                                                                        }
+                                                  if($rowcount == count($supervisingProjectsCount)){
+                                                         foreach($projectsCount as $countprojects){
+                                                              if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
+                                                                    $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                              }
+                                                        }
 
-                                                                        for($i = 1; $i <= $exemptionCount; $i++){
-                                                                              echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                                        }
-                                                                  }
-                                                            }
-
-                                                            $exemptionList[$rowcount] = $value['staff_id'];
-
-                                                      }
-                                                     echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
-                                                         <form method="post" action="allocation_edit.php">
-                                                             <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                         </form>';
-
-                                                }
+                                                        for($i = 1; $i <= $exemptionCount; $i++){
+                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                        }
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                  }
+                                                  $previousRecord = $value['staff_id'];
+                                                  $rowcount++;
+                                                  $count++;
+                                                  $staffProjectCount = 0;
+                                            }
 
 
-                                                $previousRecord = $value['staff_id'];
-                                                $rowcount++;
-                                                $count++;
-                                                $staffProjectCount = 0;
-                                          }
 
-                                          if($count == count($projects)){
-
-                                                foreach($projectsCount as $countprojects){
-                                                      if(strcmp($countprojects['staff_id'], $previousRecord) == 0){
-                                                            $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
-                                                      }
-                                                }
-
-                                                /* if($exemptionCount > 30){ //restriction to max 30
-                                                      $exemptionCount = 30;
-                                                      }
-
-                                                for($i = 1; $i <= $exemptionCount; $i++){
-                                                      echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                }*/
-                                                echo '</tr>';
-                                                echo '</table>';
-                                                echo '</td>';
-                                                }
+                                      }
 
 
-                                          }
+                                      elseif($rowcount == 1){
+                                             $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
+                                             "\n Student : " . $value["student_name"] .
+                                             "\n Examiner: ". $value['examiner_name'];
+                                            echo '<tr>';
+                                            echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
+                                            echo '<td width="100px style="padding: 7px;">' . $value['staff_name']. '</td>';
+                                            foreach($projectsCount as $countprojects){
+                                                  if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                                         echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
+                                                  }
+                                            }
 
-                                          elseif($rowcount == 1){
+                                            echo '<td>';
+                                            echo '<table border=1>';
+                                            echo '<tr>';
+                                            echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                <form method="post" action="allocation_edit.php">
+                                                    <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                </form>';
+                                            //echo '</tr>';
+                                            $rowcount++;
+                                            $count++;
+                                            $staffProjectCount++;
+                                            $previousRecord = $value['staff_id'];
 
-                                                 $details = "Project id: " . $value['project_id'] .
-                                                 "\n Supervisor : ". $value['supervisor_name'] .
-                                                 "\n Title : " . $value['project_name'] .
-                                                 "\n Student : " . $value["student_name"] .
-                                                 "\n Examiner: ". $value['staff_name'];
-                                                echo '<tr>';
-                                                echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
-                                                echo '<td width="100px style="padding: 7px;">' . $value['staff_name']. '</td>';
-                                                echo '<td width="10px" style="padding: 7px;">' . ($projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count']) . '</td>';
-                                                echo '<td>';
-                                                echo '<table border=1>';
-                                                echo '<tr>';
-                                                if(in_array($value['staff_id'], $exemptionList) == false){
+                                            if($rowcount == count($supervisingProjectsCount)){
+                                                         foreach($projectsCount as $countprojects){
+                                                              if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
+                                                                    $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                              }
+                                                        }
 
-                                                            foreach($projectsCount as $countprojects){
-                                                                  if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
-                                                                         $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
-                                                                         if($exemptionCount > 30){ //restriction to max 30
-                                                                              $exemptionCount = 30;
-                                                                        }
+                                                        for($i = 1; $i <= $exemptionCount; $i++){
+                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                        }
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                  }
+                                      }
+                                      }
 
-                                                                        for($i = 1; $i <= $exemptionCount; $i++){
-                                                                              echo '<td width="65px" bgcolor="yellow">EXE</td>';
-                                                                        }
-                                                                  }
-                                                            }
-
-                                                            $exemptionList[$rowcount] = $value['staff_id'];
-
-                                                }
-                                                echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
-                                                    <form method="post" action="allocation_edit.php">
-                                                        <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
-                                                    </form>';
-                                                //echo '</tr>';
-                                                $rowcount++;
-                                                $count++;
-                                                $staffProjectCount++;
-                                                $previousRecord = $value['staff_id'];
-
-                                                if($count == count($projects)){
-                                                      echo '</tr>';
-                                                      echo '</table>';
-                                                      echo '</td>';
-                                                }
-                                          }
-                                    }
-
-                              }
+                                }
 
 
-                        ?>
+                          ?>
 
-                  </table>
+                    </table>
+                  </div>
                   <br/>
+                  <h4><u>2) After Allocation</u></h4>
+                  <div class="table-responsive">
+                    <?php
+                          $maxColumn = getMaxColumnCount();
+                          $width = ($maxColumn * 65) + 120;
+                          echo '<table border=1 width="' . $width . 'px">'
+                    ?>
+                          <tr class="bg-dark text-white text-center" >
+                                <td width="10px" style="padding: 7px;">No.</td>
+                                <td width="100px">Staff Name</td>
+                                <td width="10px" style="padding: 7px;">EXE</td>
+                                <?php
+                                      $maxColumn = getMaxColumnCount();
+                                      $width = ($maxColumn * 65);
+                                      echo '<td ';
+                                      echo 'width ="' . $width . 'px">Projects</td>';
+                                ?>
+                          </tr>
+                          <?php
+                                $rowcount = 1;
+                                $exemptionCount = 0;
+                                $staffProjectCount = 0;
+                                $count = 0;
+                                $previousRecord;
+                                $details = "";
+                                $exemptionList = array();
+                                foreach($projects as $value){
+                                      if((!is_null($value['examinerid'])) && (is_null($value['supervisor_name']))){
+                                            if($rowcount > 1){
+                                                  // when the staffid is the same as the previous record
+                                                  if(strcmp($previousRecord, $value['staff_id']) == 0){
+                                                        $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
+                                                        "\n Student : " . $value["student_name"] .
+                                                        "\n Examiner: ". $value['examiner_name'];
+                                                        echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                            <form method="post" action="allocation_edit.php">
+                                                                <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                            </form>';
+                                                        $previousRecord = $value['staff_id'];
+                                                        $count++;
+                                                        $staffProjectCount++;
+                                                  }
+                                                  if(strcmp($previousRecord, $value['staff_id']) != 0){
+                                                        if(in_array($previousRecord, $exemptionList) == false){
+
+                                                              foreach($projectsCount as $countprojects){
+
+                                                                          if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
+                                                                                if($countprojects['examining_project'] == 0){
+                                                                                      $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                                                      if($exemptionCount > 30){ //restriction to max 30
+                                                                                      $exemptionCount = 30;
+                                                                                      }
+                                                                                      for($i = 1; $i <= $exemptionCount; $i++){
+                                                                                      echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                                                      }
+                                                                                      $exemptionList[$rowcount] = $previousRecord;
+                                                                                }
+                                                                          }
+                                                              }
+
+                                                        }
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                        echo '</tr>';
+                                                        $details = "Supervisor : ". $value['staff_name'] .
+                                                        "\n Title : " . $value['project_name'] .
+                                                        "\n Student : " . $value["student_name"] .
+                                                        "\n Examiner: ". $value['examiner_name'];
+                                                        echo '<tr>';
+                                                        echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
+                                                        echo '<td width="100px" style="padding: 7px;">' . $value['staff_name']. '</td>';
+                                                        foreach($projectsCount as $countprojects){
+                                                              if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                                                     echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
+                                                              }
+                                                        }
+                                                        echo '<td>';
+                                                        echo '<table border=1>';
+                                                        echo '<tr>';
+                                                        echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                            <form method="post" action="allocation_edit.php">
+                                                                <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                            </form>';
+                                                        '</td>';
+                                                        $previousRecord = $value['staff_id'];
+                                                        $rowcount++;
+                                                        $count++;
+                                                        $staffProjectCount = 0;
+                                                  }
+
+                                                  // to close off the last row
+                                                  if($count == count($projects)){
+                                                        foreach($projectsCount as $countprojects){
+                                                              if(strcmp($countprojects['staff_id'], $value['staff_id']) == 0){
+                                                                    $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                              }
+                                                        }
+                                                        if($exemptionCount > 30){ //restriction to max 30
+                                                                    $exemptionCount = 30;
+                                                             }
+                                                              for($i = 1; $i <= $exemptionCount; $i++){
+                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                        }
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                  }
+
+                                            }
+                                            elseif($rowcount == 1){
+                                                   $details = "Supervisor : ". $value['staff_name'] . "\n Title : " . $value['project_name'] .
+                                                   "\n Student : " . $value["student_name"] .
+                                                   "\n Examiner: ". $value['examiner_name'];
+                                                  echo '<tr>';
+                                                  echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
+                                                  echo '<td width="100px style="padding: 7px;">' . $value['staff_name']. '</td>';
+                                                  foreach($projectsCount as $countprojects){
+                                                        if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                                              echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
+                                                        }
+                                                  }
+
+                                                  echo '<td>';
+                                                  echo '<table border=1>';
+                                                  echo '<tr>';
+                                                  echo '<td width="65px" bgcolor="limegreen" style="padding: 2px;" title="' .$details .'">
+                                                        <form method="post" action="allocation_edit.php">
+                                                            <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                        </form>';
+                                                  //echo '</tr>';
+                                                  $rowcount++;
+                                                  $count++;
+                                                  $staffProjectCount++;
+                                                  $previousRecord = $value['staff_id'];
+
+                                                  if($count == count($projects)){
+                                                        $exemptionCount =  $projectsCount[$rowcount-2]['no_of_exemption'] - $projectsCount[$rowcount-2]['project_count'];
+                                                        if($exemptionCount > 30){ //restriction to max 30
+                                                              $exemptionCount = 30;
+                                                        }
+
+                                                        for($i = 1; $i <= $exemptionCount; $i++){
+                                                                    echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                        }
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                  }
+                                            }
+                                      }
+                                      elseif(is_null($value['examinerid']) && !(is_null($value['supervisor_name']))){
+
+                                            if($rowcount > 1){
+
+                                            // when the staffid is the same as the previous record
+                                            if(strcmp($previousRecord, $value['staff_id']) == 0){
+                                                  if(in_array($value['staff_id'], $exemptionList) == false){
+
+                                                  foreach($projectsCount as $countprojects){
+                                                              if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
+                                                                     $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                                                                     if($exemptionCount > 30){ //restriction to max 30
+                                                                          $exemptionCount = 30;
+                                                                    }
+
+                                                                    for($i = 1; $i <= $exemptionCount; $i++){
+                                                                          echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                                    }
+                                                              }
+                                                        }
+
+                                                        $exemptionList[$rowcount] = $value['staff_id'];
+
+                                                  }
+                                                  $details = " Project id: " . $value['project_id'] .
+                                                  "\n Supervisor : ". $value['supervisor_name'] .
+                                                  "\n Title : " . $value['project_name'] .
+                                                  "\n Student : " . $value["student_name"] .
+                                                  "\n Examiner: ". $value['staff_name'];
+                                                  echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
+                                                      <form method="post" action="allocation_edit.php">
+                                                          <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                      </form>';
+                                                  $previousRecord = $value['staff_id'];
+                                                  $count++;
+                                                  $staffProjectCount++;
+                                            }
+
+                                            if(strcmp($previousRecord, $value['staff_id']) != 0){
+                                                  if(in_array($previousRecord, $exemptionList) == false){
+
+                                                              foreach($projectsCount as $countprojects){
+
+                                                                          if(strcmp($previousRecord, $countprojects['staff_id']) == 0){
+                                                                                if($countprojects['examining_project'] == 0){
+                                                                                      $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                                                      if($exemptionCount > 30){ //restriction to max 30
+                                                                                      $exemptionCount = 30;
+                                                                                      }
+                                                                                      for($i = 1; $i <= $exemptionCount; $i++){
+                                                                                      echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                                                      }
+                                                                                      $exemptionList[$rowcount] = $previousRecord;
+                                                                                }
+                                                                          }
+                                                              }
+
+                                                        }
 
 
+                                                  if($rowcount >=2){
+
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                        echo '</tr>';
+                                                        echo '<tr>';
+                                                        echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
+                                                        echo '<td width="100px" style="padding: 7px;">' . $value['staff_name']. '</td>';
+                                                        foreach($projectsCount as $countprojects){
+                                                              if(strcmp($countprojects['staff_name'], $value['staff_name']) == 0){
+                                                                     echo '<td width="10px" style="padding: 7px;">' . ($countprojects['no_of_exemption'] - $countprojects['project_count']) . '</td>';
+                                                              }
+                                                        }
+                                                        $details = "Project id: " . $value['project_id'] .
+                                                        "\n Supervisor : ". $value['supervisor_name'] .
+                                                        "\n Title : " . $value['project_name'] .
+                                                        "\n Student : " . $value["student_name"] .
+                                                        "\n Examiner: ". $value['staff_name'];
+                                                        echo '<td>';
+                                                        echo '<table border=1>';
+                                                        echo '<tr>';
+                                                        if(in_array($value['staff_id'], $exemptionList) == false){
+
+                                                              foreach($projectsCount as $countprojects){
+                                                                    if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
+                                                                           $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                                                                           if($exemptionCount > 30){ //restriction to max 30
+                                                                                $exemptionCount = 30;
+                                                                          }
+
+                                                                          for($i = 1; $i <= $exemptionCount; $i++){
+                                                                                echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                                          }
+                                                                    }
+                                                              }
+
+                                                              $exemptionList[$rowcount] = $value['staff_id'];
+
+                                                        }
+                                                       echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
+                                                           <form method="post" action="allocation_edit.php">
+                                                               <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                           </form>';
+
+                                                  }
 
 
+                                                  $previousRecord = $value['staff_id'];
+                                                  $rowcount++;
+                                                  $count++;
+                                                  $staffProjectCount = 0;
+                                            }
+
+                                            if($count == count($projects)){
+
+                                                  foreach($projectsCount as $countprojects){
+                                                        if(strcmp($countprojects['staff_id'], $previousRecord) == 0){
+                                                              $exemptionCount = $countprojects['no_of_exemption'] - $countprojects['project_count'];
+                                                        }
+                                                  }
+
+                                                  /* if($exemptionCount > 30){ //restriction to max 30
+                                                        $exemptionCount = 30;
+                                                        }
+
+                                                  for($i = 1; $i <= $exemptionCount; $i++){
+                                                        echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                  }*/
+                                                  echo '</tr>';
+                                                  echo '</table>';
+                                                  echo '</td>';
+                                                  }
 
 
+                                            }
+
+                                            elseif($rowcount == 1){
+
+                                                   $details = "Project id: " . $value['project_id'] .
+                                                   "\n Supervisor : ". $value['supervisor_name'] .
+                                                   "\n Title : " . $value['project_name'] .
+                                                   "\n Student : " . $value["student_name"] .
+                                                   "\n Examiner: ". $value['staff_name'];
+                                                  echo '<tr>';
+                                                  echo '<td width="10px" style="padding: 7px;">' . $rowcount . '</td>';
+                                                  echo '<td width="100px style="padding: 7px;">' . $value['staff_name']. '</td>';
+                                                  echo '<td width="10px" style="padding: 7px;">' . ($projectsCount[0]['no_of_exemption'] - $projectsCount[0]['project_count']) . '</td>';
+                                                  echo '<td>';
+                                                  echo '<table border=1>';
+                                                  echo '<tr>';
+                                                  if(in_array($value['staff_id'], $exemptionList) == false){
+
+                                                              foreach($projectsCount as $countprojects){
+                                                                    if(strcmp($value['staff_id'], $countprojects['staff_id']) == 0){
+                                                                           $exemptionCount = ($countprojects['no_of_exemption'] - $countprojects['project_count']);
+                                                                           if($exemptionCount > 30){ //restriction to max 30
+                                                                                $exemptionCount = 30;
+                                                                          }
+
+                                                                          for($i = 1; $i <= $exemptionCount; $i++){
+                                                                                echo '<td width="65px" bgcolor="yellow">EXE</td>';
+                                                                          }
+                                                                    }
+                                                              }
+
+                                                              $exemptionList[$rowcount] = $value['staff_id'];
+
+                                                  }
+                                                  echo '<td width="65px" style="padding: 2px;" title="' .$details .'">
+                                                      <form method="post" action="allocation_edit.php">
+                                                          <input type="submit" class="EditAllocationtBtn" name="allocate_edit_project_id" id="' . $value['project_id'] . '" value="' .  $value['project_id'] .'">
+                                                      </form>';
+                                                  //echo '</tr>';
+                                                  $rowcount++;
+                                                  $count++;
+                                                  $staffProjectCount++;
+                                                  $previousRecord = $value['staff_id'];
+
+                                                  if($count == count($projects)){
+                                                        echo '</tr>';
+                                                        echo '</table>';
+                                                        echo '</td>';
+                                                  }
+                                            }
+                                      }
+
+                                }
+
+
+                          ?>
+
+                    </table>
+                  </div>
+                  <br/>
 
                         <div style="float:left;">
 
