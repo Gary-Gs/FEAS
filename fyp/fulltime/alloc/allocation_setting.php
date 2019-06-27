@@ -688,7 +688,7 @@ function enoughSlots() {
 				if (isset ($_REQUEST['validate'])) {
 					echo "<p class = 'warn'> CSRF validation failed.</p>";
 				} else { ?>
-                    <div id="topcon">
+                    <div id="topcon" class="table-responsive">
                     <form action="submit_saveas.php" method="post">
 										<?php $csrf->echoInputField(); ?>
                             <table id="settings_table" border="0" style="margin-top:15px;">
