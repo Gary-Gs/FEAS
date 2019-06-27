@@ -4,34 +4,6 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php'); ?>
 
 <?php
-$localHostDomain = 'http://localhost';
-$ServerDomainHTTP = 'http://155.69.100.32';
-$ServerDomainHTTPS = 'https://155.69.100.32';
-$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
-if(isset($_SERVER['HTTP_REFERER'])) {
-  try {
-      // If referer is correct
-      if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
-          //echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
-      }
-      else {
-          throw new Exception($_SERVER['Invalid Referer']);
-          //echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
-      }
-  }
-  catch (Exception $e) {
-      header("HTTP/1.1 400 Bad Request");
-      die ("Invalid Referer.");
-  }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
-    header("HTTP/1.1 400 Bad Request");
-    exit("Bad Request");
-}
-?>
-
-<?php
 $csrf = new CSRFProtection();
 
 
@@ -43,8 +15,8 @@ $maxRows_rsStaff = 15;
 $pageNum_rsStaff = 0;
 
 
-if (isset($_POST['pageNum_rsStaff'])) {
-    $pageNum_rsStaff = $_POST['pageNum_rsStaff'];
+if (isset($_GET['pageNum_rsStaff'])) {
+    $pageNum_rsStaff = $_GET['pageNum_rsStaff'];
 }
 $startRow_rsStaff = $pageNum_rsStaff * $maxRows_rsStaff;
 
@@ -88,13 +60,10 @@ try {
 $conn_db_ntu = null;
 ?>
 
-<?php $showModal = (isset($_SESSION['missingExaminerInExemption']) || isset($_SESSION['newExaminerWithoutName2'])) ? true : false; ?>
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Faculty Settings</title>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <script type="text/javascript">
         function checkExamine(val) {
@@ -102,22 +71,11 @@ $conn_db_ntu = null;
         }
     </script>
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-          var showModal = <?php echo $showModal ?>;
-
-          if (showModal) {
-            $("#addNewStaffModal").modal('show');
-          }
-        });
-    </script>
-
     <?php require_once('../../../php_css/headerwnav.php'); ?>
 
 </head>
 
 <body>
-
 
 
 <!-- modal to input new examiner name 2 -->
@@ -132,6 +90,7 @@ $conn_db_ntu = null;
             </div>
             <form method="post" action="submit_save_examiner_modal.php">
                 <div class="modal-body">
+
 
                     <?php
 
@@ -237,10 +196,7 @@ $conn_db_ntu = null;
             <div id="backtop"></div>
             <h3>Faculty Settings for Full Time Projects</h3>
             <?php
-            if (isset($_SESSION['examiner_setting_msg'])) {
-              echo "<p class='success'> Faculty settings saved.</p>";
-              unset($_SESSION['examiner_setting_msg']);
-            }
+            if (isset($_REQUEST['save'])) echo "<p class='success'> Faculty settings saved.</p>";
             if (isset($_REQUEST['examiner_setting'])) {
                 echo "<p class='success'> Faculty settings uploaded successfully.</p>";
             }
@@ -252,7 +208,7 @@ $conn_db_ntu = null;
                 ?>
 
                 <?php require_once('../../../upload_head.php'); ?>
-                <form id="FORM_FileToUpload_ExaminerSettings" method="post" class="form-inline" enctype="multipart/form-data"
+                <form id="FORM_FileToUpload_ExaminerSettings" class="form-inline" enctype="multipart/form-data"
                       role="form">
                     <table style="text-align: left; width: 100%;">
                         <col width="50%"/>
@@ -324,7 +280,7 @@ $conn_db_ntu = null;
                         <tr>
                             <td colspan="2">
                                 <input type="file" id="FileToUpload_ExaminerSettings"
-                                       name="FileToUpload_ExaminerSettings[]"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple="multiple"/>
+                                       name="FileToUpload_ExaminerSettings[]" multiple="multiple"/>
                             </td>
                             <td colspan="3">
                                 <ul id="FileToUpload_FileList"></ul>
@@ -333,7 +289,7 @@ $conn_db_ntu = null;
                         <tr>
                             <td>
                                 <br/>
-                                <!--button type="button" class="btn btn-info btn-md" id="modalBtn" data-toggle="modal" data-target="#addNewStaffModal">After Import</button-->
+                                <button type="button" class="btn btn-info btn-md" id="modalBtn" data-toggle="modal" data-target="#addNewStaffModal">After Import</button>
                             </td>
                         </tr>
                         <tr>
@@ -383,13 +339,11 @@ $conn_db_ntu = null;
                                 var li = document.createElement('li');
                                 li.innerHTML = 'File ' + (FileIndex + 1) + ':  ' + FileToUpload_ExaminerSettings.files[FileIndex].name;
                                 Filename = FileToUpload_ExaminerSettings.files[FileIndex].name.substr(0, FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.'));
-                                FileExtension = FileToUpload_ExaminerSettings.files[FileIndex].name.substr(FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.'));
 
-                                if (Filename.toLowerCase() == "examiner_list" && (FileExtension.toLowerCase() == ".xlsx" || FileExtension.toLowerCase() == ".xls" || FileExtension.toLowerCase() == ".csv")) {
+                                if (Filename.toLowerCase() == "examiner_list") {
                                     li.innerHTML += " (Valid)";
                                     li.setAttribute("style", "list-style-type: none; color: green;");
-                                } else if ((selected == "2" && Filename.toLowerCase() == "exemption" && (FileExtension.toLowerCase() == ".xlsx" || FileExtension.toLowerCase() == ".xls" || FileExtension.toLowerCase() == ".csv")) || (selected =="2" && Filename.toLowerCase() == "master"
-                                && (FileExtension.toLowerCase() == ".xlsx" || FileExtension.toLowerCase() == ".xls" || FileExtension.toLowerCase() == ".csv"))) {
+                                } else if ((selected == "2" && Filename.toLowerCase() == "exemption") || (selected =="2" && Filename.toLowerCase() == "master")) {
                                     li.innerHTML += " (Valid)";
                                     li.setAttribute("style", "list-style-type: none; color: green;");
                                 } else {
@@ -399,29 +353,19 @@ $conn_db_ntu = null;
                                 FileToUpload_FileList.append(li);
                             }
 
-                            // Rewrite codes to include checking of file extension
-                            if (selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") && FileToUpload_ExaminerSettings.files.length == 1
-                            && (FileToUpload_ExaminerSettings.files[0].name.substr(FileToUpload_ExaminerSettings.files[0].name.indexOf('.')) == ".xlsx" || FileToUpload_ExaminerSettings.files[0].name.substr(FileToUpload_ExaminerSettings.files[0].name.indexOf('.')) == ".xls"
-                            || FileToUpload_ExaminerSettings.files[0].name.substr(FileToUpload_ExaminerSettings.files[0].name.indexOf('.')) == ".csv")) {
+                            if (selected == "1" && FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") && FileToUpload_ExaminerSettings.files.length == 1) {
                                 IsValidFileUpload = true;
                             }
-                            else if (selected == "2" && FileToUpload_ExaminerSettings.files.length == 3) {
-                               // Check if the 3 files uploaded are the correct files
-                               for (var FileIndex = 0; FileIndex < FileToUpload_ExaminerSettings.files.length; FileIndex++) {
-
-                                  // Get file name
-                                  UploadFileName = FileToUpload_ExaminerSettings.files[FileIndex].name.toLowerCase();
-                                  UploadFileExtension = FileToUpload_ExaminerSettings.files[FileIndex].name.substr(FileToUpload_ExaminerSettings.files[FileIndex].name.indexOf('.'));
-
-                                  if ((UploadFileName.includes("examiner_list") || UploadFileName.includes("master") || UploadFileName.includes("exemption")) && (UploadFileExtension.toLowerCase() == ".xlsx" || UploadFileExtension.toLowerCase() == ".xls" || UploadFileExtension.toLowerCase() == ".csv")) {
-                                      IsValidFileUpload = true;
-                                  }
-                                  else {
-                                      IsValidFileUpload = false;
-                                 }
-                               }
+                            else if (selected == "2" && FileToUpload_ExaminerSettings.files.length == 3 && ((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examiner_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("master") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("exemption"))
+                                && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examiner_list") || FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("master") || FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("exemption"))
+                                && (FileToUpload_ExaminerSettings.files[2].name.toLowerCase().includes("examiner_list") || FileToUpload_ExaminerSettings.files[2].name.toLowerCase().includes("master") || FileToUpload_ExaminerSettings.files[2].name.toLowerCase().includes("exemption")))) {
+                                IsValidFileUpload = true;
                             }
-                            else {
+                            /*if((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list")) || ((FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("examinable_staff_list") || FileToUpload_ExaminerSettings.files[0].name.toLowerCase().includes("workload_staff_list"))
+                                && (FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("examinable_staff_list") ||FileToUpload_ExaminerSettings.files[1].name.toLowerCase().includes("workload_staff_list") ))){
+                                IsValidFileUpload=true;
+
+                            }*/ else {
                                 IsValidFileUpload = false;
                             }
                         }
@@ -515,11 +459,11 @@ $conn_db_ntu = null;
                                     } else {
                                         console.log("File uploaded. Server Responded!");
                                         _('status').innerHTML = "File uploaded. Server Responded!";
-
                                         try {
                                             window.location.href = "examiner_setting.php";
                                         }
-                                        catch (err) { alert(err); }
+                                        catch (err) { alert(err);
+                                        }
                                     }
 
                                 },
@@ -585,73 +529,72 @@ $conn_db_ntu = null;
 
                 <form id="examiner_form" action="submit_savewl.php" method="post">
                     <?php $csrf->echoInputField(); ?>
-                    <div class="table-responsive">
-                      <table id="staffTable" border="1" cellpadding="0" cellspacing="0" width="100%">
-                          <col width="25%"/>
-                          <col width="25%"/>
-                          <col width="25%"/>
-                          <col width="15%"/>
-                          <col width="10%"/>
+                    <table id="staffTable" border="1" cellpadding="0" cellspacing="0" width="100%">
+                        <col width="25%"/>
+                        <col width="25%"/>
+                        <col width="25%"/>
+                        <col width="15%"/>
+                        <col width="10%"/>
 
-                          <tr class="bg-dark text-white text-center">
-                              <td>Staff Name</td>
-                              <td>Staff Name2</td>
-                              <td>Staff Email</td>
-                              <td>Exemption</td>
-                              <td>Can Examine</td>
-                          </tr>
+                        <tr class="bg-dark text-white text-center">
+                            <td>Staff Name</td>
+                            <td>Staff Name2</td>
+                            <td>Staff Email</td>
+                            <td>Exemption</td>
+                            <td>Can Examine</td>
+                        </tr>
 
-                          <tr class="text-center">
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td><a onclick="javascript:checkExamine(true);">Check All</a> / <a
-                                          onclick="javascript:checkExamine(false);">Uncheck All</a></td>
-                          </tr>
+                        <tr class="text-center">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><a onclick="javascript:checkExamine(true);">Check All</a> / <a
+                                        onclick="javascript:checkExamine(false);">Uncheck All</a></td>
+                        </tr>
 
-                          <?php
-                          foreach ($rsStaff as $row_rsStaff) {
-                              $staffid = str_replace('.','',$row_rsStaff['id']);
-                              echo "<tr class='text-center'>";
-                              echo "<input type='hidden' id='index_" . $staffid . "' name='index_" . $staffid . "' value='" . $staffid . "'/>";
-                              echo "<td>";
-                              echo ($row_rsStaff['name'] != null) ? "<input type='text' name='name_" . $staffid . "'  value='" . $row_rsStaff['name'] . "' required />" :
-                                  "<input type='text'  name='name_" . $staffid . "'  required />";
-                              echo "</td>";
-                              echo "<td>";
-                              echo ($row_rsStaff['name2'] != null) ? "<input type='text' id='name2_" . $staffid . "' name='name2_" . $staffid . "'  value='" . $row_rsStaff['name2'] . "' required />" :
-                                  "<input type='text' id='name2_" . $staffid . "' name='name2_" . $staffid . "' required />";
-                              echo "</td>";
-                              echo "<td>";
-                              echo ($row_rsStaff['email'] != null) ? "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "'  value='" . $row_rsStaff['email'] . "' required />" :
-                                  "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "' required />";
-                              echo "</td>";
+                        <?php
+                        foreach ($rsStaff as $row_rsStaff) {
+                            $staffid = str_replace('.','',$row_rsStaff['id']);
+                            echo "<tr class='text-center'>";
+                            echo "<input type='hidden' id='index_" . $staffid . "' name='index_" . $staffid . "' value='" . $staffid . "'/>";
+                            echo "<td>";
+                            echo ($row_rsStaff['name'] != null) ? "<input type='text' name='name_" . $staffid . "'  value='" . $row_rsStaff['name'] . "' required />" :
+                                "<input type='text'  name='name_" . $staffid . "'  required />";
+                            echo "</td>";
+                            echo "<td>";
+                            echo ($row_rsStaff['name2'] != null) ? "<input type='text' id='name2_" . $staffid . "' name='name2_" . $staffid . "'  value='" . $row_rsStaff['name2'] . "' required />" :
+                                "<input type='text' id='name2_" . $staffid . "' name='name2_" . $staffid . "' required />";
+                            echo "</td>";
+                            echo "<td>";
+                            echo ($row_rsStaff['email'] != null) ? "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "'  value='" . $row_rsStaff['email'] . "' required />" :
+                                "<input type='email' id='email_" . $staffid . "' name='email_" . $staffid . "' required />";
+                            echo "</td>";
 
-                              echo "<td>";
+                            echo "<td>";
 
-                              if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+                            if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 
 
-                              // display sem 1 or sem 2 staffs' exemptions.
-                                  echo (isset($row_rsStaff['exemptionS2'])) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' required />" :
-                                      "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />";
+                            // display sem 1 or sem 2 staffs' exemptions.
+                                echo (isset($row_rsStaff['exemptionS2'])) ? "<input type='number' id='exemptionS2_" . $staffid . "' name='exemptionS2_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemptionS2'] . "' required />" :
+                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />";
 
-                              // display sem 1 staffs' exemptions.
-                             /* else {
-                                  echo ($row_rsStaff['exemption'] != null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />" :
-                                      "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' required />";
-                                  unset($_SESSION["semester"]);
-                              }*/
-                              echo "</td>";
-                              echo "<td>";
-                              echo ($row_rsStaff['examine']) ? "<input type='checkbox' class='chk' id='examine_" . $staffid . "' name='examine_" . $staffid . "' checked />" :
-                                  "<input type='checkbox' class='chk' id='examine_" . $staffid . "' name='examine_" . $staffid . "' />";
-                              echo "</td>";
-                              echo "</tr>";
-                          }
-                          ?>
-                      </table>
-                    </div>
+                            // display sem 1 staffs' exemptions.
+                           /* else {
+                                echo ($row_rsStaff['exemption'] != null) ? "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='" . $row_rsStaff['exemption'] . "' required />" :
+                                    "<input type='number' id='exemption_" . $staffid . "' name='exemption_" . $staffid . "' min='0' max='100' value='0' required />";
+                                unset($_SESSION["semester"]);
+                            }*/
+                            echo "</td>";
+                            echo "<td>";
+                            echo ($row_rsStaff['examine']) ? "<input type='checkbox' class='chk' id='examine_" . $staffid . "' name='examine_" . $staffid . "' checked />" :
+                                "<input type='checkbox' class='chk' id='examine_" . $staffid . "' name='examine_" . $staffid . "' />";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                        ?>
+                    </table>
+
 
                     <div style="float:right">
                         <input type="button" id="addEntry" onclick="addRow()" title="Add new entry"
@@ -812,8 +755,7 @@ $conn_db_ntu = null;
 <div id="tobottom"></div>
 
 <?php require_once('../../../footer.php'); ?>
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 </body>
 </html>
 
