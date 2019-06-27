@@ -30,6 +30,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
     exit("Bad Request");
 }
 
+/*
+if ($_SERVER['HTTP_REFERER'] != null) {
+    $urlString = explode('/', $_SERVER['HTTP_REFERER']);
+    $foldername = $urlString[3];
+    $entireUrlArr = explode("?", $_SERVER['HTTP_REFERER']);
+    $entireUrlString = $entireUrlArr[0];
+    $httpheader = $urlString[0];
+*/
+
+    // to be used for localhost
+   /* if((strcmp($foldername, 'fyp') != 0)
+        && strcmp($entireUrlString, 'http://localhost/fyp/fulltime/gen/project.php') != 0) {
+        throw new Exception("Invalid referer");
+    }
+
+   */
+   /*
+    if((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader, 'https:') == 0)){
+        if(strcmp($entireUrlString, 'https://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+            throw new Exception($_SERVER['Invalid referer']);
+        }
+    }
+    elseif((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader,'http:') == 0)){
+        if(strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+            throw new Exception($_SERVER['Invalid referer']);
+        }
+    }
+*/
+
+
+// to be used for school server
+  /*  if((strcmp($foldername,"fyp") != 0) ||
+        strcmp($entireUrlString, 'http://155.69.100.32/fyp/fulltime/gen/project.php') != 0){
+        throw new Exception("Invalid referer");
+    }
+  */
+//}
+
 $csrf = new CSRFProtection();
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
@@ -93,26 +131,18 @@ $conn_db_ntu = null;
 
 
 <head>
+
+
 	<title>Full Time Project List</title>
 	<style>
-    @media only screen and (max-width: 800px) {
-      .floatWrapper {float:none!important;}
-      .float-panel {position:static!important;}
-      .main-content {padding:20px;margin-right:0px;}
-    }
+            @media only screen and (max-width: 800px) {
+            .floatWrapper {float:none!important;}
+            .float-panel {position:static!important;}
+            .main-content {padding:20px;margin-right:0px;}
+        }
 
-    #Table_Filter_ProjectList td{
-      display:block;
-    	width:auto;
-    }
 
-    @media only screen and (min-width: 70em) {
-      #Table_Filter_ProjectList td{
-      	display:table-cell;
-      	margin-bottom:0px;
-      }
-    }
-  </style>
+    </style>
 
 </head>
 
@@ -173,7 +203,7 @@ $conn_db_ntu = null;
 	    		<?php require_once('../../../upload_head.php'); ?>
 
 
-	    	<form id="FORM_FileToUpload_ProjectList" method="post" enctype="multipart/form-data">
+	    		<form id="FORM_FileToUpload_ProjectList" method="post" enctype="multipart/form-data">
 				<table style="text-align: left; width: 100%;">
 					<col width="20%">
 					<col width="20%">
@@ -210,7 +240,7 @@ $conn_db_ntu = null;
 				<?php $csrf->echoInputField();?>
 			</form>
 			<br/>
-			<form id="filterParams" name="searchbox" action="project.php" method="post">
+			<form id="filterParams" name="searchbox" action="project.php" method="post" >
 				<table id="Table_Filter_ProjectList" width="100%" >
 					<colgroup>
 						<col width="20%" >
@@ -313,40 +343,39 @@ $conn_db_ntu = null;
 			</form>
 
 			<br/>
-      <div class="table-responsive">
-  			<table id="tables" width="100%" border="1">
-  				<col width="13%" />
-  				<col width="6%" />
-  				<col width="5%" />
-  				<col width="32%" />
-  				<col width="30%" />
-  				<col width="6%" />
-  				<col width="6%" />
+			<table id="tables" width="100%" border="1">
+				<col width="13%" />
+				<col width="6%" />
+				<col width="5%" />
+				<col width="32%" />
+				<col width="30%" />
+				<col width="6%" />
+				<col width="6%" />
 
-  				<tr class="bg-dark text-white text-center">
-  					<td>Project ID</td>
-  					<td>Year</td>
-  					<td>Sem</td>
-  					<td>Project Title</td>
-  					<td>Supervisor</td>
-  					<td>Exam Year</td>
-  					<td>Exam Sem</td>
-  				</tr>
-  				<?php
-  				foreach ($DBData_rsProject as $key => $value) {
-  					echo "<tr>";
-  					echo "<td class='text-center'>" . $value['project_id'] . "</td>";
-  					echo "<td class='text-center'>" . $value['year'] . "</td>";
-  					echo "<td class='text-center'>" . $value['sem'] . "</td>";
-  					echo "<td class='text-center'>" . $value['title'] . "</td>";
-  					echo "<td class='text-center'>" . $value['Supervisor'] . "</td>";
-  					echo "<td class='text-center'>" . $value['examine_year'] . "</td>";
-  					echo "<td class='text-center'>" . $value['examine_sem'] . "</td>";
-  					echo "</tr>";
-  				}
-  				?>
-  			</table>
-      </div>
+				<tr class="bg-dark text-white text-center">
+					<td>Project ID</td>
+					<td>Year</td>
+					<td>Sem</td>
+					<td>Project Title</td>
+					<td>Supervisor</td>
+					<td>Exam Year</td>
+					<td>Exam Sem</td>
+				</tr>
+				<?php
+				foreach ($DBData_rsProject as $key => $value) {
+					echo "<tr>";
+					echo "<td class='text-center'>" . $value['project_id'] . "</td>";
+					echo "<td class='text-center'>" . $value['year'] . "</td>";
+					echo "<td class='text-center'>" . $value['sem'] . "</td>";
+					echo "<td class='text-center'>" . $value['title'] . "</td>";
+					echo "<td class='text-center'>" . $value['Supervisor'] . "</td>";
+					echo "<td class='text-center'>" . $value['examine_year'] . "</td>";
+					echo "<td class='text-center'>" . $value['examine_sem'] . "</td>";
+					echo "</tr>";
+				}
+				?>
+			</table>
+
 			<br/>
 		</div>
 

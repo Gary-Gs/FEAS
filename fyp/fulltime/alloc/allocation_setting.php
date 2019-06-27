@@ -430,18 +430,6 @@ function enoughSlots() {
             #settings_table {
                 width: 100%;
             }
-
-						td{
-						  display:block;
-							width:auto;
-						}
-
-						@media only screen and (min-width: 70em) {
-						  td{
-							display:table-cell;
-							margin-bottom:0px;
-						  }
-						}
         </style>
 
         <script type="text/javascript">
@@ -463,35 +451,7 @@ function enoughSlots() {
                         dateFormat: "yy-mm-dd",
                     });
                 }
-
-								$("#alloc_days1").datepicker("option", "onSelect", function (dateText, inst) {
-								var count = 2;
-								while (count <= $noOfDays) {
-										var date = $('#alloc_days' + (count-1)).datepicker('getDate');
-										date.setDate(date.getDate() + 1);
-
-										while (date.getDay() == 0 || date.getDay() == 6) {
-											date.setDate(date.getDate() + 1);
-										}
-										$('#alloc_days' + count).datepicker('setDate', date);
-										count++;
-								}
-						});
-
-						$("#alloc_days2").datepicker("option", "onSelect", function (dateText, inst) {
-								var count = 3;
-								while (count <= $noOfDays) {
-										var date = $('#alloc_days' + (count-1)).datepicker('getDate');
-										date.setDate(date.getDate() + 1);
-
-										while (date.getDay() == 0 || date.getDay() == 6) {
-											date.setDate(date.getDate() + 1);
-										}
-										$('#alloc_days' + count).datepicker('setDate', date);
-										count++;
-								}
-						});
-          }
+            }
 
             // function calculateNextDate() {
             //     var start_date = $("#alloc_date").val();
@@ -688,9 +648,9 @@ function enoughSlots() {
 				if (isset ($_REQUEST['validate'])) {
 					echo "<p class = 'warn'> CSRF validation failed.</p>";
 				} else { ?>
-                    <div id="topcon" class="table-responsive">
-                    <form action="submit_saveas.php" method="post">
-										<?php $csrf->echoInputField(); ?>
+                    <div id="topcon">
+                        <form action="submit_saveas.php" method="post">
+							<?php $csrf->echoInputField(); ?>
                             <table id="settings_table" border="0" style="margin-top:15px;">
                                 <tr>
                                     <td valign="top" style="text-align:left;">
@@ -720,7 +680,7 @@ function enoughSlots() {
                                             </table>
                                         </div>
                                     </td>
-                                    <td valign="top" style="text-align:left;" rowspan="2">
+                                    <td valign="top" style="text-align:left; padding-left:70px;" rowspan="2">
                                         <u><h4 style="padding-bottom:10px;">Room Settings</h4></u>
                                         <ul id="roomTabs" class="room_tabs"></ul>
                                         <div id="roomTableGroup">

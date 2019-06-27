@@ -59,6 +59,31 @@ if(isset($_SERVER['HTTP_REFERER'])) {
   }
 }
 
+/* to be used for server
+if($_SERVER['HTTP_REFERER'] != null){
+	$urlString = explode('/', $_SERVER['HTTP_REFERER']);
+	$foldername = $urlString[3];
+	$entireUrlString = $_SERVER['HTTP_REFERER'];
+	$httpheader = $urlString[0];
+
+	if((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader, 'https:') == 0)){
+		if(strcmp($_SERVER['HTTP_REFERER'], 'https://155.69.100.32/fyp/fulltime/gen/faculty.php') != 0){
+			throw new Exception($_SERVER['Invalid referer']);
+		}
+	}
+	elseif((strcmp($foldername, "fyp") != 0) && (strcmp($httpheader,'http:') == 0)){
+		if(strcmp($_SERVER['HTTP_REFERER'], 'http://155.69.100.32/fyp/fulltime/gen/faculty.php') != 0){
+			throw new Exception($_SERVER['Invalid referer']);
+		}
+	}
+}
+*/
+
+// for localhost codes
+/*if((strcmp($foldername, "fyp") != 0) && (strcmp($entireUrlString, "http://localhost/fyp/fulltime/gen/faculty.php") != 0)){
+	throw new Exception("Invalid referer");
+}*/
+
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 $filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
 $filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : '') ."%";
@@ -119,23 +144,13 @@ $conn_db_ntu = null;
 <head>
 	<title>Faculty List</title>
 	<style>
-    @media only screen and (max-width: 800px) {
-      .floatWrapper {float:none!important;}
-      .float-panel {position:static!important;}
-      .main-content {padding:20px;margin-right:0px;}
-    }
+            @media only screen and (max-width: 800px) {
+            .floatWrapper {float:none!important;}
+            .float-panel {position:static!important;}
+            .main-content {padding:20px;margin-right:0px;}
+        }
 
-		#Table_Filter_FacultyList td{
-      display:block;
-    	width:auto;
-    }
 
-    @media only screen and (min-width: 70em) {
-      #Table_Filter_FacultyList td{
-      	display:table-cell;
-      	margin-bottom:0px;
-      }
-    }
     </style>
 </head>
 
@@ -194,152 +209,151 @@ $conn_db_ntu = null;
 
 				<?php require_once('../../../upload_head.php'); ?>
 				<form id="FORM_FileToUpload_FacultyList" method="post" enctype="multipart/form-data" role="form">
-						<table style="text-align: left; width: 100%;">
-							<col width="20%">
-							<col width="20%">
-							<col width="20%">
-							<col width="20%">
-							<col width="20%">
-							<tr>
-								<td colspan="2">
-									Please select the <b><u>Faculty List</u></b>:
-								</td>
-								<td colspan="3" style="text-align: right;">
-									<input type="submit" value="Import" name="submit" class="btn btn-xs btn-success" >
-								</td>
-							</tr>
-							<tr>
-								<td colspan="5">File Name format: <b>staff_list</b></td>
-							</tr>
-							<tr>
-								<td colspan="5">
-									<input type="file" id="FileToUpload_FacultyList" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file" >
-								</td>
-							</tr>
-							<tr>
-								<td colspan="5">
-									<div id="progressbardiv" class="progress" style="display: none;">
-										<div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" style="width:0%; color:black; ">
-											<span>0%</span>
-										</div>
+					<table style="text-align: left; width: 100%;">
+						<col width="20%">
+						<col width="20%">
+						<col width="20%">
+						<col width="20%">
+						<col width="20%">
+						<tr>
+							<td colspan="2">
+								Please select the <b><u>Faculty List</u></b>:
+							</td>
+							<td colspan="3" style="text-align: right;">
+								<input type="submit" value="Import" name="submit" class="btn btn-xs btn-success" >
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5">File Name format: <b>staff_list</b></td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<input type="file" id="FileToUpload_FacultyList" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file" >
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<div id="progressbardiv" class="progress" style="display: none;">
+									<div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" style="width:0%; color:black; ">
+										<span>0%</span>
 									</div>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="5"><div id="status"></div></td>
-							</tr>
-						</table>
-						<?php $csrf->echoInputField();?>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5"><div id="status"></div></td>
+						</tr>
+					</table>
+					<?php $csrf->echoInputField();?>
 				</form>
 				<br/>
 				<form name="searchbox" action="faculty.php" method="post">
-						<table id="Table_Filter_FacultyList" width="100%">
-							<colgroup>
-								<col width="20%" >
-								<col width="20%" >
-								<col width="20%" >
-								<col width="20%" >
-								<col width="20%" >
-							</colgroup>
-							<tr>
-								<td colspan="5" style="text-align: right;">
+					<table id="Table_Filter_FacultyList" width="100%">
+						<colgroup>
+							<col width="20%" >
+							<col width="20%" >
+							<col width="20%" >
+							<col width="20%" >
+							<col width="20%" >
+						</colgroup>
+						<tr>
+							<td colspan="5" style="text-align: right;">
+								<?php
+								if( $Total_RowCount > 1){
+									echo $Total_RowCount . " records";
+								}else{
+									echo $Total_RowCount . " record";
+								}
+								?>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<b>Staff Name</b>
+							</td>
+							<td>
+								<select id="filter_StaffID" name="filter_StaffID" onchange="this.form.submit()">
+									<option value="" selected>SELECT</option>
 									<?php
-									if( $Total_RowCount > 1){
-										echo $Total_RowCount . " records";
-									}else{
-										echo $Total_RowCount . " record";
+									foreach ($AL_Staff as $key => $value) {
+									    if(isset($_REQUEST["filter_StaffID"])){
+                                            $StaffID_Filter = $_REQUEST["filter_StaffID"];
+                                        } else {
+									        $StaffID_Filter = null;
+                                        }
+										$StaffID = $key;
+										$StaffName = $value;
+										if($StaffID_Filter == $StaffID){
+											echo "<option value=" . $StaffID . " selected>";
+											echo $StaffName;
+											echo "</option>";
+										}else{
+											echo "<option value=" . $StaffID . ">";
+											echo $StaffName;
+											echo "</option>";
+										}
 									}
 									?>
-								</td>
-							</tr>
+								</select>
+							</td>
+							<td colspan="3" style="text-align:right;">
+								<input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" />
+								<input type="submit" value="Search" title="Search for a project" class="bt"/>
+							</td>
+						</tr>
 
-							<tr>
-								<td>
-									<b>Staff Name</b>
-								</td>
-								<td>
-									<select id="filter_StaffID" name="filter_StaffID" onchange="this.form.submit()">
-										<option value="" selected>SELECT</option>
-										<?php
-										foreach ($AL_Staff as $key => $value) {
-										    if(isset($_REQUEST["filter_StaffID"])){
-	                                            $StaffID_Filter = $_REQUEST["filter_StaffID"];
-	                                        } else {
-										        $StaffID_Filter = null;
-	                                        }
-											$StaffID = $key;
-											$StaffName = $value;
-											if($StaffID_Filter == $StaffID){
-												echo "<option value=" . $StaffID . " selected>";
-												echo $StaffName;
-												echo "</option>";
-											}else{
-												echo "<option value=" . $StaffID . ">";
-												echo $StaffName;
-												echo "</option>";
-											}
-										}
-										?>
-									</select>
-								</td>
-								<td colspan="3" style="text-align:right;">
-									<input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" />
-									<input type="submit" value="Search" title="Search for a project" class="bt"/>
-								</td>
-							</tr>
-
-						</table>
+					</table>
 				</form>
 				<br/>
 
-				<div class="table-responsive">
-					<table width="100%" border="1">
-						<col width="20%" />
-						<col width="20%" />
-						<col width="25%" />
-						<col width="35%" />
+				<table width="100%" border="1">
+					<col width="20%" />
+					<col width="20%" />
+					<col width="25%" />
+					<col width="35%" />
 
-						<tr class="bg-dark text-white text-center">
-							<td>Staff Name</td>
-							<td>Staff ID</td>
-							<td>Project Preference</td>
-							<td>Area Preference</td>
-						</tr>
-						<?php
+					<tr class="bg-dark text-white text-center">
+						<td>Staff Name</td>
+						<td>Staff ID</td>
+						<td>Project Preference</td>
+						<td>Area Preference</td>
+					</tr>
+					<?php
 
-						foreach ($AL_Staff_Filter as $key => $AL_Staff_value) {
-							$StaffID 	= $AL_Staff_value['id'];
+					foreach ($AL_Staff_Filter as $key => $AL_Staff_value) {
+						$StaffID 	= $AL_Staff_value['id'];
 
-							echo "<tr>";
-							echo "<td>" . $AL_Staff_value['name'] . "</td>";
-							echo "<td>" . $StaffID. "</td>";
-							echo "<td>";
-							$AL_StaffProjPref = array();
-							foreach ($DBData_rsProjPref as $key => $DBData_rsProjPref_value) {
-								if($DBData_rsProjPref_value["staff_id"] == $StaffID){
-									$AL_StaffProjPref[] = $DBData_rsProjPref_value["prefer"];
-								}
+						echo "<tr>";
+						echo "<td>" . $AL_Staff_value['name'] . "</td>";
+						echo "<td>" . $StaffID. "</td>";
+						echo "<td>";
+						$AL_StaffProjPref = array();
+						foreach ($DBData_rsProjPref as $key => $DBData_rsProjPref_value) {
+							if($DBData_rsProjPref_value["staff_id"] == $StaffID){
+								$AL_StaffProjPref[] = $DBData_rsProjPref_value["prefer"];
 							}
-							$AL_StaffProjPref =array_unique($AL_StaffProjPref);
-							asort($AL_StaffProjPref);
-							echo implode(",<br/>",  array_filter($AL_StaffProjPref));
-							echo "</td>";
-							echo "<td>";
-							$AL_StaffAreaPref = array();
-							foreach ($DBData_rsAreaPref as $key => $DBData_rsAreaPref_value) {
-								if($DBData_rsAreaPref_value["staff_id"] == $StaffID){
-									$AL_StaffAreaPref[] = $DBData_rsAreaPref_value["title"];
-								}
-							}
-							$AL_StaffAreaPref = array_unique($AL_StaffAreaPref);
-							asort($AL_StaffAreaPref);
-							echo implode(",<br/>",  array_filter($AL_StaffAreaPref));
-							echo "</td>";
-							echo "</tr>";
 						}
-						?>
-					</table>
-				</div>
+						$AL_StaffProjPref =array_unique($AL_StaffProjPref);
+						asort($AL_StaffProjPref);
+						echo implode(",<br/>",  array_filter($AL_StaffProjPref));
+						echo "</td>";
+						echo "<td>";
+						$AL_StaffAreaPref = array();
+						foreach ($DBData_rsAreaPref as $key => $DBData_rsAreaPref_value) {
+							if($DBData_rsAreaPref_value["staff_id"] == $StaffID){
+								$AL_StaffAreaPref[] = $DBData_rsAreaPref_value["title"];
+							}
+						}
+						$AL_StaffAreaPref = array_unique($AL_StaffAreaPref);
+						asort($AL_StaffAreaPref);
+						echo implode(",<br/>",  array_filter($AL_StaffAreaPref));
+						echo "</td>";
+						echo "</tr>";
+					}
+					?>
+				</table>
+
 				<br/><br/>
 
 			</div>

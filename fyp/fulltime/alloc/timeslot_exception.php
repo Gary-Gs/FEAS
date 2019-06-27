@@ -242,29 +242,28 @@
 
 					<form action="submit_savete.php" method="post">
 						<?php $csrf->echoInputField();?>
-						<div class="table-responsive">
-							<table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
-								<col width="40%" />
-								<col width="20%" />
-								<col width="20%" />
-								<col width="20%" />
+						<table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
+							<col width="40%" />
+							<col width="20%" />
+							<col width="20%" />
+							<col width="20%" />
 
-								<tr class="bg-dark text-white text-center" >
-									<td>Staff Name</td>
-									<td>Day</td>
-									<td>Start Time</td>
-									<td>End Time</td>
-								</tr>
-								<?php initEntries(); ?>
+							<tr class="bg-dark text-white text-center" >
+								<td>Staff Name</td>
+								<td>Day</td>
+								<td>Start Time</td>
+								<td>End Time</td>
+							</tr>
+							<?php initEntries(); ?>
 
-								<tr>
-									<td class="exception_td"></td>
-									<td class="exception_td"></td>
-									<td class="exception_td"></td>
-									<td class="exception_td"><a onclick="javascript:addException(5);" class="bt" title="Add more exception"/>Add Exception</a></td>
-								</tr>
-							</table>
-						</div>
+							<tr>
+								<td class="exception_td"></td>
+								<td class="exception_td"></td>
+								<td class="exception_td"></td>
+								<td class="exception_td"><a onclick="javascript:addException(5);" class="bt" title="Add more exception"/>Add Exception</a></td>
+							</tr>
+						</table>
+
 						<div style="float:right; padding-top:25px;">
 
 						<input type="submit" name="clear" title="Clear changes" value="Clear Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>

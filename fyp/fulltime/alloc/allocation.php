@@ -233,42 +233,41 @@ function getTimeSlot($d, $s) {
 					echo isset($_SESSION["total_projects"]) ? "Total Projects: " . $_SESSION["total_projects"] : "";
 					?>
                 </div>
-								<div class="table-responsive">
-	                <table border="1" cellpadding="0" cellspacing="0" width="100%">
-	                    <col width="12%"/>
-	                    <col width="22%"/>
-	                    <col width="22%"/>
-	                    <col width="4%"/>
-	                    <col width="15%"/>
-	                    <col width="15%"/>
-	                    <col width="10%"/>
 
-	                    <tr class="bg-dark text-white text-center">
-	                        <td>Project ID</td>
-	                        <td>Supervisor</td>
-	                        <td>Examiner</td>
-	                        <td>Day</td>
-	                        <td>Date</td>
-	                        <td>Timeslot</td>
-	                        <td>Room</td>
-	                    </tr>
+                <table border="1" cellpadding="0" cellspacing="0" width="100%">
+                    <col width="12%"/>
+                    <col width="22%"/>
+                    <col width="22%"/>
+                    <col width="4%"/>
+                    <col width="15%"/>
+                    <col width="15%"/>
+                    <col width="10%"/>
 
-						<?php foreach ($rsAllocation as $row_rsAllocation) { ?>
-	                    <tr <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_tr"'; ?> >
-	                        <td>
-	                            <a id="<?php echo $row_rsAllocation['project_id']; ?>"
-	                               class="to_allocate_edit"><?php echo $row_rsAllocation['project_id']; ?></a>
-	                        </td>
-	                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getStaff($row_rsAllocation['staff_id']); ?></td>
-	                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getStaff($row_rsAllocation['examiner_id']); ?></td>
-	                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo ($row_rsAllocation['day'] == "" || $row_rsAllocation['day'] == -1) ? '-' : $row_rsAllocation['day']; ?></td>
+                    <tr class="bg-dark text-white text-center">
+                        <td>Project ID</td>
+                        <td>Supervisor</td>
+                        <td>Examiner</td>
+                        <td>Day</td>
+                        <td>Date</td>
+                        <td>Timeslot</td>
+                        <td>Room</td>
+                    </tr>
 
-	                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getActualDate($row_rsAllocation['day']); ?></td>
-	                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getTimeSlot($row_rsAllocation['day'], $row_rsAllocation['slot']); ?></td>
-	                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getRoom($row_rsAllocation['room'], $row_rsAllocation['day']); ?></td>
-							<?php } ?>
-	                </table>
-								</div>
+					<?php foreach ($rsAllocation as $row_rsAllocation) { ?>
+                    <tr <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_tr"'; ?> >
+                        <td>
+                            <a id="<?php echo $row_rsAllocation['project_id']; ?>"
+                               class="to_allocate_edit"><?php echo $row_rsAllocation['project_id']; ?></a>
+                        </td>
+                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getStaff($row_rsAllocation['staff_id']); ?></td>
+                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getStaff($row_rsAllocation['examiner_id']); ?></td>
+                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo ($row_rsAllocation['day'] == "" || $row_rsAllocation['day'] == -1) ? '-' : $row_rsAllocation['day']; ?></td>
+
+                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getActualDate($row_rsAllocation['day']); ?></td>
+                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getTimeSlot($row_rsAllocation['day'], $row_rsAllocation['slot']); ?></td>
+                        <td <?php if ($row_rsAllocation['clash'] == "1") echo 'class="clash_td"'; ?> ><?php echo getRoom($row_rsAllocation['room'], $row_rsAllocation['day']); ?></td>
+						<?php } ?>
+                </table>
                 <br/>
             </div>
 
