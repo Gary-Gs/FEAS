@@ -15,7 +15,7 @@ $key = "w!5C'zUT.<-FG76";
 $localHostDomain = 'http://localhost';
 $ServerDomainHTTP = 'http://155.69.100.32';
 $ServerDomainHTTPS = 'https://155.69.100.32';
-$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+$ServerDomain = 'https://fypexam.scse.ntu.edu.sg';
 if(isset($_SERVER['HTTP_REFERER'])) {
   try {
       // If referer is correct
@@ -35,6 +35,13 @@ if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") && $_SERVER['HTTP_
     $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://155.69.100.32');
+    exit;
+}
+
+if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") && $_SERVER['HTTP_HOST'] === "fypexam.scse.ntu.edu.sg") {
+    $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    header('HTTP/1.1 301 Moved Permanently');
+    header('Location: https://fypexam.scse.ntu.edu.sg');
     exit;
 }
 
