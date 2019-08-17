@@ -290,9 +290,11 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 				if (!count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
 				// project assignment until margin
 				// project preference
+                // print_r($staff->getID());
 				if (array_key_exists($staff->getID(), $AL_StaffWithPref_Project)) {
 					$randomProjectPreferenceKey = key($staff->assignment_project);
-					$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
+                    //print_r($randomProjectPreferenceKey);
+                    $randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
 					if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
 						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
 							&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
@@ -318,28 +320,32 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 				}
 				// end of project preference
 				if (!count($staff->assignment_project) > 0) {
-					if (!count($staff->assignment_area) > 0) {
+					if (count($staff->assignment_area) > 0) {
 						// area preference
 						if (array_key_exists($staff->getID(), $AL_StaffWithPref_Area)) {
-							$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
-							$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
-							$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
-							foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
-								$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
-							} // End of foreach
-							$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
-							if (count($IntersectResult) > 0) {
-								if (!$randomProject->isAssignedStaff()
-									&& $randomProject->getStaff() != $staff->getID()
-//									&& $staff->getWorkload() < $Target_Workload01
-								) {
-									$randomProject->assignStaff($staff->getID(), "Workload Assignment");
-									$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
-									$staff->setWorkload($Workload_New);
-									$Total_ProjectAssigned++;
-									unset($WorkingProjectList[$randomProject->getID()]);
-									continue;
-								}
+                            foreach ($WorkingProjectList as $workList){
+                                $randomProject = $workList;
+                                //$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
+                                $PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
+                                $AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
+                                foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
+                                    $AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
+                                } // End of foreach
+                                $IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
+                                //print_r($IntersectResult);
+                                if (count($IntersectResult) > 0) {
+                                    if (!$randomProject->isAssignedStaff()
+                                        && $randomProject->getStaff() != $staff->getID()
+                                        //									&& $staff->getWorkload() < $Target_Workload01
+                                    ) {
+                                        $randomProject->assignStaff($staff->getID(), "Workload Assignment");
+                                        $Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+                                        $staff->setWorkload($Workload_New);
+                                        $Total_ProjectAssigned++;
+                                        unset($WorkingProjectList[$randomProject->getID()]);
+                                        break;
+                                    }
+                                }
 							}
 						}
 						// end of area preference
