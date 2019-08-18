@@ -94,6 +94,7 @@ $conn_db_ntu = null;
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Faculty Settings</title>
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <script type="text/javascript">
@@ -830,6 +831,7 @@ $conn_db_ntu = null;
 
 <?php require_once('../../../footer.php'); ?>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>
