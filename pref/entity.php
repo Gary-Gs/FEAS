@@ -1,10 +1,10 @@
 <?php
 
 //Objects Definition
-class Staff { 
-    private $staffid; 
+class Staff {
+    private $staffid;
     private $salutation, $name;
-	
+
 
 	function __construct($staffid, $salutation, $name){
 		$this->staffid 			= $staffid;
@@ -15,7 +15,7 @@ class Staff {
 	function getID() 				{ return $this->staffid; }
 	function getSalutation()		{ return $this->salutation; }
 	function getName() 				{ return $this->name; }
-	
+
 	function getSalutationStr()
 	{
 		$salutation = $this->salutation;
@@ -40,41 +40,44 @@ class Staff {
 		default:	//echo $salutation."<br/>";
 			break;
 		}
-		
+
 		return $salutation;
 	}
-	
+
 	function toString() { return $this->getSalutationStr()." ".$this->name; }
 }
 
 class Project {
 	private $projectid;
-	private $staffid, $examiner, $title;
-	
-	function __construct($projectid, $staffid, $examiner, $title){
+	private $staffid, $examiner, $title, $summary;
+
+	function __construct($projectid, $staffid, $examiner, $title, $summary){
 		$this->projectid 	= $projectid;
 		$this->staffid		= $staffid;
 		$this->examiner 	= $examiner;
 		$this->title 		= $title;
+    $this->summary  = $summary;
 	}
 
 	function setStaff($staffid) 			{ $this->staffid = staffid; }
 	function setExaminer($examiner) 		{ $this->examiner = examiner; }
-		
+  function setSummary($summary) 		{ $this->summary = summary; }
+
 	function getID() 			{ return $this->projectid; }
 	function getStaff() 		{ return $this->staffid; }
 	function getExaminer() 		{ return $this->examiner; }
 	function getTitle()			{ return $this->title; }
+  function getSummary()			{ return $this->summary; }
 }
 
 class Area {
 	private $areaid, $title;
-	
+
 	function __construct($areaid, $title){
 		$this->areaid 		= $areaid;
 		$this->title		= $title;
 	}
-	
+
 	function getID() 			{ return $this->areaid; }
 	function getTitle()			{ return $this->title; }
 }
