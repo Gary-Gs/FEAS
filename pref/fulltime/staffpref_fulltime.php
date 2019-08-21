@@ -1,9 +1,7 @@
 <?php require_once('../../Connections/db_ntu.php');
-	 require_once('../../Connections/db_ntu_student.php');
 	 require_once('../entity.php');
 	 require_once('../../CSRFProtection.php');
-	 require_once('../../Utility.php');
-	 ?>
+	 require_once('../../Utility.php');?>
 
 <?php
 	if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
@@ -102,26 +100,7 @@
 			//not used
 			//$query_rsProject  	= "SELECT p2.project_id as pno, p2.staff_id as staffid, p1.title as ptitle FROM ".$TABLES['fyp_assign']." as p2 LEFT JOIN ".$TABLES['fyp']." as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 ORDER BY p2.project_id ASC";
 
-			//$query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle, p1.summary as psummary FROM ".$TABLES['fea_projects']." as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp']." as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue." ORDER BY p3.project_id ASC ";
-
-			/* $query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle, CONCAT(p1.Area1,'|', p1.Area2,'|', p1.Area3,'|', p1.Area4,'|', p1.Area5) as psummary FROM ".$TABLES['fea_projects'].
-												 " as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp'].
-												 " as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue.
-												 " ORDER BY p3.project_id ASC ";
-												 */
-
-		 $query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle FROM ".$TABLES['fea_projects'].
-												 " as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp'].
-												 " as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue.
-												 " ORDER BY p3.project_id ASC ";
-
-			/* $query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle, p.descript as psummary FROM ".$TABLES['fea_projects'].
-												 " as p3 LEFT JOIN ". $TABLES['fyp_assign'].
-												 " as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp'].
-												 " as p1 ON p2.project_id = p1.project_id LEFT JOIN ". $STUDENTTABLES['student_fyp'] .
-												 " as p ON p1.project_id = p.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue.
-												 " and p3.examine_sem = ".$examSemValue." ORDER BY p3.project_id ASC ";
-												 */
+			$query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle FROM ".$TABLES['fea_projects']." as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp']." as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue." ORDER BY p3.project_id ASC ";
 
 			$query_rsArea	= "SELECT * FROM ".$TABLES['interest_area']." where title <> '-' ORDER BY title ASC, `key` ASC";
 
@@ -164,24 +143,10 @@
 			//Projects
 			$projectList = array();
 			foreach($rsProject as $project) { //Index Project By pno
-				$query_projectDescription = "SELECT descript FROM ". $STUDENTTABLES['fyp'] .
-																		" WHERE project_id = ?";
-				try {
-						$stmt_rsProjectDescription = $conn_db_ntu_student->prepare($query_projectDescription);
-						$stmt_rsProjectDescription->bindParam(1, $project['pno']);
-						$stmt_rsProjectDescription->execute();
-						$rsProjectDescription 	= $stmt_rsProjectDescription->fetch();
-				}
-				catch (PDOException $e) {
-					die($e->getMessage());
-				}
-				//$project['psummary'] = str_replace('|', "<br>", $project['psummary']);
-
 				$projectList[ $project['pno'] ] = new Project(	$project['pno'],
 																$project['staffid'],
 																"",	//To be replaced if there's examiner already
-																$project['ptitle'],
-															  $rsProjectDescription['descript']); //$project['psummary'] );
+																$project['ptitle'] );
 			}
 
 			foreach($projectList as $project) {
@@ -254,8 +219,6 @@
 	<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
-		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-
 		<?php
 		if (!$staffPrefOpened){
 			$unavailableUrl = "../staffpref_unavailable.php";
@@ -265,10 +228,6 @@
 	?>
 
 	<style>
-		td.details-control {
-     cursor: pointer;
-	 }
-
 		#content {
 			padding-left:0px;
 			margin-left:0px;
@@ -324,7 +283,6 @@
 		.hidden {
 			display: none;
 		}
-
 	</style>
 
 	<script type="text/javascript">
@@ -395,23 +353,7 @@
                     addDropDown(this.api().column(1));
 
 				  }
-      } );
-
-			var oTable = $('#proj_table').DataTable();
-			$('#proj_table').on('click', 'td.details-control', function () {
-				var tr = $(this).closest('tr');
-				var row = oTable.row(tr);
-
-				if (row.child.isShown()) {
-						// This row is already open - close it
-						row.child.hide();
-						tr.removeClass('shown');
-				} else {
-						// Open this row
-						row.child(format(tr.data('child-value'))).show();
-						tr.addClass('shown');
-				}
-			});
+            } );
 
 		function addDropDown(column) {
 
@@ -836,9 +778,9 @@
 
 									<td class="table_cell">
 										<table id="proj_table" class="table table-bordered pref_table" cellspacing="0"  width="100%">
+											<col width="40%" />
 											<col width="45%" />
 											<col width="43%" />
-											<col width="23%" />
 
 											<thead>
 												<tr>
@@ -850,15 +792,16 @@
 												<th class="bg-dark text-white text-center"></th>
 												<th class="bg-dark text-white text-center"></th>
 												<th class="bg-dark text-white text-center"></th>
+
 												</tr>
 											</thead>
 
 											<tbody>
 												<?php foreach ($projectList as $project) { ?>
-												<tr data-child-value="<?php echo $project->getSummary(); ?>">
-													<td class="details-control"><?php echo $project->getID(); ?></td>
-													<td class="details-control"><?php echo getStaff($project->getStaff()); ?></td>
-													<td class="details-control"><?php echo $project->getTitle(); ?></td>
+												<tr>
+													<td ><?php echo $project->getID(); ?></td>
+													<td><?php echo getStaff($project->getStaff()); ?></td>
+													<td><?php echo $project->getTitle(); ?></td>
 												</tr>
 												<?php } ?>
 											</tbody>
@@ -971,16 +914,10 @@
 						<br/><br/><br/>
 					</form>
 
-
-	       <?php }?>
-
+	             <?php }?>
 	</div>
 
-	<script>
-		function format(value) {
-				return '<div>Description: ' + value + '</div>';
-		}
-	</script>
+
 	<!-- InstanceEndEditable -->
 	<?php require_once('../../footer.php'); ?>
 
