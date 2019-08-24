@@ -37,7 +37,7 @@ if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") && $_SERVER['HTTP_
     header('Location: https://155.69.100.32');
     exit;
 }
-elseif ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") && $_SERVER['HTTP_HOST'] === "fypexam.scse.ntu.edu.sg") {
+if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === "off") && $_SERVER['HTTP_HOST'] === "fypexam.scse.ntu.edu.sg") {
     $location = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://fypexam.scse.ntu.edu.sg');
