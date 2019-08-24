@@ -17,20 +17,20 @@
 	td{
 		background-color: white;
 	}
-</style> 
+</style>
 
 
 </head>
 
 <body>
-	<?php require_once('../php_css/headerwnav.php');?> 
+	<?php require_once('../php_css/headerwnav.php');?>
 
-	
-	
+
+
 	<div style="margin-left: -15px;">
 		<div class="container-fluid">
-            <?php require_once('nav.php'); ?> 
-           
+            <?php require_once('nav.php'); ?>
+
                 <!-- Page Content Holder -->
                 <div class="container-fluid">
 
@@ -50,7 +50,14 @@
                     		<td width="20%"><a href="/fyp/fulltime/gen/faculty.php">B. Faculty List</a></td>
                     		<td>List all staff project preferences and area preferences. Staff may use the search bar provided to search for a particular staff.</td>
                     	</tr>
-
+											<tr>
+												<td width="20%"><a href="/fyp/fulltime/gen/feedback.php">C. Research Interest</a></td>
+												<td>List all research interest of staff. Staff may use the select box to search for a particular staff.</td>
+											</tr>
+											<tr>
+												<td width="20%"><a href="/fyp/fulltime/gen/feedback.php">D. Feedback</a></td>
+												<td>List all feedback received. Staff may use the select box to filter the feedback.</td>
+											</tr>
                     </table>
 
                 	</br>
@@ -97,14 +104,18 @@
                             <td width="20%"><a href="/fyp/fulltime/alloc/result_visualization.php">D. Results Visualization</a></td>
                             <td>To have a visualization of the allocation results</td>
                         </tr>
+												<tr>
+														<td width="20%"><a href="/fyp/fulltime/alloc/staffpref_result.php">E. Staff Preference Result</a></td>
+														<td>To have a visualization of the staff preference results</td>
+												</tr>
                     </table>
                 </div>
-            
+
             <!-- closing navigation div in nav.php -->
             </div>
 
 		</div>
-		
+
 	</div>
 
 		<?php require_once('../footer.php'); ?>

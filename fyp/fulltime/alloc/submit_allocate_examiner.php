@@ -4,7 +4,7 @@ require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 
-//redirect initialised as false first	
+//redirect initialised as false first
 $redirect = false;
 $error_code = -1;
 $staff_workload = 0;
@@ -84,10 +84,10 @@ try {
 
 // Used for workload calculation
 $WORKLOAD_TOTALPROJECTS = $totalProjects->rowCount();
-// No examinableProject or staff 
+// No examinableProject or staff
 
 if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
-	// echo "[Error] Problem loading staff/project list.";        
+	// echo "[Error] Problem loading staff/project list.";
 	$error_code = 1;
 } else {
 	// Covert DB objects into arraylist
@@ -163,6 +163,9 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	$updateQuery = sprintf("insert into %s (`project_id`, `examiner_id`, `day`, `slot`, `room`) values %s on duplicate key update `examiner_id`=values(`examiner_id`), `day`=NULL, `slot`=NULL, `room`=NULL", $TABLES['allocation_result'], implode(",", $values));
 	$conn_db_ntu->exec($updateQuery);
 	unset($values);
+
+	$conn_db_ntu->exec("delete from " . $TABLES['staff_pref'] . " where choice >= 100 and archive = 0");
+
 	//echo "[PDO] Results Saved.<br/>";
 	$error_code = 0;
 }

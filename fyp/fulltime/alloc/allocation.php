@@ -160,6 +160,15 @@ function getTimeSlot($d, $s) {
             <div class="container-fluid">
                 <h3>Examiner Allocation System for Full Time Projects</h3>
 				<?php
+					if (isset($_SESSION['scrape']) && $_SESSION['scrape'] > 0) {
+						echo "<p class='success'> All research interests retrieved. " . "</p>";
+						unset($_SESSION['scrape']);
+					}
+					if (isset($_SESSION['scrape']) && $_SESSION['scrape'] <= 0) {
+						echo "<p class='warn'> No research interests retrieved. " . "</p>";
+						unset($_SESSION['scrape']);
+					}
+
 				if (isset($_REQUEST['error_timeslot'])) {
 					$error_code = $_REQUEST['error_timeslot'];
 
@@ -216,6 +225,9 @@ function getTimeSlot($d, $s) {
                     <a href="submit_download_timetable.php" class="btn bg-dark text-white" style="font-size:12px;"
                        title="Download Timetable">Download Timetable</a>
                     <br/><br/>
+										<a href="retrieve_research_interest.php" class="btn bg-dark text-white"
+                       style="font-size:12px;" title="View Timetable">Retrieve Research Interests</a>
+
                     <button id="BTN_AllocationExaminer" class="btn bg-dark text-white" style="font-size:12px;"
                             title="Allocate Examiner">Allocate Examiner
                     </button>

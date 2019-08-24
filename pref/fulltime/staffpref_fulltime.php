@@ -1,7 +1,8 @@
 <?php require_once('../../Connections/db_ntu.php');
 	 require_once('../entity.php');
 	 require_once('../../CSRFProtection.php');
-	 require_once('../../Utility.php');?>
+	 require_once('../../Utility.php');
+	 ?>
 
 <?php
 	if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
@@ -100,7 +101,26 @@
 			//not used
 			//$query_rsProject  	= "SELECT p2.project_id as pno, p2.staff_id as staffid, p1.title as ptitle FROM ".$TABLES['fyp_assign']." as p2 LEFT JOIN ".$TABLES['fyp']." as p1 ON p2.project_id=p1.project_id WHERE p2.complete = 0 ORDER BY p2.project_id ASC";
 
-			$query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle FROM ".$TABLES['fea_projects']." as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp']." as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue." ORDER BY p3.project_id ASC ";
+			//$query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle, p1.summary as psummary FROM ".$TABLES['fea_projects']." as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp']." as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue." ORDER BY p3.project_id ASC ";
+
+		 $query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle, CONCAT(p1.Area1,'|', p1.Area2,'|', p1.Area3,'|', p1.Area4,'|', p1.Area5) as psummary FROM ".$TABLES['fea_projects'].
+												 " as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp'].
+												 " as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue.
+												 " ORDER BY p3.project_id ASC ";
+
+/*
+		 $query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle FROM ".$TABLES['fea_projects'].
+												 " as p3 LEFT JOIN ".$TABLES['fyp_assign']." as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp'].
+												 " as p1 ON p2.project_id = p1.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue." and p3.examine_sem = ".$examSemValue.
+												 " ORDER BY p3.project_id ASC ";
+*/
+			/* $query_rsProject = "SELECT p3.project_id as pno, p2.staff_id as staffid, p1.title as ptitle, p.descript as psummary FROM ".$TABLES['fea_projects'].
+												 " as p3 LEFT JOIN ". $TABLES['fyp_assign'].
+												 " as p2 ON p3.project_id = p2.project_id LEFT JOIN ".$TABLES['fyp'].
+												 " as p1 ON p2.project_id = p1.project_id LEFT JOIN ". $STUDENTTABLES['student_fyp'] .
+												 " as p ON p1.project_id = p.project_id WHERE p2.complete = 0 and p3.examine_year = ".$examYearValue.
+												 " and p3.examine_sem = ".$examSemValue." ORDER BY p3.project_id ASC ";
+												 */
 
 			$query_rsArea	= "SELECT * FROM ".$TABLES['interest_area']." where title <> '-' ORDER BY title ASC, `key` ASC";
 
@@ -143,10 +163,14 @@
 			//Projects
 			$projectList = array();
 			foreach($rsProject as $project) { //Index Project By pno
+
+				$project['psummary'] = str_replace('|', "<br>", $project['psummary']);
+
 				$projectList[ $project['pno'] ] = new Project(	$project['pno'],
 																$project['staffid'],
 																"",	//To be replaced if there's examiner already
-																$project['ptitle'] );
+																$project['ptitle'],
+															  $project['psummary']); //$project['psummary'] );
 			}
 
 			foreach($projectList as $project) {
@@ -219,6 +243,8 @@
 	<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
+		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
 		<?php
 		if (!$staffPrefOpened){
 			$unavailableUrl = "../staffpref_unavailable.php";
@@ -228,6 +254,10 @@
 	?>
 
 	<style>
+		td.details-control {
+     cursor: pointer;
+	 }
+
 		#content {
 			padding-left:0px;
 			margin-left:0px;
@@ -283,6 +313,49 @@
 		.hidden {
 			display: none;
 		}
+
+		#feedback-button {
+		  height: 40px;
+		  border: solid 3px #CCCCCC;
+		  background: #333;
+		  width: 100px;
+		  line-height: 32px;
+		  -webkit-transform: rotate(-90deg);
+		  font-weight: 600;
+		  color: white;
+		  transform: rotate(-90deg);
+		  -ms-transform: rotate(-90deg);
+		  -moz-transform: rotate(-90deg);
+		  text-align: center;
+		  font-size: 17px;
+		  position: fixed;
+		  right: -40px;
+		  top: 45%;
+		  font-family: "Roboto", helvetica, arial, sans-serif;
+		  z-index: 999;
+		}
+
+		.starrating > input {display: none;}  /* Remove radio buttons */
+
+		.starrating > label:before {
+		  content: "\f005"; /* Star */
+		  margin: 2px;
+		  font-size: 3em;
+		  font-family: FontAwesome;
+		  display: inline-block;
+		}
+
+		.starrating > label
+		{
+		  color: #222222; /* Start color when not clicked */
+		}
+
+		.starrating > input:checked ~ label
+		{ color: #ffca08 ; } /* Set yellow color when star checked */
+
+		.starrating > input:hover ~ label
+		{ color: #ffca08 ;  } /* Set yellow color when star hover */
+
 	</style>
 
 	<script type="text/javascript">
@@ -353,7 +426,23 @@
                     addDropDown(this.api().column(1));
 
 				  }
-            } );
+      } );
+
+			var oTable = $('#proj_table').DataTable();
+			$('#proj_table').on('click', 'td.details-control', function () {
+				var tr = $(this).closest('tr');
+				var row = oTable.row(tr);
+
+				if (row.child.isShown()) {
+						// This row is already open - close it
+						row.child.hide();
+						tr.removeClass('shown');
+				} else {
+						// Open this row
+						row.child(format(tr.data('child-value'))).show();
+						tr.addClass('shown');
+				}
+			});
 
 		function addDropDown(column) {
 
@@ -778,9 +867,9 @@
 
 									<td class="table_cell">
 										<table id="proj_table" class="table table-bordered pref_table" cellspacing="0"  width="100%">
-											<col width="40%" />
 											<col width="45%" />
 											<col width="43%" />
+											<col width="23%" />
 
 											<thead>
 												<tr>
@@ -792,16 +881,15 @@
 												<th class="bg-dark text-white text-center"></th>
 												<th class="bg-dark text-white text-center"></th>
 												<th class="bg-dark text-white text-center"></th>
-
 												</tr>
 											</thead>
 
 											<tbody>
 												<?php foreach ($projectList as $project) { ?>
-												<tr>
-													<td ><?php echo $project->getID(); ?></td>
-													<td><?php echo getStaff($project->getStaff()); ?></td>
-													<td><?php echo $project->getTitle(); ?></td>
+												<tr data-child-value="<?php echo $project->getSummary(); ?>">
+													<td class="details-control"><?php echo $project->getID(); ?></td>
+													<td class="details-control"><?php echo getStaff($project->getStaff()); ?></td>
+													<td class="details-control"><?php echo $project->getTitle(); ?></td>
 												</tr>
 												<?php } ?>
 											</tbody>
@@ -914,10 +1002,127 @@
 						<br/><br/><br/>
 					</form>
 
-	             <?php }?>
+					<!--Buttons-->
+					<div class="container">
+						<!-- Trigger the modal with a button -->
+						<button type="button" id="feedback-button">Feedback</button>
+
+						<!-- Modal -->
+						<div class="modal fade" id="feedbackModal" role="dialog" tabindex="-1" aria-hidden="true">
+							<div class="modal-dialog" >
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<h2 class="modal-title">Feedback</h2>
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+									</div>
+
+									<form role="form" autocomplete="off" name="feedbackForm" method="post" action="submit_feedback.php">
+										<div class="modal-body">
+											<br />
+											<?php $csrf->echoInputField();?>
+											<!-- Hidden field, current user id -->
+											<input name="staffid" id="staffID" type="text" value="<?php echo $staffid; ?>" style="display:none;" />
+											<!--input name="examYearValue" id="examYearValue" type="text" value="<!--?php echo $examYearValue; ?>" style="display:none;" />
+											<input name="examSemValue" id="examSemValue" type="text" value="<!--?php echo $examSemValue; ?>" style="display:none;" /-->
+
+											<b>Rate Overall Experience</b>
+											<div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
+							            <input type="radio" id="star5" name="rating" value="5" required="required" /><label class="form-check-label" for="star5" title="5 star">5</label>
+							            <input type="radio" id="star4" name="rating" value="4" required="required" /><label class="form-check-label" for="star4" title="4 star">4</label>
+							            <input type="radio" id="star3" name="rating" value="3" required="required" /><label class="form-check-label" for="star3" title="3 star">3</label>
+							            <input type="radio" id="star2" name="rating" value="2" required="required" /><label class="form-check-label" for="star2" title="2 star">2</label>
+							            <input type="radio" id="star1" name="rating" value="1" required="required" /><label class="form-check-label" for="star1" title="1 star">1</label>
+							        </div>
+											<p style="text-align:center;">(1 being the lowest and 5 being the highest)</p>
+											<p style="display:none; color:red" id="errorMsg">Please select one of the options above.</p>
+
+											<b>Type of Feedback</b>
+											<br />
+											<div class="form-group" style="margin-top:3px;">
+							            <input type="radio" name="type" value="Bug" required="required" style="margin:5px;" />
+													<p style="display:inline">Bug</p>
+							            <input type="radio" name="type" value="Suggestion" required="required" style="margin:5px;" />
+													<p style="display:inline">Suggestion</p>
+ 							           	<input type="radio" name="type" value="Others" required="required" style="margin:5px;" />
+													<p style="display:inline">Others</p>
+							        </div>
+
+											<div class="form-group">
+												<b>Feedback</b>
+												<textarea class="form-control form-control-sm" style="min-width: 100%" name="comment" type="comment" id="comment" required="required" maxlength="500"></textarea>
+												<p style="text-align:right;" id="count_message"></p>
+											</div>
+											<br />
+
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+												<button type="submit" class="btn btn-primary" name="SubmitFeedback" onclick="validateRating()">Submit Feedback</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<script>
+					$(document).ready(function(){
+						$("#feedback-button").click(function(){
+							$("#feedbackModal").modal();
+						});
+
+						$('#feedbackModal').on('hidden.bs.modal', function (e) {
+							$(this).find('form').trigger('reset');
+							document.getElementById("errorMsg").style.display = "none";
+							$('#count_message').html('500 characters remaining');
+							document.getElementById('staffID').value = <?php echo $staffid; ?>;
+							document.getElementById('examYearValue').value = <?php echo $examYearValue; ?>;
+							document.getElementById('examYearValue').value = <?php echo $examSemValue; ?>;
+						})
+
+						var text_max = 500;
+						$('#count_message').html(text_max + ' characters remaining');
+
+						$('#comment').keyup(function() {
+						  var text_length = $('#comment').val().length;
+						  var text_remaining = text_max - text_length;
+
+						  $('#count_message').html(text_remaining + ' characters remaining');
+						});
+					});
+
+					function validateRating() {
+						var errorMsg = document.getElementById("errorMsg");
+						var rating = document.getElementsByName("rating");
+						var formValid = false;
+
+						var i = 0;
+						while (!formValid && i < rating.length) {
+								if (rating[i].checked) formValid = true;
+								i++;
+						}
+
+						if (!formValid) {
+							errorMsg.style.display = "block";
+						}
+						else {
+							errorMsg.style.display = "none";
+						}
+						// return true to submit, else false
+						return formValid;
+					}
+					</script>
+
+	       <?php }?>
+
 	</div>
 
-
+	<script>
+		function format(value) {
+				return '<div><strong>Related Areas: </strong><pre>' + value + '</pre></div>';
+		}
+	</script>
 	<!-- InstanceEndEditable -->
 	<?php require_once('../../footer.php'); ?>
 
