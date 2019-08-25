@@ -54,12 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
             $filter_ProjectYear = $_REQUEST['filter_ProjectYear'];
       }
       else{
-
-            $projectCurrentYear = date("Y", $time);
-            $projectPreviousYear = $projectCurrentYear - 1;
-            $projectCurrentYearSub = substr($projectCurrentYear, 2, 4);
-            $projectPreviousYearSub = substr($projectPreviousYear, 2, 4);
-            $filter_ProjectYear = $projectPreviousYearSub . $projectCurrentYearSub;
+          if(($nmonth >= 01) && ($nmonth <= 06)){
+              $projectCurrentYear = date("Y", $time);
+              $projectPreviousYear = $projectCurrentYear - 1;
+              $projectCurrentYearSub = substr($projectCurrentYear, 2, 4);
+              $projectPreviousYearSub = substr($projectPreviousYear, 2, 4);
+              $filter_ProjectYear = $projectPreviousYearSub . $projectCurrentYearSub;
+          }
+          elseif(($nmonth >= 07) && ($nmonth <= 12)){
+              $projectCurrentYear = date("Y", $time);
+              $projectNextYear = $projectCurrentYear + 1;
+              $projectCurrentYearSub = substr($projectCurrentYear, 2, 4);
+              $projectNextYearSub = substr($projectNextYear, 2, 4);
+              $filter_ProjectYear = $projectCurrentYearSub . $projectNextYearSub;
+          }
       }
 
       // for semester 1, we retrieve the exemption number from exemption column in staff table
