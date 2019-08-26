@@ -46,7 +46,7 @@ $filter_ProjectYear 	= "%". (isset($_POST['filter_ProjectYear']) && !empty($_POS
 $filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_ProjectSem']) : '') ."%";
 $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
-        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : '') ."%";
+        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : ''); //."%";
 
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];

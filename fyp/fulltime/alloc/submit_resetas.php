@@ -37,7 +37,7 @@ $stmt->execute();
 $NO_OF_DAYS = 3;
 $roomArrStr = "";
 $roomDayArray = array();
-for ($i = 1; $i <= 9; $i++) {
+for ($i = 1; $i <= 10; $i++) {
 	$roomName = "TR+ " . $i;
 	$roomDayArray[$i] = $roomName;
 }

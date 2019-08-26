@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
 }
 
 $filter_StaffID 	= "%". (isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID']) ?
-        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : '') ."%";
+        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : ''); //."%";
 
 $query_rsResearchInterest = "SELECT name, staff_id, GROUP_CONCAT(interest SEPARATOR '---') AS interests FROM " . $TABLES['research_interest'] .
                             " LEFT JOIN " . $TABLES['staff'] .

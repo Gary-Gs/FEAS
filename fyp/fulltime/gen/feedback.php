@@ -46,7 +46,7 @@ $filter_Rating 	= "%". (isset($_POST['filter_Rating']) && !empty($_POST['filter_
         preg_replace('/[^0-9]/','',$_POST['filter_Rating']) : '') ."%";
 $filter_Type  	= "%". (isset($_POST['filter_Type']) && !empty($_POST['filter_Type']) ? $_POST['filter_Type'] : '') ."%";
 $filter_StaffID 	= "%". (isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID']) ?
-        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : '') ."%";
+        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : ''); //."%";
 
 $query_rsFeedback = "SELECT * FROM " . $TABLES['fea_feedback'] . " as p1 LEFT JOIN " . $TABLES['staff'] . " as p2 ON p1.staff_id = p2.id ".
                     "WHERE p1.exam_year LIKE ? AND p1.exam_sem LIKE ? AND p1.rating LIKE ? AND p1.type LIKE ? AND p1.staff_id LIKE ?";

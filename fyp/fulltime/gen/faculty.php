@@ -61,7 +61,7 @@ if(isset($_SERVER['HTTP_REFERER'])) {
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 $filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
-$filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : '') ."%";
+$filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : ''); //."%";
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
 $query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND s.id LIKE ? AND s.name LIKE ?";
