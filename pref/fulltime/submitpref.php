@@ -35,7 +35,7 @@ require_once('../../Utility.php');?>
 
 	$staffid = $_REQUEST['staffid'];
 
-	if (!isset($_POST['clearChanges'])) {
+	if (isset($_POST['saveChanges'])) {
 		try
 		{
 			//$conn_db_ntu->exec("DELETE FROM ".$TABLES['staff_pref']." WHERE staff_id LIKE $sid");
@@ -115,6 +115,15 @@ require_once('../../Utility.php');?>
 		$conn_db_ntu = null;
 
 		$_SESSION['saveChanges'] = 'save';
+	}
+	elseif (isset($_POST['deleteAll'])) {
+		$stmt1 = $conn_db_ntu->prepare("DELETE FROM " . $TABLES['staff_pref']." WHERE staff_id = ?");
+		$stmt1->bindParam(1, $staffid);
+		$stmt1->execute();
+
+		$conn_db_ntu = null;
+
+		$_SESSION['clearAll'] = 'clearAll';
 	}
 	else {
 		$_SESSION['clearChanges'] = 'clear';

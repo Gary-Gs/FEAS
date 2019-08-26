@@ -9,7 +9,7 @@ $error = false;
 $localHostDomain = 'http://localhost';
 $ServerDomainHTTP = 'http://155.69.100.32';
 $ServerDomainHTTPS = 'https://155.69.100.32';
-$ServerDomain = 'https://fypExam.scse.ntu.edu.sg';
+$ServerDomain = 'https://fypexam.scse.ntu.edu.sg';
 if(isset($_SERVER['HTTP_REFERER'])) {
 	try {
 			// If referer is correct

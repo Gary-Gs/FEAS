@@ -995,9 +995,9 @@
 
 						<!--Buttons-->
 						<div style="float:right; padding-top:25px;">
-							<a href="clearpref.php" class="btn bg-dark text-white text-center" title="Clear all saved preferences" style="font-size:12px;">Delete All</a>
-							<input type="submit" name="clearChanges" class="btn bg-dark text-white text-center" title="Clear all selected preferences" style="font-size:12px;" value="Clear Changes" onclick="return confirm('Clear Changes?');" />
-							<input type="submit" class="btn bg-dark text-white text-center" title="Save all selected preferences" value="Save Changes" style="font-size:12px !important;"  onclick="return confirm('Save Changes?');" />
+                            <input type="submit" name="deleteAll" class="btn bg-dark text-white text-center" title="Delete all selected preferences" style="font-size:12px;" value="Delete All" onclick="return confirm('Delete all preferences?');" />
+                            <input type="submit" name="clearChanges" class="btn bg-dark text-white text-center" title="Clear all selected preferences" style="font-size:12px;" value="Clear Changes" onclick="return confirm('Clear Changes?');" />
+                            <input type="submit" name="saveChanges" class="btn bg-dark text-white text-center" title="Save all selected preferences" value="Save Changes" style="font-size:12px !important;"  onclick="return confirm('Save Changes?');" />
 						</div>
 						<br/><br/><br/>
 					</form>
