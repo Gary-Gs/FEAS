@@ -81,8 +81,9 @@ function HandleExcelData($objPHPExcel){
 		if ($AllDataInSheet[$index]["C"] != "" && $AllDataInSheet[$index]["C"] != null && $AllDataInSheet[$index]["A"] != "" && $AllDataInSheet[$index]["A"] != null) {
 			$EXCEL_FacultyEmail 	= strtolower($AllDataInSheet[$index]["C"]);
 			$EXCEL_FacultyName 		= $AllDataInSheet[$index]["A"];
+			$EXCEL_FacultyName2		= $AllDataInSheet[$index]["B"];
 			$EXCEL_FacultyID		= explode("@", $EXCEL_FacultyEmail)[0];
-			$EXCEL_Faculty 			= sprintf("%s;%s;%s", $EXCEL_FacultyID,$EXCEL_FacultyEmail,$EXCEL_FacultyName);
+			$EXCEL_Faculty 			= sprintf("%s;%s;%s;%s", $EXCEL_FacultyID,$EXCEL_FacultyEmail,$EXCEL_FacultyName,$EXCEL_FacultyName2);
 			$Excel_FacultyList[$EXCEL_FacultyID] 	= $EXCEL_Faculty;
 		}
 	}
@@ -101,7 +102,7 @@ function HandleExcelData($objPHPExcel){
 			// DB: ADD FACULTY FROM EXCEL INTO DB
 			foreach ($Excel_FacultyList as $FacultyString) {
 				$Faculty 		= explode(";", $FacultyString);		// "id,email;name;..."
-				$insert_Faculty = sprintf("INSERT INTO %s (id,email,name) VALUES('%s','%s','%s');",$TABLES["staff"],$Faculty[0],$Faculty[1],$Faculty[2]);
+				$insert_Faculty = sprintf("INSERT INTO %s (id,email,name,name2) VALUES('%s','%s','%s','%s');",$TABLES["staff"],$Faculty[0],$Faculty[1],$Faculty[2],$Faculty[3]);
 				try
 				{
 					$DBObj_Result = $conn_db_ntu->prepare($insert_Faculty);
