@@ -143,7 +143,7 @@ for ($i = $indexFrom; $i >= $indexTo && $i > -1; $i--) {
 // Project
 if (isset($_POST['download_project_filter_To']) && $_POST['download_project_filter_To'] == $currentYrSem) {
 
-  $query_rsProjectPreference		= "SELECT project.project_id, project.title, count(DISTINCT p4.staff_id) as total FROM " .
+  /*$query_rsProjectPreference		= "SELECT project.project_id, project.title, count(DISTINCT p4.staff_id) as total FROM " .
                                   "(SELECT DISTINCT(p1.project_id), p2.title FROM " . $TABLES["fea_projects"] . " as p1 " .
                                   " LEFT JOIN " . $TABLES['fyp'] . " as p2 " .
                                   " ON p1.project_id = p2.project_id ".
@@ -153,7 +153,15 @@ if (isset($_POST['download_project_filter_To']) && $_POST['download_project_filt
                                   " LEFT JOIN " . $TABLES['staff_pref'] . " as p4" .
                                   " ON project.project_id = p4.prefer " .
                                   " GROUP BY project.project_id, project.title " .
-                                  " ORDER BY project.project_id ASC";
+                                  " ORDER BY project.project_id ASC"; */
+
+    $query_rsProjectPreference  = "SELECT project.project_id, project.title, count(DISTINCT p4.staff_id) as total FROM " .
+                                  "(SELECT DISTINCT(p1.project_id), p2.title FROM " . $TABLES['fea_projects'] . " AS p1 LEFT JOIN " . $TABLES['fyp'] .
+                                  " as p2 ON p1.project_id = p2.project_id WHERE p1.examine_year = (SELECT examine_year FROM " . $TABLES['fea_projects'] .
+                                  " ORDER BY examine_year Desc LIMIT 1) AND p1.examine_sem = (SELECT examine_sem FROM " . $TABLES['fea_projects'] .
+                                  " ORDER BY project_id Desc LIMIT 1)) AS project LEFT JOIN " . $TABLES['staff_pref'] . " as p4 ON project.project_id = p4.prefer " .
+                                  " GROUP BY project.project_id, project.title ORDER BY project.project_id ASC";
+
 
     $stmt_1 = $conn_db_ntu->prepare($query_rsProjectPreference);
     $stmt_1->execute();

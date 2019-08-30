@@ -34,7 +34,9 @@
 								<div class="card-body">
 									<p>
 										- Project List<br/>
-										- Faculty List
+										- Faculty List<br/>
+										- Research Interests<br/>
+										- Feedback
 
 									</p>
 								</div>
@@ -62,7 +64,9 @@
 									<p>
 										- Allocation Settings<br/>
 										- Allocation System<br/>
-										- View Allocation Plan
+										- View Allocation Plan<br/>
+										- Results Visualization<br/>
+										- Staff Preference Results
 
 									</p>
 								</div>
