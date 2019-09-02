@@ -9,23 +9,20 @@
     <link rel="stylesheet" href="/css/new_main.css" type="text/css">
 
     <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-			<h4 style="font-family: 'Poppins', sans-serif;font-size: 1.2em;
-    font-weight: 300; line-height: 1.7em;padding:5px">SCSE | FYP Examiner Allocation System</h4>
+        <h4 class="float-left" style="font-family: 'Poppins', sans-serif;font-size: 1.2em;
+        font-weight: 300; line-height: 1.7em;padding:5px">SCSE | FYP Examiner Allocation System</h4>
+        <?php if (isset($_SESSION['success'])) {
+            //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
+            unset ($_SESSION['success']);
+        }
+        if (isset($_SESSION['displayname'])){
+            $displayname = trim($_SESSION['displayname'], '#');
+            echo "<p class='credentials' style='color: white; text-align:right;padding:5px'>Welcome, ".$displayname. " <a href='/logout.php' title='Logout'>
+                                    <img src='/images/logout.png' width='25px' height='25px' alt='Logout'/></a></p>";
 
-	                <?php if (isset($_SESSION['success'])) {
-	                    //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
-	                    unset ($_SESSION['success']);
-	                    }
-	                        if (isset($_SESSION['displayname'])){
-	                            $displayname = trim($_SESSION['displayname'], '#');
-	                            echo "<p class='credentials' style='color: white; float:right; margin-top:-42px'>Welcome, ".$displayname. " <a href='/logout.php' title='Logout'>
-	                            <img src='/images/logout.png' width='25px' height='25px' alt='Logout'/></a></p>";
-
-	                            }
-	                ?>
-
-
-	</div>
+        }
+        ?>
+    </div>
 
 <!-- Optional JavaScript -->
  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
