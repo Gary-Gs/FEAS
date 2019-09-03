@@ -66,7 +66,7 @@ if (!empty($htmlData)) {
     }
   }
 }
-
+/*
 // Retrieve those staff who has totally no Preference
 $query_rsStaffNoPreference		= "SELECT id FROM " . $TABLES["staff"] .
 																" WHERE id NOT IN (SELECT staff_id FROM " . $TABLES["staff_pref"] . " WHERE archive = 0)";
@@ -148,7 +148,7 @@ foreach ($rsStaffNoPreference as $row_rsStaffNoPreference) {
 		//}
 	} // end foreach
 }
-
+*/
 $conn_db_ntu = null;
 
 $_SESSION['scrape'] = $count;
