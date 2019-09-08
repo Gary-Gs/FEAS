@@ -64,7 +64,7 @@ $filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search
 $filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : ''); //."%";
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
-$query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND s.id LIKE ? AND s.name LIKE ?";
+$query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND (s.id LIKE ? AND s.name LIKE ?)";
 $query_rsProjPref 		= "SELECT * FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0 ORDER BY sp.staff_id ASC";
 $query_rsAreaPref 		= "SELECT * FROM " . $TABLES['staff_pref'] 	. " as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key AND archive=0";
 try
@@ -430,7 +430,7 @@ $conn_db_ntu = null;
 
     <!-- for going back to bottom -->
     <div id="tobottom"></div>
-    
+
 	</div>
 		<?php require_once('../../../footer.php'); ?>
 
