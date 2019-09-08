@@ -412,7 +412,8 @@ $conn_db_ntu = null;
 			<div class="container col-sm-1 col-md-1 col-lg-1">
             	<div class="float-panel">
             		<br/><br/><br/>
-            		<a href="#backtop"><img src="../../../images/totop.png" width="50%" height="50%" /></a>
+                    <a href="#backtop"><img src="../../../images/totop.png" width="40%" height="40%" /></a><br/>
+                    <a href="#tobottom"><img src="../../../images/tobottom.png" width="40%" height="40%" /></a><br/>
             	</div>
             </div>
             <!-- page content closing div -->
@@ -427,7 +428,9 @@ $conn_db_ntu = null;
 
 </div>
 
-
+    <!-- for going back to bottom -->
+    <div id="tobottom"></div>
+    
 	</div>
 		<?php require_once('../../../footer.php'); ?>
 
