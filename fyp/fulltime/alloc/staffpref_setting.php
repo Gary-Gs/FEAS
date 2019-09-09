@@ -100,6 +100,10 @@
 								}
 								unset($_SESSION['error']);
 							}
+                            elseif (isset($_SESSION['save']) && $_SESSION['save'] == 'success') {
+                                echo "<p class='success'> Staff preference settings saved.</p>";
+                                unset($_SESSION['save']);
+                            }
 							?>
 						<h4 style="padding-bottom:10px;">Open Period</h4>
 							<table id="timeslot_table" border="0" width="300" style="text-align:left;">

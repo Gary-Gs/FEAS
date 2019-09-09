@@ -19,134 +19,135 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 		$html = file_get_html('https://www3.ntu.edu.sg/SCSE/moss_staffac.asp');
 		$htmlData = trim($html);
 		if (!empty($htmlData)) {
-		    $count = 0;
+			$count = 0;
 
-		    // Find the table containing the staff table, followed by the table that contains individual staff details
-		    $outerTable = $html->find('table[class="style1"]', 1);
-		    $staffTable = $outerTable->find('table', 0);
-		    $table = $staffTable->find('table[class="style1"]');
+			// Find the table containing the staff table, followed by the table that contains individual staff details
+			$outerTable = $html->find('table[class="style1"]', 1);
+			$staffTable = $outerTable->find('table', 0);
+			$table = $staffTable->find('table[class="style1"]');
 
-		    foreach ($table as $row) {
-		      $staffDetails = $row->find('span[class="parahead2"]', 0)->plaintext;
-		      $getStaffEmail = $row->find('a', -1)->plaintext;
-		      $staffEmail = preg_split('/[{|[]|@/', $getStaffEmail);
-		      $email = strtolower($staffEmail[0]);
+			foreach ($table as $row) {
+				$staffDetails = $row->find('span[class="parahead2"]', 0)->plaintext;
+				$getStaffEmail = $row->find('a', -1)->plaintext;
+				$staffEmail = preg_split('/[{|[]|@/', $getStaffEmail);
+				$email = strtolower($staffEmail[0]);
 
-		      $researchInterestTable = $row->find('table', 0);
-		      $researchInterestRow = $researchInterestTable->find('tr');
+				$researchInterestTable = $row->find('table', 0);
+				$researchInterestRow = $researchInterestTable->find('tr');
 
-		      // No research interest
-		      if ($researchInterestTable == null || $researchInterestRow == null) {
-		        $empty = "";
-		        // Insert into database
-		        $stmt_insert = $conn_db_ntu->prepare("INSERT INTO ".$TABLES['research_interest']." (staff_id, interest) VALUES (?, ?)");
-		        $stmt_insert->bindParam(1, $email);
-		        $stmt_insert->bindParam(2, $empty);
-		        $stmt_insert->execute();
-		      }
-		      else {
-		        foreach ($researchInterestRow as $researchInterest) {
-		          $interest = $researchInterest->find('td', 1)->plaintext;
+				// No research interest
+				if ($researchInterestTable == null || $researchInterestRow == null) {
+					$empty = "";
+					// Insert into database
+					$stmt_insert = $conn_db_ntu->prepare("INSERT INTO ".$TABLES['research_interest']." (staff_id, interest) VALUES (?, ?)");
+					$stmt_insert->bindParam(1, $email);
+					$stmt_insert->bindParam(2, $empty);
+					$stmt_insert->execute();
+				}
+				else {
+					foreach ($researchInterestRow as $researchInterest) {
+						$interest = $researchInterest->find('td', 1)->plaintext;
 
-		          // Insert into database
-		          $stmt_insert = $conn_db_ntu->prepare("INSERT INTO ".$TABLES['research_interest']." (staff_id, interest) VALUES (?, ?)");
-		          $stmt_insert->bindParam(1, $email);
-		          $stmt_insert->bindParam(2, $interest);
-		          $stmt_insert->execute();
-		        }
-		      }
-		      $count++;
-		    }
-			}
-	  }
-
-		// Retrieve those staff who has totally no Preference
-		$query_rsStaffNoPreference		= "SELECT id FROM " . $TABLES["staff"] .
-																		" WHERE id NOT IN (SELECT staff_id FROM " . $TABLES["staff_pref"] . " WHERE archive = 0)";
-
-		$stmt_staffNoPreference = $conn_db_ntu->prepare($query_rsStaffNoPreference);
-		$stmt_staffNoPreference->execute();
-		$rsStaffNoPreference = $stmt_staffNoPreference->fetchAll(PDO::FETCH_ASSOC);
-
-		// Foreach staff
-		foreach ($rsStaffNoPreference as $row_rsStaffNoPreference) {
-			// retrieve his research interest
-			$query_rsGetStaffResearchInterest		= "SELECT * FROM " . $TABLES["research_interest"] .
-																					" WHERE staff_id = ?";
-
-			$stmt_getStaffResearchInterest = $conn_db_ntu->prepare($query_rsGetStaffResearchInterest);
-			$stmt_getStaffResearchInterest->bindParam(1, $row_rsStaffNoPreference["id"]);
-			$stmt_getStaffResearchInterest->execute();
-			$rsGetStaffResearchInterest = $stmt_getStaffResearchInterest->fetchAll(PDO::FETCH_ASSOC);
-
-			// retrieve all area preference available
-			$query_rsGetAllInterestArea		= "SELECT * FROM " . $TABLES["interest_area"];
-
-			$stmt_getAllInterestArea = $conn_db_ntu->prepare($query_rsGetAllInterestArea);
-			$stmt_getAllInterestArea->execute();
-			$rsGetAllInterestArea = $stmt_getAllInterestArea->fetchAll(PDO::FETCH_ASSOC);
-
-			$archive = 0;
-			$choiceCount = 100;
-			//$areaFound = false;
-			$date   = new DateTime(); //this returns the current date time
-			$currentDateTime = $date->format('Y-m-d H:i:s');
-
-			// if no match above
-			//if ($areaFound == false) {
-				foreach ($rsGetStaffResearchInterest as $row_rsGetStaffResearchInterest) {
-					$maxMatch = 0;
-					$currentInterestMatch = "";
-
-					foreach ($rsGetAllInterestArea as $row_rsGetAllInterestArea) {
-						$currentMatch = 0;
-						$keywordArray = explode(',', $row_rsGetAllInterestArea['keyword']);
-
-						foreach ($keywordArray as $key) {
-							if (stripos(($row_rsGetStaffResearchInterest['interest']), $key) !== false) {
-								$currentMatch++;
-							}
-						}
-
-						if ($currentMatch > $maxMatch) {
-							$maxMatch = $currentMatch;
-							$currentInterestMatch = $row_rsGetAllInterestArea['key'];
-						}
-					} // end foreach interest loop
-
-					if ($currentInterestMatch != "") {
-						// Check if the preference has already been added before
-						$query_rsCheckPreferenceExist		= "SELECT * FROM " . $TABLES["staff_pref"] .
-																							" WHERE staff_id = ? AND prefer = ?";
-
-						$stmt_checkPreferenceExist = $conn_db_ntu->prepare($query_rsCheckPreferenceExist);
-						$stmt_checkPreferenceExist->bindParam(1, $row_rsStaffNoPreference["id"]);
-						$stmt_checkPreferenceExist->bindParam(2, $currentInterestMatch);
-						$stmt_checkPreferenceExist->execute();
-						$rsCheckPreferenceExist = $stmt_checkPreferenceExist->fetchAll(PDO::FETCH_ASSOC);
-
-						if ($rsCheckPreferenceExist == null || sizeof($rsCheckPreferenceExist) == 0) {
-							// insert
-							$insertStmt = $conn_db_ntu->prepare("INSERT INTO ". $TABLES['staff_pref'] . " (staff_id, prefer, choice, choose_time, archive) VALUES (?, ?, ?, ?, ?)");
-							$insertStmt->bindParam(1, $row_rsStaffNoPreference['id']);
-							$insertStmt->bindParam(2, $currentInterestMatch);
-							$insertStmt->bindParam(3, $choiceCount);
-							$insertStmt->bindParam(4, $currentDateTime);
-							$insertStmt->bindParam(5, $archive);
-							$insertStmt->execute();
-
-							$choiceCount++;
-						}
+						// Insert into database
+						$stmt_insert = $conn_db_ntu->prepare("INSERT INTO ".$TABLES['research_interest']." (staff_id, interest) VALUES (?, ?)");
+						$stmt_insert->bindParam(1, $email);
+						$stmt_insert->bindParam(2, $interest);
+						$stmt_insert->execute();
 					}
 				}
+				$count++;
 			}
+		}
 	}
+
+	// Retrieve those staff who has totally no Preference
+	$query_rsStaffNoPreference		= "SELECT id FROM " . $TABLES["staff"] .
+		" WHERE id NOT IN (SELECT staff_id FROM " . $TABLES["staff_pref"] . " WHERE archive = 0)";
+
+	$stmt_staffNoPreference = $conn_db_ntu->prepare($query_rsStaffNoPreference);
+	$stmt_staffNoPreference->execute();
+	$rsStaffNoPreference = $stmt_staffNoPreference->fetchAll(PDO::FETCH_ASSOC);
+
+	// Foreach staff
+	foreach ($rsStaffNoPreference as $row_rsStaffNoPreference) {
+		// retrieve his research interest
+		$query_rsGetStaffResearchInterest		= "SELECT * FROM " . $TABLES["research_interest"] .
+			" WHERE staff_id = ?";
+
+		$stmt_getStaffResearchInterest = $conn_db_ntu->prepare($query_rsGetStaffResearchInterest);
+		$stmt_getStaffResearchInterest->bindParam(1, $row_rsStaffNoPreference["id"]);
+		$stmt_getStaffResearchInterest->execute();
+		$rsGetStaffResearchInterest = $stmt_getStaffResearchInterest->fetchAll(PDO::FETCH_ASSOC);
+
+		// retrieve all area preference available
+		$query_rsGetAllInterestArea		= "SELECT * FROM " . $TABLES["interest_area"];
+
+		$stmt_getAllInterestArea = $conn_db_ntu->prepare($query_rsGetAllInterestArea);
+		$stmt_getAllInterestArea->execute();
+		$rsGetAllInterestArea = $stmt_getAllInterestArea->fetchAll(PDO::FETCH_ASSOC);
+
+		$archive = 0;
+		$choiceCount = 100;
+		//$areaFound = false;
+		$date   = new DateTime(); //this returns the current date time
+		$currentDateTime = $date->format('Y-m-d H:i:s');
+
+		// if no match above
+		//if ($areaFound == false) {
+		foreach ($rsGetStaffResearchInterest as $row_rsGetStaffResearchInterest) {
+			$maxMatch = 0;
+			$currentInterestMatch = "";
+
+			foreach ($rsGetAllInterestArea as $row_rsGetAllInterestArea) {
+				$currentMatch = 0;
+				$keywordArray = explode(',', $row_rsGetAllInterestArea['keyword']);
+
+				foreach ($keywordArray as $key) {
+					if (stripos(($row_rsGetStaffResearchInterest['interest']), $key) !== false) {
+						$currentMatch++;
+					}
+				}
+
+				if ($currentMatch > $maxMatch) {
+					$maxMatch = $currentMatch;
+					$currentInterestMatch = $row_rsGetAllInterestArea['key'];
+				}
+			} // end foreach interest loop
+
+			if ($currentInterestMatch != "") {
+				// Check if the preference has already been added before
+				$query_rsCheckPreferenceExist		= "SELECT * FROM " . $TABLES["staff_pref"] .
+					" WHERE staff_id = ? AND prefer = ?";
+
+				$stmt_checkPreferenceExist = $conn_db_ntu->prepare($query_rsCheckPreferenceExist);
+				$stmt_checkPreferenceExist->bindParam(1, $row_rsStaffNoPreference["id"]);
+				$stmt_checkPreferenceExist->bindParam(2, $currentInterestMatch);
+				$stmt_checkPreferenceExist->execute();
+				$rsCheckPreferenceExist = $stmt_checkPreferenceExist->fetchAll(PDO::FETCH_ASSOC);
+
+				if ($rsCheckPreferenceExist == null || sizeof($rsCheckPreferenceExist) == 0) {
+					// insert
+					$insertStmt = $conn_db_ntu->prepare("INSERT INTO ". $TABLES['staff_pref'] . " (staff_id, prefer, choice, choose_time, archive) VALUES (?, ?, ?, ?, ?)");
+					$insertStmt->bindParam(1, $row_rsStaffNoPreference['id']);
+					$insertStmt->bindParam(2, $currentInterestMatch);
+					$insertStmt->bindParam(3, $choiceCount);
+					$insertStmt->bindParam(4, $currentDateTime);
+					$insertStmt->bindParam(5, $archive);
+					$insertStmt->execute();
+
+					$choiceCount++;
+				}
+			}
+		}
+	}
+}
 
 
 
 //redirect initialised as false first
 $redirect = false;
 $error_code = -1;
+$_SESSION['error_examiner'] = -1;
 $staff_workload = 0;
 $WORKLOAD_PER_PROJECT_EXAMINED = 1;
 $WORKLOAD_TOTALPROJECTS = 0;
@@ -229,6 +230,7 @@ $WORKLOAD_TOTALPROJECTS = $totalProjects->rowCount();
 if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	// echo "[Error] Problem loading staff/project list.";
 	$error_code = 1;
+	$_SESSION['error_examiner'] = 1;
 } else {
 	// Covert DB objects into arraylist
 
@@ -308,6 +310,9 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 
 	//echo "[PDO] Results Saved.<br/>";
 	$error_code = 0;
+	$_SESSION['error_examiner'] = 0;
+	$_SESSION['allocate_examiner'] = 'allocated';
+
 }
 
 $conn_db_ntu = null;
@@ -315,10 +320,7 @@ $conn_db_ntu = null;
 //redirect set to true at the end to ensure everything has been executed successfully
 $redirect = true;
 
-if ($redirect) {
-	echo ($error_code != 0) ? "error_examiner=$error_code" : "allocate_examiner=1";
-	return;
-}
+
 
 function mergesort($count, $proj_info) {
 	$final_list = array();
@@ -433,11 +435,11 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 				if (!count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
 				// project assignment until margin
 				// project preference
-                // print_r($staff->getID());
+				print_r($staff->getID());
 				if (array_key_exists($staff->getID(), $AL_StaffWithPref_Project)) {
 					$randomProjectPreferenceKey = key($staff->assignment_project);
-                    //print_r($randomProjectPreferenceKey);
-                    $randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
+					print_r($randomProjectPreferenceKey);
+					$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
 					if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
 						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
 							&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
@@ -466,29 +468,29 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 					if (count($staff->assignment_area) > 0) {
 						// area preference
 						if (array_key_exists($staff->getID(), $AL_StaffWithPref_Area)) {
-                            foreach ($WorkingProjectList as $workList){
-                                $randomProject = $workList;
-                                //$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
-                                $PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
-                                $AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
-                                foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
-                                    $AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
-                                } // End of foreach
-                                $IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
-                                //print_r($IntersectResult);
-                                if (count($IntersectResult) > 0) {
-                                    if (!$randomProject->isAssignedStaff()
-                                        && $randomProject->getStaff() != $staff->getID()
-                                        //									&& $staff->getWorkload() < $Target_Workload01
-                                    ) {
-                                        $randomProject->assignStaff($staff->getID(), "Workload Assignment");
-                                        $Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
-                                        $staff->setWorkload($Workload_New);
-                                        $Total_ProjectAssigned++;
-                                        unset($WorkingProjectList[$randomProject->getID()]);
-                                        break;
-                                    }
-                                }
+							foreach ($WorkingProjectList as $workList){
+								$randomProject = $workList;
+								//$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
+								$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
+								$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
+								foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
+									$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
+								} // End of foreach
+								$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
+								print_r($IntersectResult);
+								if (count($IntersectResult) > 0) {
+									if (!$randomProject->isAssignedStaff()
+										&& $randomProject->getStaff() != $staff->getID()
+										//									&& $staff->getWorkload() < $Target_Workload01
+									) {
+										$randomProject->assignStaff($staff->getID(), "Workload Assignment");
+										$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+										$staff->setWorkload($Workload_New);
+										$Total_ProjectAssigned++;
+										unset($WorkingProjectList[$randomProject->getID()]);
+										break;
+									}
+								}
 							}
 						}
 						// end of area preference

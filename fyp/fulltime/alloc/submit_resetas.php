@@ -27,8 +27,34 @@ $stmt->bindParam(1, $defaultDays);
 $stmt->bindParam(2, $type);
 $stmt->execute();
 
-$examYear = 1718;
-$examSem = 1;
+$time = time();
+$currentMonth = date("M", $time);
+$nmonth = date('m', strtotime($currentMonth));
+
+
+if(($nmonth >= 01) && ($nmonth <= 06)){
+	$examSem = 2;
+}
+elseif(($nmonth >= 07) && ($nmonth <= 12)){
+	$examSem = 1;
+}
+
+
+if(($nmonth >= 01) && ($nmonth <= 06)){
+	$projectCurrentYear = date("Y", $time);
+	$projectPreviousYear = $projectCurrentYear - 1;
+	$projectCurrentYearSub = substr($projectCurrentYear, 2, 4);
+	$projectPreviousYearSub = substr($projectPreviousYear, 2, 4);
+	$examYear = $projectPreviousYearSub . $projectCurrentYearSub;
+}
+elseif(($nmonth >= 07) && ($nmonth <= 12)){
+	$projectCurrentYear = date("Y", $time);
+	$projectNextYear = $projectCurrentYear + 1;
+	$projectCurrentYearSub = substr($projectCurrentYear, 2, 4);
+	$projectNextYearSub = substr($projectNextYear, 2, 4);
+	$examYear = $projectCurrentYearSub . $projectNextYearSub;
+}
+
 $stmt = $conn_db_ntu->prepare("INSERT INTO " . $TABLES['allocation_settings_others'] . " (`id`, `exam_year`, `exam_sem`) VALUES (1,?,?) ON DUPLICATE KEY UPDATE `exam_year` = VALUES(`exam_year`),`exam_sem` = VALUES(`exam_sem`) ");
 $stmt->bindParam(1, $examYear);
 $stmt->bindParam(2, $examSem);

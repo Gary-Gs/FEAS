@@ -764,8 +764,7 @@ function enoughSlots() {
                                 </tr>
                             </table>
                             <div style="float:right; padding-top:25px;">
-                                <a href="submit_resetas.php" class="btn bg-dark text-white" title="Reset to default"
-                                   style="width:130px;font-size:12px;">Reset to default</a>
+                                <a href="submit_resetas.php" class="btn bg-dark text-white" title="Reset to default" style="width:130px;font-size:12px;" onclick="return confirm('Reset to Default?')">Reset to default</a>
                                 <input type="submit" title="Save all changes" value="Save Changes"
                                        class="btn bg-dark text-white" style="font-size:12px !important;"/>
                                 <br/><br/>

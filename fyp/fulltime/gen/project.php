@@ -246,7 +246,7 @@ $conn_db_ntu = null;
 						</td>
 						<td style="float: right;">
 							<?php
-							if( $Total_RowCount > 1){
+							if( $Total_RowCount > 0){
 								echo $Total_RowCount . " records";
 							}else{
 								echo $Total_RowCount . " record";
@@ -440,14 +440,13 @@ $conn_db_ntu = null;
 			</script>
 
 
-	    <div class="container col-sm-1 col-md-1 col-lg-1">
-	    	<div class="float-panel">
-	    		<br/><br/><br/>
-            		<a href="#backtop"><img src="../../../images/totop.png" width="40%" height="40%" /></a><br/>
-            		<a href="#tobottom"><img src="../../../images/tobottom.png" width="40%" height="40%" /></a><br/>
-	    	</div>
-
-	    </div>
+        <div class="container col-sm-1 col-md-1 col-lg-1">
+            <div style="position: fixed;">
+                <br/><br/><br/>
+                <a href="#backtop"><img src="../../../images/totop.png" width="30%" height="30%" /></a><br/>
+                <a href="#tobottom"><img src="../../../images/tobottom.png" width="30%" height="30%" /></a><br/>
+            </div>
+        </div>
 
 
 		 <!-- closing navigation div in nav.php -->

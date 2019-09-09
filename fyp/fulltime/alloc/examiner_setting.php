@@ -623,6 +623,7 @@ $conn_db_ntu = null;
                               <td></td>
                               <td></td>
                               <td></td>
+                              <td></td>
                               <td><a onclick="javascript:checkExamine(true);">Check All</a> / <a
                                           onclick="javascript:checkExamine(false);">Uncheck All</a></td>
                           </tr>

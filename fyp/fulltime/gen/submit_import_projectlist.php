@@ -103,7 +103,7 @@ function HandleExcelData($objPHPExcel){
 	$checksupervisor = trim($AllDataInSheet[1]["G"]);
 	$checkarea5 = trim($AllDataInSheet[1]["Q"]);
 	//check for the correct format, if it's not correct we will not upload into the database
-	if($checkprojheader=="Proj_id" && $checksupervisor=="Supervisor" && $checkarea5=="Area5"){
+	if($checkprojheader=="Project No" && $checksupervisor=="Supervisor" && $checkarea5=="Area5"){
 
 		for($row = 2; $row <= $highestRow ; $row++ )
 		{

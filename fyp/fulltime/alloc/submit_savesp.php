@@ -246,6 +246,7 @@ else {
 		header("location:staffpref_setting.php");
 	}
 	else {
+		$_SESSION['save'] = "success";
 		header("location:staffpref_setting.php");
 	}
 	exit;

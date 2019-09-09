@@ -50,14 +50,14 @@
                     		<td width="20%"><a href="/fyp/fulltime/gen/faculty.php">B. Faculty List</a></td>
                     		<td>List all staff project preferences and area preferences. Staff may use the search bar provided to search for a particular staff.</td>
                     	</tr>
-											<tr>
-												<td width="20%"><a href="/fyp/fulltime/gen/feedback.php">C. Research Interest</a></td>
-												<td>List all research interest of staff. Staff may use the select box to search for a particular staff.</td>
-											</tr>
-											<tr>
-												<td width="20%"><a href="/fyp/fulltime/gen/feedback.php">D. Feedback</a></td>
-												<td>List all feedback received. Staff may use the select box to filter the feedback.</td>
-											</tr>
+                        <tr>
+                            <td width="20%"><a href="/fyp/fulltime/gen/research_interest.php">C. Research Interest</a></td>
+                            <td>List all research interest of staff. Staff may use the select box to search for a particular staff.</td>
+                        </tr>
+                        <tr>
+                            <td width="20%"><a href="/fyp/fulltime/gen/feedback.php">D. Feedback</a></td>
+                            <td>List all feedback received. Staff may use the select box to filter the feedback.</td>
+                        </tr>
                     </table>
 
                 	</br>
@@ -104,10 +104,10 @@
                             <td width="20%"><a href="/fyp/fulltime/alloc/result_visualization.php">D. Results Visualization</a></td>
                             <td>To have a visualization of the allocation results</td>
                         </tr>
-												<tr>
-														<td width="20%"><a href="/fyp/fulltime/alloc/staffpref_result.php">E. Staff Preference Result</a></td>
-														<td>To have a visualization of the staff preference results</td>
-												</tr>
+                        <tr>
+                            <td width="20%"><a href="/fyp/fulltime/alloc/staffpref_result.php">E. Staff Preference Result</a></td>
+                            <td>To have a visualization of the staff preference results</td>
+                        </tr>
                     </table>
                 </div>
 
