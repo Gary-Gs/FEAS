@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/new_main.css" type="text/css">
 
     <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-        <a href="/index.php"><h4 class="float-left" style="margin-top:12px">SCSE | FYP Examiner Allocation System</h4></a>
+        <a href="/index.php" style="color:white"><h4 class="float-left" style="margin-top:12px">SCSE | FYP Examiner Allocation System</h4></a>
         <div class="text-white float-right" style="margin-top:7px">
             <?php if (isset($_SESSION['success'])) {
                 //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
