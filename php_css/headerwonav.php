@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="/css/new_main.css" type="text/css">
 
     <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-        <h4 class="float-left" style="font-family: 'Poppins', sans-serif;font-size: 1.2em;
-        font-weight: 300; line-height: 1.7em;padding:5px">SCSE | FYP Examiner Allocation System</h4>
+        <a href="/index.php"><h4 class="float-left" style="font-family: 'Poppins', sans-serif;font-size: 1.2em; color:white;
+    font-weight: 300; line-height: 1.7em;padding:5px">SCSE | FYP Examiner Allocation System</h4></a>
         <?php if (isset($_SESSION['success'])) {
             //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
             unset ($_SESSION['success']);
