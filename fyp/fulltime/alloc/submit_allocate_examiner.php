@@ -6,7 +6,7 @@ require_once('../../../Utility.php');
 include('../../../simple_html_dom.php');
 
 
-$stmt_selectPrefBasedOnResearchInterest = $conn_db_ntu->prepare("SELECT * FROM " . $TABLES['staff_pref'] . " WHERE choice >= 100 and archive = 0");
+$stmt_selectPrefBasedOnResearchInterest = $conn_db_ntu->prepare("SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] . " WHERE choice >= 100 and archive = 0");
 $stmt_selectPrefBasedOnResearchInterest->execute();
 $selectPrefBasedOnResearchInterest = $stmt_selectPrefBasedOnResearchInterest->fetchAll(PDO::FETCH_ASSOC);
 
@@ -62,7 +62,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 
 	// Retrieve those staff who has totally no Preference
 	$query_rsStaffNoPreference		= "SELECT id FROM " . $TABLES["staff"] .
-		" WHERE id NOT IN (SELECT staff_id FROM " . $TABLES["staff_pref"] . " WHERE archive = 0)";
+		" WHERE id NOT IN (SELECT LOWER(staff_id) as staff_id FROM " . $TABLES["staff_pref"] . " WHERE archive = 0)";
 
 	$stmt_staffNoPreference = $conn_db_ntu->prepare($query_rsStaffNoPreference);
 	$stmt_staffNoPreference->execute();
@@ -116,7 +116,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 
 			if ($currentInterestMatch != "") {
 				// Check if the preference has already been added before
-				$query_rsCheckPreferenceExist		= "SELECT * FROM " . $TABLES["staff_pref"] .
+				$query_rsCheckPreferenceExist		= "SELECT *, LOWER(staff_id) as staff_id FROM " . $TABLES["staff_pref"] .
 					" WHERE staff_id = ? AND prefer = ?";
 
 				$stmt_checkPreferenceExist = $conn_db_ntu->prepare($query_rsCheckPreferenceExist);
@@ -190,10 +190,10 @@ $query_rsInterestArea = "select * from " . $TABLES["interest_area"];
 $exempt_sem = ($examSemValue == 2) ? "s.exemptionS2" : "s.exemption";
 $query_rsStaff = "select s.id as staffid, s.name as staffname, s.position as salutation, coalesce(" . $exempt_sem . ", 0) as workload, coalesce(s.examine, 1) as examine from " . $TABLES['staff'] . " as s where s.examine=1 order by " . $exempt_sem . " asc, staffid asc";
 
-$query_rsProjPref = "select * from " . $TABLES['staff_pref'] . " where (prefer like 'SCE%' or prefer like 'SCSE%') and archive = 0 order by choice asc";
+$query_rsProjPref = "select *, LOWER(staff_id) as staff_id  from " . $TABLES['staff_pref'] . " where (prefer like 'SCE%' or prefer like 'SCSE%') and archive = 0 order by choice asc";
 
 //$query_rsAreaPref = "select * from " . $TABLES['staff_pref'] . " where prefer not like 'SCE%' order by choice asc";
-$query_rsAreaPref = "select * from " . $TABLES['staff_pref'] . " as sp inner join " . $TABLES['interest_area'] . " as ia on sp.prefer= ia.key  and  archive =0 order by choice asc";
+$query_rsAreaPref = "select *, LOWER(staff_id) as staff_id  from " . $TABLES['staff_pref'] . " as sp inner join " . $TABLES['interest_area'] . " as ia on sp.prefer= ia.key  and  archive =0 order by choice asc";
 
 $query_rsExaminableProject = "select t1.pno, t1.staffid, t1.exam_year, t1.exam_sem, t1.ptitle, t1.parea1, t1.parea2, t1.parea3, t1.parea4, t1.parea5, count(t2.projects) as chosen from (select p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 from `fea_projects` as p3 left join `fyp_assign` as p2 on p3.project_id=p2.project_id left join `fyp` as p1 on p2.project_id=p1.project_id where p2.complete = 0 and p3.examine_year = " . $examYearValue . " and p3.examine_sem = " . $examSemValue . ") as t1 left join (select prefer as projects from `fea_staff_pref` where archive = 0) as t2 on t1.pno=t2.projects group by t1.pno order by chosen asc";
 

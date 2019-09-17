@@ -65,8 +65,8 @@ $filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUES
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
 $query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ?)";
-$query_rsProjPref 		= "SELECT * FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0 ORDER BY sp.staff_id ASC";
-$query_rsAreaPref 		= "SELECT * FROM " . $TABLES['staff_pref'] 	. " as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key AND archive=0";
+$query_rsProjPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0 ORDER BY sp.staff_id ASC";
+$query_rsAreaPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key AND archive=0";
 try
 {
 	// GET ALL STAFF FOR FILTER DROP DOWN CONTROL
