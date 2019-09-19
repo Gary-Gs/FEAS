@@ -188,7 +188,7 @@ try {
 $query_rsInterestArea = "select * from " . $TABLES["interest_area"];
 
 $exempt_sem = ($examSemValue == 2) ? "s.exemptionS2" : "s.exemption";
-$query_rsStaff = "select s.id as staffid, s.name as staffname, s.position as salutation, coalesce(" . $exempt_sem . ", 0) as workload, coalesce(s.examine, 1) as examine from " . $TABLES['staff'] . " as s where s.examine=1 order by " . $exempt_sem . " asc, staffid asc";
+$query_rsStaff = "select s.id as staffid, s.name as staffname, s.position as salutation, s.exemption as exemption, s.exemptionS2 as exemptionS2, coalesce(" . $exempt_sem . ", 0) as workload, coalesce(s.examine, 1) as examine from " . $TABLES['staff'] . " as s where s.examine=1 order by " . $exempt_sem . " asc, staffid asc";
 
 $query_rsProjPref = "select *, LOWER(staff_id) as staff_id  from " . $TABLES['staff_pref'] . " where (prefer like 'SCE%' or prefer like 'SCSE%') and archive = 0 order by choice asc";
 
@@ -254,7 +254,7 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 	// Staff
 	$staffList = array();
 	foreach ($staffs as $staff) { //Index Staff by staffid
-		$staffList[$staff['staffid']] = new Staff($staff['staffid'], $staff['salutation'], $staff['staffname'], $staff['workload']);
+		$staffList[$staff['staffid']] = new StaffAllocate($staff['staffid'], $staff['salutation'], $staff['staffname'], $staff['exemption'], $staff['exemptionS2'], $staff['workload']);
 		$staff_workload += $staff['workload'];
 	}
 
@@ -359,6 +359,20 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$AL_StaffWithPref_Area = array();
 	$AL_StaffWithPref_NoSelection = array();
 	$AL_StaffOverLoad = array();
+	$examinersList = array();
+	$projExaminersList = array();
+	$newExaminersList = array();
+	$areaExaminersList = array();
+	$noPrefExaminersList = array();
+	$assignedList = array();
+	$exemptS1 = "getExemption";
+	$exemptS2 = "getExemption2";
+	$getExemptions;
+	if (date("n") < 12 && date("n") > 7)
+		$getExemptions = $exemptS1;
+	else
+		$getExemptions = $exemptS2;
+
 //	echo count($WorkingStaffList) . "\n";
 	$indexcount = 0;
 	foreach ($WorkingStaffList as $WorkingStaff) {
@@ -422,117 +436,296 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Step02: Allocate staff with project preference first (in random order)
 
-	// start of flooding algorithm
+	// Start of flooding algorithm
+	$examinerCount = 0;
 	$margin = 1;
-	while (true) {
-		if (!count($WorkingProjectList) > 0) {
-			break;
-		}
+	while (count($WorkingProjectList) != $examinerCount) {
 		foreach ($WorkingStaffList as $staff) {
-
-			$ignore_project = 0;
-			while ($staff->getWorkload() < $margin && count($WorkingProjectList) > 0) {
-				$noIntersect = 0;
-				if (!count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
-				// project assignment until margin
-				// project preference
-				print_r($staff->getID());
-				if (array_key_exists($staff->getID(), $AL_StaffWithPref_Project)) {
-					$randomProjectPreferenceKey = key($staff->assignment_project);
-					print_r($randomProjectPreferenceKey);
-					$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
-					if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
-						if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
-							&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
-//							&& $staff->getWorkload() < $Target_Workload01
-						) {
-							$WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
-							$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
-							$staff->setWorkload($Workload_New);
-							$Total_ProjectAssigned++;
-							unset($WorkingProjectList[$randomProjectPreferenceValue]);
-							unset($staff->assignment_project[$randomProjectPreferenceKey]);
-
-							if (count($staff->assignment_project) == 0)
-								unset($AL_StaffWithPref_Project[$staff->getID()]);
-							continue;
-						}
-					} else {
-						unset($staff->assignment_project[$randomProjectPreferenceKey]);
-
-						if (count($staff->assignment_project) == 0)
-							unset($AL_StaffWithPref_Project[$staff->getID()]);
-					}
-				}
-				// end of project preference
-				if (!count($staff->assignment_project) > 0) {
-					if (count($staff->assignment_area) > 0) {
-						// area preference
-						if (array_key_exists($staff->getID(), $AL_StaffWithPref_Area)) {
-							foreach ($WorkingProjectList as $workList){
-								$randomProject = $workList;
-								//$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
-								$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
-								$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
-								foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
-									$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
-								} // End of foreach
-								$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
-								$noIntersect++;
-								//print_r($IntersectResult);
-								if (count($IntersectResult) > 0) {
-									if (!$randomProject->isAssignedStaff()
-										&& $randomProject->getStaff() != $staff->getID()
-										//									&& $staff->getWorkload() < $Target_Workload01
-									) {
-										$randomProject->assignStaff($staff->getID(), "Workload Assignment");
-										$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
-										$staff->setWorkload($Workload_New);
-										$Total_ProjectAssigned++;
-										unset($WorkingProjectList[$randomProject->getID()]);
-										break;
-									}
-								}
-							}
-						}
-						// end of area preference
-					}
-					// no preference
-					if ($noIntersect == 0 || $noIntersect == count($WorkingProjectList)) {
-						if (array_key_exists($staff->getID(), $AL_StaffWithPref_NoSelection)) {
-							//						$randomProject = reset($WorkingProjectList)->getID();
-							reset($WorkingProjectList);
-							for ($i = 0; $i < $ignore_project; $i++) {
-								next($WorkingProjectList);
-							}
-							if (!current($WorkingProjectList)) return; //no more projects
-							$randomProject = current($WorkingProjectList)->getID();
-
-							if (!$WorkingProjectList[$randomProject]->isAssignedStaff()
-								&& $WorkingProjectList[$randomProject]->getStaff() != $staff->getID()
-								//							&& $staff->getWorkload() < $Target_Workload01
-							) {
-								$WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
-								$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
-								$staff->setWorkload($Workload_New);
-								$Total_ProjectAssigned++;
-								unset($WorkingProjectList[$randomProject]);
-								continue;
-							} else if ($WorkingProjectList[$randomProject]->getStaff() != $staff->getID()) {
-								continue;
-							} else {
-								$ignore_project++;
-							}
-						}
-						// end of no preference
-					}
-				}
+			while ($staff->$getExemptions < $margin && count($WorkingProjectList) != $examinerCount) {
+				// All examiners
+				array_push($examinersList, $staff);
+				$examinerCount++;
+				break;
 			}
 		}
 		$margin++;
 	}
 
-	return; //ignore following code
+	// Preferred projects
+	foreach ($examinersList as $staff) {
+		if (count($staff->assignment_project) > 0)
+			array_push($projExaminersList, $staff);
+	}
+
+	while (count($projExaminersList) > 0) {
+		foreach ($projExaminersList as $staff) {
+
+			while (count($projExaminersList) != 0) {
+				if (count($staff->assignment_project) == 0) {
+					array_shift($projExaminersList);
+					break;
+				}
+				$randomProjectPreferenceKey = key($staff->assignment_project);
+				//print_r($randomProjectPreferenceKey);
+				$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
+				//echo $randomProjectPreferenceValue;
+				if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
+					if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
+						&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
+//							&& $staff->getWorkload() < $Target_Workload01
+					) {
+						$WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
+						$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+						$staff->setWorkload($Workload_New);
+						$Total_ProjectAssigned++;
+						//print_r($staff->getID());
+						unset($WorkingProjectList[$randomProjectPreferenceValue]);
+						unset($staff->assignment_project[$randomProjectPreferenceKey]);
+						array_push($assignedList, $staff);
+						array_shift($projExaminersList);
+						break;
+					}
+				} else {
+					unset($staff->assignment_project[$randomProjectPreferenceKey]);
+					if (count($staff->assignment_project) == 0){
+						array_shift($projExaminersList);
+						break;
+					}
+				}
+				continue;
+			}
+		}
+	}
+
+
+	// Preferred areas & no preferences
+	for ($i=0; $i<count($examinersList); $i++){
+		if (current($examinersList) !== reset($assignedList)){
+			array_push($newExaminersList, current($examinersList));
+		}
+		else{array_shift($assignedList);}
+		next($examinersList);
+	}
+
+	// Flooding algorithm again to put back staff that didn't get their preferred projects
+	$margin = 1;
+	$examinerCount = 0;
+	$refloodList = array();
+	while (count($newExaminersList) != 0) {
+		$examinerCount = 0;
+		foreach ($newExaminersList as $staff) {
+			while ($staff->$getExemptions < $margin && count($WorkingProjectList) != count($refloodList)) {
+				array_push($refloodList, $staff);
+				array_shift($newExaminersList);
+				break;
+			}
+			if ($staff->$getExemptions >= $margin){
+				array_push($newExaminersList, $staff);
+				array_shift($newExaminersList);
+			}
+
+		}
+		$margin++;
+	}
+
+	foreach ($refloodList as $staff) {
+		if (count($staff->assignment_area) > 0)
+			array_push($areaExaminersList, $staff);
+	}
+
+	foreach ($refloodList as $staff) {
+		if (count($staff->assignment_area) == 0)
+			array_push($noPrefExaminersList, $staff);
+	}
+
+	// Preferred areas
+	$noIntersect=0;
+	foreach ($areaExaminersList as $staff) {
+		$noIntersect=0;
+		foreach ($WorkingProjectList as $workList){
+			$randomProject = $workList;
+			//$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)]
+			$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
+			$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
+			foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
+				$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
+			} // End of foreach
+			$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
+			//print_r($IntersectResult);
+			if (count($IntersectResult) > 0) {
+				if (!$randomProject->isAssignedStaff()
+					&& $randomProject->getStaff() != $staff->getID()
+				) {
+					$randomProject->assignStaff($staff->getID(), "Workload Assignment");
+					$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+					$staff->setWorkload($Workload_New);
+					$Total_ProjectAssigned++;
+					//print_r($staff->getID());
+					$noIntersect++;
+					unset($WorkingProjectList[$randomProject->getID()]);
+					array_shift($areaExaminersList);
+					break;
+				}
+			}
+		}
+		if ($noIntersect == 0){
+			array_unshift($noPrefExaminersList, $staff);
+			array_shift($areaExaminersList);
+		}
+	}
+	// End of area preference
+
+	// No preferences or failed to get preferred projects/areas
+	while (count($WorkingProjectList) != 0) {
+		foreach ($noPrefExaminersList as $staff) {
+			$ignore_project = 0;
+			reset($WorkingProjectList);
+			for ($i = 0; $i < $ignore_project; $i++) {
+				next($WorkingProjectList);
+			}
+			if (!current($WorkingProjectList)) return; //no more projects
+
+			$randomProj = $WorkingProjectList[array_rand($WorkingProjectList)];
+			$randomProject = $randomProj->getID();
+			if (!$WorkingProjectList[$randomProject]->isAssignedStaff()
+				&& $WorkingProjectList[$randomProject]->getStaff() != $staff->getID()
+//				&& $staff->getWorkload() < $Target_Workload01
+			) {
+				$WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
+				$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+				$staff->setWorkload($Workload_New);
+				$Total_ProjectAssigned++;
+				//print_r($staff->getID());
+				unset($WorkingProjectList[$randomProject]);
+				array_shift($noPrefExaminersList);
+				break;
+			} else if ($WorkingProjectList[$randomProject]->getStaff() != $staff->getID()) {
+				break;
+			} else {
+				$ignore_project++;
+			}
+		}
+	}
+	// end of no preference
+
+	return;
+
+	// Old examiner algorithm
+
+	// start of flooding algorithm
+	// $margin = 1;
+	// while (true) {
+	// if (!count($WorkingProjectList) > 0) {
+	// break;
+	// }
+	// foreach ($WorkingStaffList as $staff) {
+
+	// $ignore_project = 0;
+	// while ($staff->getWorkload() < $margin && count($WorkingProjectList) > 0) {
+	// $noIntersect = 0;
+	// if (!count($staff->assignment_project) > 0) $AL_StaffWithPref_NoSelection[$staff->getID()] = $staff;
+	// // project assignment until margin
+	// // project preference
+	// print_r($staff->getID());
+	// if (array_key_exists($staff->getID(), $AL_StaffWithPref_Project)) {
+	// $randomProjectPreferenceKey = key($staff->assignment_project);
+	// print_r($randomProjectPreferenceKey);
+	// $randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
+	// if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
+	// if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
+	// && $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
+// //							&& $staff->getWorkload() < $Target_Workload01
+	// ) {
+	// $WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
+	// $Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+	// $staff->setWorkload($Workload_New);
+	// $Total_ProjectAssigned++;
+	// unset($WorkingProjectList[$randomProjectPreferenceValue]);
+	// unset($staff->assignment_project[$randomProjectPreferenceKey]);
+
+	// if (count($staff->assignment_project) == 0)
+	// unset($AL_StaffWithPref_Project[$staff->getID()]);
+	// continue;
+	// }
+	// } else {
+	// unset($staff->assignment_project[$randomProjectPreferenceKey]);
+
+	// if (count($staff->assignment_project) == 0)
+	// unset($AL_StaffWithPref_Project[$staff->getID()]);
+	// }
+	// }
+	// // end of project preference
+	// if (!count($staff->assignment_project) > 0) {
+	// if (count($staff->assignment_area) > 0) {
+	// // area preference
+	// if (array_key_exists($staff->getID(), $AL_StaffWithPref_Area)) {
+	// foreach ($WorkingProjectList as $workList){
+	// $randomProject = $workList;
+	// //$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)];
+	// $PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
+	// $AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
+	// foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
+	// $AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
+	// } // End of foreach
+	// $IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
+	// $noIntersect++;
+	// //print_r($IntersectResult);
+	// if (count($IntersectResult) > 0) {
+	// if (!$randomProject->isAssignedStaff()
+	// && $randomProject->getStaff() != $staff->getID()
+	// //									&& $staff->getWorkload() < $Target_Workload01
+	// ) {
+	// $randomProject->assignStaff($staff->getID(), "Workload Assignment");
+	// $Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+	// $staff->setWorkload($Workload_New);
+	// $Total_ProjectAssigned++;
+	// unset($WorkingProjectList[$randomProject->getID()]);
+	// break;
+	// }
+	// }
+	// }
+	// }
+	// // end of area preference
+	// }
+	// // no preference
+	// if ($noIntersect == 0 || $noIntersect == count($WorkingProjectList)) {
+	// if (array_key_exists($staff->getID(), $AL_StaffWithPref_NoSelection)) {
+	// //						$randomProject = reset($WorkingProjectList)->getID();
+	// reset($WorkingProjectList);
+	// for ($i = 0; $i < $ignore_project; $i++) {
+	// next($WorkingProjectList);
+	// }
+	// if (!current($WorkingProjectList)) return; //no more projects
+	// $randomProject = current($WorkingProjectList)->getID();
+
+	// if (!$WorkingProjectList[$randomProject]->isAssignedStaff()
+	// && $WorkingProjectList[$randomProject]->getStaff() != $staff->getID()
+	// //							&& $staff->getWorkload() < $Target_Workload01
+	// ) {
+	// $WorkingProjectList[$randomProject]->assignStaff($staff->getID(), "Workload Assignment");
+	// $Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
+	// $staff->setWorkload($Workload_New);
+	// $Total_ProjectAssigned++;
+	// unset($WorkingProjectList[$randomProject]);
+	// continue;
+	// } else if ($WorkingProjectList[$randomProject]->getStaff() != $staff->getID()) {
+	// continue;
+	// } else {
+	// $ignore_project++;
+	// }
+	// }
+	// // end of no preference
+	// }
+	// }
+	// }
+	// }
+	// $margin++;
+	// }
+
+	// return;
+
+
+	//ignore following code
 	// end of flooding algorithm
 
 //    $String01 = $String01 . sprintf("%s\n", "********************** Start of Project Pref Allocation ********************** ");

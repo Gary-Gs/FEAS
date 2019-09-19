@@ -232,9 +232,9 @@ function getTimeSlot($d, $s) {
                 <a href="submit_download_timetable.php" class="btn bg-dark text-white" style="font-size:12px;"
                    title="Download Timetable">Download Timetable</a>
                 <br/><br/>
-                <button id="BTN_RetrieveInterests" class="btn bg-dark text-white"
-                        style="font-size:12px;" title="View Timetable">Retrieve Research Interests
-                </button>
+                <a href="retrieve_research_interest.php" class="btn bg-dark text-white"
+                   style="font-size:12px;" title="View Timetable">Retrieve Research Interests</a>
+
                 <button id="BTN_AllocationExaminer" class="btn bg-dark text-white" style="font-size:12px;"
                         title="Allocate Examiner">Allocate Examiner
                 </button>
@@ -314,23 +314,6 @@ function getTimeSlot($d, $s) {
             // 		}
             // 	});
             // });
-            $("#BTN_RetrieveInterests").click(function (e) {
-                $("#loadingdiv").show();
-                $.ajax({
-                    url: 'retrieve_research_interest.php',
-                    type: 'GET',
-                    success: function (data) {
-                        console.log(data);
-                        // window.location.href = ("allocation.php?" + data);
-                        location.reload();
-                        $("#loadingdiv").hide();
-                    },
-                    error: function (data) {
-                        console.log("Server error");
-                        $("#loadingdiv").hide();
-                    }
-                });
-            });
             $("#BTN_AllocationExaminer").click(function (e) {
                 $("#loadingdiv").show();
                 $.ajax({
