@@ -1,6 +1,7 @@
 <?php require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
-require_once('../../../Utility.php'); ?>
+require_once('../../../Utility.php');
+require_once('../../../restriction.php'); ?>
 <?php
 /* this code is for restricting access, can uncomment it later */
 /*

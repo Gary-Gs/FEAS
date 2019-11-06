@@ -1,4 +1,5 @@
-<?php require_once('Utility.php'); ?>
+<?php require_once('Utility.php');
+require_once('restriction.php');?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

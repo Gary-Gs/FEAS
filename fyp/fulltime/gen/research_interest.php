@@ -2,6 +2,7 @@
 require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
+require_once('../../../restriction.php');
 
 $localHostDomain = 'http://localhost';
 $ServerDomainHTTP = 'http://155.69.100.32';

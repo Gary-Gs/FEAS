@@ -364,7 +364,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$newExaminersList = array();
 	$areaExaminersList = array();
 	$noPrefExaminersList = array();
-	$assignedList = array();
+	$unassignedList = array();
+	$refloodList = array();
 	$exemptS1 = "getExemption";
 	$exemptS2 = "getExemption2";
 	$getExemptions;
@@ -437,14 +438,12 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	// Step02: Allocate staff with project preference first (in random order)
 
 	// Start of flooding algorithm
-	$examinerCount = 0;
 	$margin = 1;
-	while (count($WorkingProjectList) != $examinerCount) {
+	while (count($WorkingProjectList) != count($examinersList)) {
 		foreach ($WorkingStaffList as $staff) {
-			while ($staff->$getExemptions < $margin && count($WorkingProjectList) != $examinerCount) {
+			while ($staff->$getExemptions < $margin && count($WorkingProjectList) != count($examinersList)) {
 				// All examiners
 				array_push($examinersList, $staff);
-				$examinerCount++;
 				break;
 			}
 		}
@@ -481,7 +480,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 						//print_r($staff->getID());
 						unset($WorkingProjectList[$randomProjectPreferenceValue]);
 						unset($staff->assignment_project[$randomProjectPreferenceKey]);
-						array_push($assignedList, $staff);
+						array_push($unassignedList, $staff);
 						array_shift($projExaminersList);
 						break;
 					}
@@ -500,19 +499,16 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 
 	// Preferred areas & no preferences
 	for ($i=0; $i<count($examinersList); $i++){
-		if (current($examinersList) !== reset($assignedList)){
+		if (current($examinersList) !== reset($unassignedList)){
 			array_push($newExaminersList, current($examinersList));
 		}
-		else{array_shift($assignedList);}
+		else{array_shift($unassignedList);}
 		next($examinersList);
 	}
 
 	// Flooding algorithm again to put back staff that didn't get their preferred projects
 	$margin = 1;
-	$examinerCount = 0;
-	$refloodList = array();
 	while (count($newExaminersList) != 0) {
-		$examinerCount = 0;
 		foreach ($newExaminersList as $staff) {
 			while ($staff->$getExemptions < $margin && count($WorkingProjectList) != count($refloodList)) {
 				array_push($refloodList, $staff);

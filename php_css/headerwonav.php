@@ -9,9 +9,20 @@
     <link rel="stylesheet" href="/css/new_main.css" type="text/css">
 
     <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
-        <a href="/index.php"><h4 class="float-left" style="font-family: 'Poppins', sans-serif;font-size: 1.2em; color:white;
-    font-weight: 300; line-height: 1.7em;padding:5px">SCSE | FYP Examiner Allocation System</h4></a>
-        <?php if (isset($_SESSION['success'])) {
+        <?php // users who are able to access all modules
+        $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh", "c170098", "teew0007"];
+
+        // only verified users navigate to all modules
+        if (in_array($_SESSION['id'], $verifiedUsers)) {
+            echo "<a href='/index.php'><h4 class='float-left' style='font-family: Poppins, sans-serif;font-size: 1.2em; color:white;
+		font-weight: 300; line-height: 1.7em;padding:5px'>SCSE | FYP Examiner Allocation System</h4></a>";
+        }
+        else {
+            echo "<a href='/pref/nav.php'><h4 class='float-left' style='font-family: Poppins, sans-serif;font-size: 1.2em; color:white;
+		font-weight: 300; line-height: 1.7em;padding:5px'>SCSE | FYP Examiner Allocation System</h4></a>";
+        }
+
+        if (isset($_SESSION['success'])) {
             //echo "<p class='success'>[Login] ".$_SESSION['success']."</p>";
             unset ($_SESSION['success']);
         }

@@ -9,8 +9,6 @@ class StaffAllocate {
     public $assignment_area, $assignment_project;		//Used for project assignment working
     public $assignment_list;							//Used for timeslot assignment working
 
-    //public $timeslot_test = new Timeslot();
-
     public $timeslotException;
 
     function __construct($staffid, $salutation, $name, $exemption, $exemptionS2, $mseCount=0){
