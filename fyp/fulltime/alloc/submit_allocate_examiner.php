@@ -535,13 +535,10 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	}
 
 	// Preferred areas
-	$noIntersect=0;
 	foreach ($areaExaminersList as $staff) {
 		$noIntersect=0;
 		foreach ($WorkingProjectList as $workList){
-			$randomProject = $workList;
-			//$randomProject = $WorkingProjectList[array_rand($WorkingProjectList)]
-			$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $randomProject->getProjectArea());
+			$PROJECT_AreaKeyCode = array_intersect($interestAreaList, $workList->getProjectArea());
 			$AL_ConvertRandomStaffAreaPref_To_ssKeyList = array();
 			foreach ($staff->assignment_area as $AreaPrefInKeyCode) {
 				$AL_ConvertRandomStaffAreaPref_To_ssKeyList[$AreaPrefInKeyCode] = $interestAreaList[$AreaPrefInKeyCode];
@@ -549,16 +546,16 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 			$IntersectResult = array_intersect($AL_ConvertRandomStaffAreaPref_To_ssKeyList, $PROJECT_AreaKeyCode);
 			//print_r($IntersectResult);
 			if (count($IntersectResult) > 0) {
-				if (!$randomProject->isAssignedStaff()
-					&& $randomProject->getStaff() != $staff->getID()
+				if (!$workList->isAssignedStaff()
+					&& $workList->getStaff() != $staff->getID()
 				) {
-					$randomProject->assignStaff($staff->getID(), "Workload Assignment");
+					$workList->assignStaff($staff->getID(), "Workload Assignment");
 					$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 					$staff->setWorkload($Workload_New);
 					$Total_ProjectAssigned++;
 					//print_r($staff->getID());
 					$noIntersect++;
-					unset($WorkingProjectList[$randomProject->getID()]);
+					unset($WorkingProjectList[$workList->getID()]);
 					array_shift($areaExaminersList);
 					break;
 				}
