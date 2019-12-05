@@ -63,8 +63,8 @@ else {
 			$error_code = 3;
 		}
 		//else if ((date('m', strtodate($start_dt)) <= 06 && date('m', strtotime($end_dt)) >= 07) || (date('m', strtotime($start_dt)) >= 07 && date('m', strtotime($end_dt)) <= 06)) {
-		else if (($start_dt->format('m') <= 06 && $end_dt->format('m') >= 07) || ($start_dt->format('m') >= 07 && $end_dt->format('m') <= 06)) {
-			$error_code = 4;
+		else if (($start_dt->format('y') != $end_dt->format('y')) || (($start_dt->format('m') <= 06 && $end_dt->format('m') >= 07) || ($start_dt->format('m') >= 07 && $end_dt->format('m') <= 06))) {
+				$error_code = 4;
 		}
 		else if ($start_dt->format('Y-m-d') < date("Y-m-d") && $end_dt->format('Y-m-d') < date("Y-m-d")) {
 			$error_code = 5;

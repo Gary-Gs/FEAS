@@ -234,7 +234,7 @@ function getTimeSlot($d, $s) {
                    title="Download Timetable">Download Timetable</a>
                 <br/><br/>
                 <a href="retrieve_research_interest.php" class="btn bg-dark text-white"
-                   style="font-size:12px;" title="View Timetable">Retrieve Research Interests</a>
+                   style="font-size:12px;" title="Retrieve Research Interests">Retrieve Research Interests</a>
 
                 <button id="BTN_AllocationExaminer" class="btn bg-dark text-white" style="font-size:12px;"
                         title="Allocate Examiner">Allocate Examiner
