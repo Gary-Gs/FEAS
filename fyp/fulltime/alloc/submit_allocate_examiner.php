@@ -369,7 +369,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$exemptS1 = "getExemption";
 	$exemptS2 = "getExemption2";
 	$getExemptions;
-	if (date("n") < 12 && date("n") > 7)
+	if (date("n") <= 12 && date("n") > 7)
 		$getExemptions = $exemptS1;
 	else
 		$getExemptions = $exemptS2;
