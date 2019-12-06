@@ -106,7 +106,7 @@ require_once('../restriction.php');  ?>
                             <td>To have a visualization of the allocation results</td>
                         </tr>
                         <tr>
-                            <td width="20%"><a href="/fyp/fulltime/alloc/staffpref_result.php">E. Staff Preference Result</a></td>
+                            <td width="20%"><a href="/fyp/fulltime/alloc/staffpref_result.php">E. Staff Preference Visualization</a></td>
                             <td>To have a visualization of the staff preference results</td>
                         </tr>
                     </table>

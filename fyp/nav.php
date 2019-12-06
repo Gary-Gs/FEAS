@@ -88,7 +88,7 @@
                             <li><a href="/fyp/fulltime/alloc/allocation.php">Allocation System</a></li>
                             <li><a href="/fyp/fulltime/alloc/allocation_timetable.php">View Allocation Plan</a></li>
                             <li><a href="/fyp/fulltime/alloc/result_visualization.php">Results Visualization</a></li>
-                            <li><a href="/fyp/fulltime/alloc/staffpref_result.php">Staff Preference Results</a></li>
+                            <li><a href="/fyp/fulltime/alloc/staffpref_result.php">Staff Preference Visualization</a></li>
                         </ul>
                     </li>
 

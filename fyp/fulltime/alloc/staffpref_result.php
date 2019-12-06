@@ -275,7 +275,7 @@ $viewArray = array("Chart", "Table");
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Staff Preference Results</title>
+	<title>Staff Preference Visualization</title>
 	<style>
   .nav-tabs > li > a
   {
@@ -293,7 +293,7 @@ $viewArray = array("Chart", "Table");
 	<?php require_once('../../../php_css/headerwnav.php'); ?>
   		 <?php require_once('../../nav.php'); ?>
        <div class="container-fluid" style="margin-bottom:5%;">
-        <h3>Staff Preference Results</h3>
+        <h3>Staff Preference Visualization</h3>
         <?php
           if (isset($_SESSION['filterFromExceedFilterTo'])) {
             echo "<p class='warn'> Filter Semesters in Ascending Order.</p>";
