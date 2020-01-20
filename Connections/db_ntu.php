@@ -31,6 +31,7 @@ else {
 	// ADDED
 	$TABLES['student'] = 'student';
 	$TABLES['interest_area'] = 'ss_keys';
+	$TABLES['temp_staff'] = 'temp_staff';
 
 	//Entity Tables
 	$TABLES['staff_pref'] = 'fea_staff_pref';
