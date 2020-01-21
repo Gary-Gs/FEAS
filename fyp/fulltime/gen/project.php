@@ -38,16 +38,78 @@ $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 
 global $TABLES;
 
+
+//initialize once
+if(!isset($_SESSION['project_pagination'])){
+    $_SESSION["project_pagination"] = '';
+}
+
+if(!isset($_SESSION['pre_filter_ProjectYear'])){
+    $_SESSION["pre_filter_ProjectYear"] = '';
+}
+
+if(!isset($_SESSION['pre_filter_ProjectSem'])){
+    $_SESSION["pre_filter_ProjectSem"] = '';
+}
+
 $cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
     preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
 $filter_Search 			= "%". $cleanedSearch . "%";
 
+//reset pagination when project year filter changes
+if(isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear'])){
+    if($_SESSION["pre_filter_ProjectYear"] != $_POST["filter_ProjectYear"]){
+        $_SESSION["project_pagination"] = 0;
+    }
+}
+
 $filter_ProjectYear 	= "%". (isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_ProjectYear']) : '') ."%";
+$pre_filter_ProjectYear = explode("%",$filter_ProjectYear);
+$_SESSION["pre_filter_ProjectYear"] = $pre_filter_ProjectYear[1];
+//-----
+
+
+//reset pagination when project sem filter changes
+if(isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem'])) {
+    if ($_SESSION["pre_filter_ProjectSem"] != $_POST["filter_ProjectSem"]) {
+        echo "<script>console.log( 'after: " . "clear project sem" . "' );</script>";
+        $_SESSION["project_pagination"] = 0;
+    }
+}
+
 $filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_ProjectSem']) : '') ."%";
+$pre_filter_ProjectSem = explode("%",$filter_ProjectSem);
+$_SESSION["pre_filter_ProjectSem"] = $pre_filter_ProjectSem[1];
+
+
+//----
 $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
         preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : ''); //."%";
+
+$maxRow_Project = 20;
+
+//next page
+if(isset($_POST["nextpage"])) {
+    $_SESSION["project_pagination"]+=1;
+}
+
+//previous page
+if(isset($_POST["previouspage"])) {
+    $_SESSION["project_pagination"]-=1;
+}
+//store page number
+$pageNum_Project = (isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear'])) ?
+    $_SESSION["project_pagination"]:  $_SESSION["project_pagination"];
+
+//ensure valid page number
+if($pageNum_Project == ''){
+    $pageNum_Project = 0;
+    $_SESSION["project_pagination"] = 0;
+}
+
+$startRow_Project = $pageNum_Project * $maxRow_Project; //first page start row = 0 , 2nd page start row = 20
 
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];
@@ -86,7 +148,45 @@ catch (PDOException $e)
     die($e->getMessage());
 }
 
-$conn_db_ntu = null;
+$total_pages = ceil($Total_RowCount / $maxRow_Project) - 1;
+
+//limit record to 20 per page
+$query_limit_rsStaff = sprintf("%s LIMIT %d,%d", $query_rsStaff, $startRow_Project, $maxRow_Project);
+$query_limit_rsProject = sprintf("%s LIMIT %d,%d", $query_rsProject, $startRow_Project, $maxRow_Project);
+
+try {
+    // GET ALL STAFF FOR FILTER DROP DOWN CONTROL
+    $stmt_0 = $conn_db_ntu->prepare($query_limit_rsStaff);
+    $stmt_0->execute();
+    $DBData_rsStaff = $stmt_0->fetchAll(PDO::FETCH_ASSOC);
+    $AL_Staff = array();
+    foreach ($DBData_rsStaff as $key => $value) {
+        $AL_Staff[$value["id"]] = $value["name"];
+    }
+    asort($AL_Staff);
+
+    // GET Project data
+    $stmt = $conn_db_ntu->prepare($query_limit_rsProject);
+    $stmt->bindParam(1, $filter_Search);                // Search project id
+    $stmt->bindParam(2, $filter_Search);                // Search project title
+    $stmt->bindParam(3, $filter_ProjectYear);            // Search project year
+    $stmt->bindParam(4, $filter_ProjectSem);            // Search project sem
+    $stmt->bindParam(5, $filter_Supervisor);            // Search supervisor*/
+    $stmt->execute();
+    $DBData_rsProject = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $Total_RowCount = count($DBData_rsProject);
+
+} catch (PDOException $e) {
+    die($e->getMessage());
+}
+
+$currentPage = $_SERVER ["PHP_SELF"];
+
+$queryString_rsStaff = "";
+$queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_rsStaff);
+
+//i dont have
+//$conn_db_ntu = null;
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -318,11 +418,39 @@ $conn_db_ntu = null;
                             </select>
                         </td>
                         <td colspan="2" style="text-align:right;">
-                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" />
+                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" placeholder="enter project id/title" />
                             <input type="submit" value="Search" title="Search for a project" class="bt"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6"  style="text-align:right">
+                            <!--pagination-->
+                            <?php if ($pageNum_Project >0) { // Show if not first page ?>
+                                <input type="submit" value="previous" name="previouspage" class="bt"/>
+                            <?php }?>
+
+                            <?php if ($pageNum_Project < $total_pages) { // Show if not last page ?>
+                                <input type="submit" value="next" name="nextpage" class="bt"/>
+                            <?php } // Show if not last page ?>
                         </td>
                     </tr>
                 </table>
+
+
+                <td colspan="4">
+
+                    <?php
+                    if($total_pages==-1){
+                        echo "Page 0"." of " .($total_pages+1);
+                    }else{
+                        echo "Page".($pageNum_Project+1)." of " .($total_pages+1);
+                    }
+
+                    ?></td>
+
+                </td>
+
                 <?php $csrf->echoInputField();?>
             </form>
 
@@ -356,6 +484,19 @@ $conn_db_ntu = null;
                         echo "<td class='text-center'>" . $value['Supervisor'] . "</td>";
                         echo "<td class='text-center'>" . $value['examine_year'] . "</td>";
                         echo "<td class='text-center'>" . $value['examine_sem'] . "</td>";
+                        echo "</tr>";
+                    }
+
+
+                    if (count($DBData_rsProject)==0){
+                        echo "<tr>";
+                        echo "<td class='text-center'>" . "</td>";
+                        echo "<td class='text-center'>" . "</td>";
+                        echo "<td class='text-center'>" .  "</td>";
+                        echo "<td class='text-center'>" . "No Records" . "</td>";
+                        echo "<td class='text-center'>" .  "</td>";
+                        echo "<td class='text-center'>" .  "</td>";
+                        echo "<td class='text-center'>" . "</td>";
                         echo "</tr>";
                     }
                     ?>
@@ -564,14 +705,6 @@ $conn_db_ntu = null;
 
         </script>
 
-
-        <div class="container col-sm-1 col-md-1 col-lg-1">
-            <div style="position: fixed;">
-                <br/><br/><br/>
-                <a href="#backtop"><img src="../../../images/totop.png" width="30%" height="30%" /></a><br/>
-                <a href="#tobottom"><img src="../../../images/tobottom.png" width="30%" height="30%" /></a><br/>
-            </div>
-        </div>
 
 
         <!-- closing navigation div in nav.php -->
