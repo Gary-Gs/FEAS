@@ -185,8 +185,6 @@ $currentPage = $_SERVER ["PHP_SELF"];
 $queryString_rsStaff = "";
 $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_rsStaff);
 
-//i dont have
-//$conn_db_ntu = null;
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
