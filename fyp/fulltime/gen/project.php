@@ -416,7 +416,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                             </select>
                         </td>
                         <td colspan="2" style="text-align:right;">
-                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" placeholder="enter project id/title" />
+                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" placeholder="e.g. SCSE19-0553" />
                             <input type="submit" value="Search" title="Search for a project" class="bt"/>
                         </td>
 
