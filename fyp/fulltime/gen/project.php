@@ -490,7 +490,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         echo "<td class='text-center'>" . "</td>";
                         echo "<td class='text-center'>" . "</td>";
                         echo "<td class='text-center'>" .  "</td>";
-                        echo "<td class='text-center'>" . "No Records" . "</td>";
+                        echo "<td class='text-center' style='color:red; font-weight: bold'>" . "No Records" . "</td>";
                         echo "<td class='text-center'>" .  "</td>";
                         echo "<td class='text-center'>" .  "</td>";
                         echo "<td class='text-center'>" . "</td>";
@@ -701,7 +701,14 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
             });
 
         </script>
-
+        <div class="container col-sm-1 col-md-1 col-lg-1">
+            <div style="position: fixed;">
+                <br/><br/><br/>
+                <a href="#backtop"><img src="../../../images/totop.png" width="30%" height="30%" /></a><br/>
+                <a href="#tobottom"><img src="../../../images/tobottom.png" width="30%" height="30%" /></a><br/>
+            </div>
+        </div>
+    </div>
 
 
         <!-- closing navigation div in nav.php -->
