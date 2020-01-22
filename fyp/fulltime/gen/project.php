@@ -421,9 +421,10 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         </td>
 
                     </tr>
-                    <tr>
+
                         <td colspan="6"  style="text-align:right">
                             <!--pagination-->
+                            <br/>
                             <?php if ($pageNum_Project >0) { // Show if not first page ?>
                                 <input type="submit" value="previous" name="previouspage" class="bt"/>
                             <?php }?>
@@ -435,19 +436,17 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                     </tr>
                 </table>
 
-
-                <td colspan="4">
-
-                    <?php
-                    if($total_pages==-1){
-                        echo "Page 0"." of " .($total_pages+1);
-                    }else{
-                        echo "Page".($pageNum_Project+1)." of " .($total_pages+1);
-                    }
-
-                    ?></td>
-
-                </td>
+                    <div style="text-align:right;">
+                        <br/>
+                        <?php
+                                if($total_pages==-1)
+                                {
+                                  echo "Page 0"." of " .($total_pages+1);
+                                }else {
+                                    echo "Page ".($pageNum_Project+1)." of " .($total_pages+1);
+                                }
+                                ?>
+                    </div>
 
                 <?php $csrf->echoInputField();?>
             </form>
