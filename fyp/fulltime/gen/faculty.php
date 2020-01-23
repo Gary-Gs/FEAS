@@ -391,11 +391,11 @@ catch (PDOException $e)
                             <!--pagination-->
                             <br/>
                             <?php if ($pageNum_faculty >0) { // Show if not first page ?>
-                                <input type="submit" value="previous" name="previouspage" class="bt"/>
+                                <input type="submit" value="Previous" name="previouspage" class="bt"/>
                             <?php }?>
 
                             <?php if ($pageNum_faculty < $total_pages) { // Show if not last page ?>
-                                <input type="submit" value="next" name="nextpage" class="bt"/>
+                                <input type="submit" value="Next" name="nextpage" class="bt"/>
                             <?php } // Show if not last page ?>
                         </td>
 
