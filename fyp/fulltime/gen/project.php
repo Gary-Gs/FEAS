@@ -52,10 +52,6 @@ if(!isset($_SESSION['pre_filter_ProjectSem'])){
     $_SESSION["pre_filter_ProjectSem"] = '';
 }
 
-if(!isset($_SESSION['pre_filter_Supervisor'])){
-    $_SESSION["pre_filter_Supervisor"] = '';
-}
-
 $cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
     preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
 $filter_Search 			= "%". $cleanedSearch . "%";
@@ -77,6 +73,7 @@ $_SESSION["pre_filter_ProjectYear"] = $pre_filter_ProjectYear[1];
 //reset pagination when project sem filter changes
 if(isset($_POST['filter_ProjectSem']) && !empty($_POST['filter_ProjectSem'])) {
     if ($_SESSION["pre_filter_ProjectSem"] != $_POST["filter_ProjectSem"]) {
+        echo "<script>console.log( 'after: " . "clear project sem" . "' );</script>";
         $_SESSION["project_pagination"] = 0;
     }
 }
@@ -88,15 +85,8 @@ $_SESSION["pre_filter_ProjectSem"] = $pre_filter_ProjectSem[1];
 
 
 //----
-if(isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor'])) {
-    if ($_SESSION["pre_filter_Supervisor"] != $_POST["filter_Supervisor"]) {
-        $_SESSION["project_pagination"] = 0;
-    }
-}
 $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
         preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : ''); //."%";
-$pre_filter_Supervisor = explode("%",$filter_Supervisor);
-$_SESSION["pre_filter_Supervisor"] = $pre_filter_Supervisor[1];
 
 $maxRow_Project = 20;
 
@@ -161,12 +151,12 @@ catch (PDOException $e)
 $total_pages = ceil($Total_RowCount / $maxRow_Project) - 1;
 
 //limit record to 20 per page
-//$query_limit_rsStaff = sprintf("%s LIMIT %d,%d", $query_rsStaff, $startRow_Project, $maxRow_Project);
+$query_limit_rsStaff = sprintf("%s LIMIT %d,%d", $query_rsStaff, $startRow_Project, $maxRow_Project);
 $query_limit_rsProject = sprintf("%s LIMIT %d,%d", $query_rsProject, $startRow_Project, $maxRow_Project);
 
 try {
     // GET ALL STAFF FOR FILTER DROP DOWN CONTROL
-    $stmt_0 = $conn_db_ntu->prepare($query_rsStaff);
+    $stmt_0 = $conn_db_ntu->prepare($query_limit_rsStaff);
     $stmt_0->execute();
     $DBData_rsStaff = $stmt_0->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff = array();
