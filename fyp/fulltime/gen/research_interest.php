@@ -291,11 +291,11 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                                 <!--pagination-->
                                 <br/>
                                 <?php if ($pageNum_researchInterest >0) { // Show if not first page ?>
-                                    <input type="submit" value="Previous" name="previouspage" class="bt"/>
+                                    <input type="submit" value="previous" name="previouspage" class="bt"/>
                                 <?php }?>
 
                                 <?php if ($pageNum_researchInterest < $total_pages) { // Show if not last page ?>
-                                    <input type="submit" value="Next" name="nextpage" class="bt"/>
+                                    <input type="submit" value="next" name="nextpage" class="bt"/>
                                 <?php } // Show if not last page ?>
                             </td>
 
