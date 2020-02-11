@@ -282,7 +282,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                                     </select>
                                 </td>
                                 <td colspan="3" style="text-align:right;">
-                                    <input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. 'algorithms'or 'Althea' "  />
+                                    <input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. algorithms"  />
                                     <input type="submit" value="Search" title="Search for a project" class="bt"/>
                                 </td>
                             </tr>
