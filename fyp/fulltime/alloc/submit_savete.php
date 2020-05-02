@@ -1,6 +1,6 @@
 <?php require_once('../../../Connections/db_ntu.php');
-	require_once('../../../CSRFProtection.php');
-	require_once('../../../Utility.php');?>
+require_once('../../../CSRFProtection.php');
+require_once('../../../Utility.php');?>
 
 <?php
 $localHostDomain = 'http://localhost';
@@ -9,24 +9,24 @@ $ServerDomainHTTPS = 'https://155.69.100.32';
 $ServerDomain = 'https://fypexam.scse.ntu.edu.sg';
 if(isset($_SERVER['HTTP_REFERER'])) {
 	try {
-			// If referer is correct
-			if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
-					//echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
-			}
-			else {
-					throw new Exception($_SERVER['Invalid Referer']);
-					//echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
-			}
+		// If referer is correct
+		if ((strpos($_SERVER['HTTP_REFERER'], $localHostDomain) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTP) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomainHTTPS) !== false) || (strpos($_SERVER['HTTP_REFERER'], $ServerDomain) !== false)) {
+			//echo "<script>console.log( 'Debug: " . "Correct Referer" . "' );</script>";
+		}
+		else {
+			throw new Exception($_SERVER['Invalid Referer']);
+			//echo "<script>console.log( 'Debug: " . "Incorrect Referer" . "' );</script>";
+		}
 	}
 	catch (Exception $e) {
-			header("HTTP/1.1 400 Bad Request");
-			die ("Invalid Referer.");
+		header("HTTP/1.1 400 Bad Request");
+		die ("Invalid Referer.");
 	}
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
-		header("HTTP/1.1 400 Bad Request");
-		exit("Bad Request");
+	header("HTTP/1.1 400 Bad Request");
+	exit("Bad Request");
 }
 else {
 	$csrf = new CSRFProtection();
@@ -45,15 +45,14 @@ else {
     setcookie("submit_status","call");
   }
 */
-
 	if (!isset($_POST['clear'])) {
 		//Set Values (Timeslot Exceptions)
-		try {
+		/*try {
 			$conn_db_ntu->exec("DELETE FROM " . $TABLES['fea_settings_availability']);
 		} catch (PDOException $e) {
 			die($e->getMessage());
 		}
-
+		*/
 		$i = 1;
 		$j = 1;
 		while (isset($_REQUEST['staff_' . $i]) ||
@@ -84,6 +83,7 @@ else {
 				if (sizeof($existRecords) <= 0)    //Has no duplicates
 				{
 
+
 					$stmt = $conn_db_ntu->prepare("INSERT INTO " . $TABLES['fea_settings_availability'] . " (staff_id, day, time_start, time_end) VALUES (?, ?, ?, ?)");
 					$stmt->bindParam(1, $staff);
 					$stmt->bindParam(2, $day);
@@ -100,6 +100,14 @@ else {
 		}
 		$conn_db_ntu = null;
 	}
+	else {
+		try {
+			$conn_db_ntu->exec("DELETE FROM " . $TABLES['fea_settings_availability']);
+		} catch (PDOException $e) {
+			die($e->getMessage());
+		}
+	}
+
 
 	if (isset ($_REQUEST['validate'])) {
 		header("location:timeslot_exception.php?validate=1");

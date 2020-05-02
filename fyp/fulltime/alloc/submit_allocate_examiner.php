@@ -5,16 +5,75 @@ require_once('../../../CSRFProtection.php');
 require_once('../../../Utility.php');
 include('../../../simple_html_dom.php');
 
+//remove unavailable staff
+//get all the exemptions(ok)
+$query_rsTotalExemptions = "select count(*) from " .$TABLES['fea_settings_availability'];
 
+//get allocation start and end time
+$query_rsAlloc = "select * from " .$TABLES['allocation_settings_general'];
+
+//get all staff details from timeslot
+$query_rsAll = "select * from " .$TABLES['fea_settings_availability'];
+
+//get data from temp staff
+$query_rsTempAll = "select * from " .$TABLES['temp_staff'];
+
+try {
+	$totalExemptions = $conn_db_ntu->query($query_rsTotalExemptions);
+	$alloc = $conn_db_ntu->query($query_rsAlloc);
+
+	$tsAll = $conn_db_ntu->query($query_rsAll);
+	$tsTempAll = $conn_db_ntu->query($query_rsTempAll);
+
+} catch (PDOException $e) {
+	die($e->getMessage());
+}
+
+//fetch alloc start and end time
+$rows = $alloc->fetch(PDO::FETCH_BOTH);
+$allocStart = $rows[1];
+$allocEnd = $rows[2];
+
+//fetch row by row (must be PDO else cannot work)
+//fetch_both = can fetch by column name or array number (0 to 3)
+while ($row = $tsAll->fetch(PDO::FETCH_BOTH)) {
+	//staff_id is row[0] and put into $staffid
+	$staffid = $row[0];
+	$day = $row[1];
+	$timestart = $row[2];
+	$timeend = $row[3];
+
+	if ($day == "*") {
+		//those that are unavailable during the ENTIRE period
+		if ($timestart <= $allocStart && $timeend >= $allocEnd) {
+			//insert all the staff details inside temp_staff
+			//$stmt_insert = $conn_db_ntu->prepare("insert into " . $TABLES['temp_staff'] . " (`id`, `email`, `name`, `name2`, `position`, `workload`,`msc_contri`, `exemption`, `exemptionS2`, `examine`) (select * from " .$TABLES['staff']. " where id = (select staff_id from " .$TABLES['fea_settings_availability'].")");
+			$query_insertTemp = "insert into " . $TABLES['temp_staff'] . " select * from " . $TABLES['staff'] . " where id = '$staffid'";
+			$stmt_insert = $conn_db_ntu->prepare($query_insertTemp);
+			$stmt_insert->execute();
+
+			//remove all the staff details from staff
+			$query_removeStaff = "delete from " . $TABLES['staff'] . " where id = '$staffid'";
+			$stmt_remove = $conn_db_ntu->prepare($query_removeStaff);
+			$stmt_remove->execute();
+		}
+	}
+}
+
+
+//get staff id
 $stmt_selectPrefBasedOnResearchInterest = $conn_db_ntu->prepare("SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] . " WHERE choice >= 100 and archive = 0");
 $stmt_selectPrefBasedOnResearchInterest->execute();
 $selectPrefBasedOnResearchInterest = $stmt_selectPrefBasedOnResearchInterest->fetchAll(PDO::FETCH_ASSOC);
 
+//get all research interest
 $stmt_checkResearchInterestExists = $conn_db_ntu->prepare("SELECT * FROM " . $TABLES['research_interest']);
 $stmt_checkResearchInterestExists->execute();
 $checkResearchInterestExists = $stmt_checkResearchInterestExists->fetchAll(PDO::FETCH_ASSOC);
 
+//check if there is any research interest
 if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResearchInterest) <= 0) {
+	//check if research interest exist
 	if ($checkResearchInterestExists == null || sizeof($checkResearchInterestExists) <= 0) {
 		$html = file_get_html('https://www3.ntu.edu.sg/SCSE/moss_staffac.asp');
 		$htmlData = trim($html);
@@ -26,6 +85,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 			$staffTable = $outerTable->find('table', 0);
 			$table = $staffTable->find('table[class="style1"]');
 
+			//get all the research interest
 			foreach ($table as $row) {
 				$staffDetails = $row->find('span[class="parahead2"]', 0)->plaintext;
 				$getStaffEmail = $row->find('a', -1)->plaintext;
@@ -45,6 +105,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 					$stmt_insert->execute();
 				}
 				else {
+					//got research interest
 					foreach ($researchInterestRow as $researchInterest) {
 						$interest = $researchInterest->find('td', 1)->plaintext;
 
@@ -55,6 +116,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 						$stmt_insert->execute();
 					}
 				}
+				//count the no of research interest
 				$count++;
 			}
 		}
@@ -68,7 +130,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 	$stmt_staffNoPreference->execute();
 	$rsStaffNoPreference = $stmt_staffNoPreference->fetchAll(PDO::FETCH_ASSOC);
 
-	// Foreach staff
+	// For each staff with no preference
 	foreach ($rsStaffNoPreference as $row_rsStaffNoPreference) {
 		// retrieve his research interest
 		$query_rsGetStaffResearchInterest		= "SELECT * FROM " . $TABLES["research_interest"] .
@@ -81,7 +143,6 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 
 		// retrieve all area preference available
 		$query_rsGetAllInterestArea		= "SELECT * FROM " . $TABLES["interest_area"];
-
 		$stmt_getAllInterestArea = $conn_db_ntu->prepare($query_rsGetAllInterestArea);
 		$stmt_getAllInterestArea->execute();
 		$rsGetAllInterestArea = $stmt_getAllInterestArea->fetchAll(PDO::FETCH_ASSOC);
@@ -94,14 +155,18 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 
 		// if no match above
 		//if ($areaFound == false) {
+
+		//For staff with research interest
 		foreach ($rsGetStaffResearchInterest as $row_rsGetStaffResearchInterest) {
 			$maxMatch = 0;
 			$currentInterestMatch = "";
 
+			//Get all their interest area
 			foreach ($rsGetAllInterestArea as $row_rsGetAllInterestArea) {
 				$currentMatch = 0;
 				$keywordArray = explode(',', $row_rsGetAllInterestArea['keyword']);
 
+				//Find match between research interest and interest area
 				foreach ($keywordArray as $key) {
 					if (stripos(($row_rsGetStaffResearchInterest['interest']), $key) !== false) {
 						$currentMatch++;
@@ -125,6 +190,7 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 				$stmt_checkPreferenceExist->execute();
 				$rsCheckPreferenceExist = $stmt_checkPreferenceExist->fetchAll(PDO::FETCH_ASSOC);
 
+				// if has not been added before then
 				if ($rsCheckPreferenceExist == null || sizeof($rsCheckPreferenceExist) == 0) {
 					// insert
 					$insertStmt = $conn_db_ntu->prepare("INSERT INTO ". $TABLES['staff_pref'] . " (staff_id, prefer, choice, choose_time, archive) VALUES (?, ?, ?, ?, ?)");
@@ -135,14 +201,13 @@ if ($selectPrefBasedOnResearchInterest == null || sizeof($selectPrefBasedOnResea
 					$insertStmt->bindParam(5, $archive);
 					$insertStmt->execute();
 
+					//count the amount of choice
 					$choiceCount++;
 				}
 			}
 		}
 	}
 }
-
-
 
 //redirect initialised as false first
 $redirect = false;
@@ -160,8 +225,9 @@ function CmpWorkloadAsc($a, $b) {
 }
 
 //Assignment Settings
-try {
 
+try {
+	//select those full-time
 	$query_rsOtherSettings = "select * from " . $TABLES['allocation_settings_others'] . " where type = 'FT'";
 	$otherSettings = $conn_db_ntu->query($query_rsOtherSettings)->fetch();
 
@@ -170,6 +236,7 @@ try {
 }
 
 //Exam Year & Sem settings
+//get today date/time
 $today = new DateTime();
 
 /* Parse Settings */
@@ -184,19 +251,28 @@ try {
 
 //$_SESSION['examSemValue']  = $examSemValue;
 //$_SESSION['examYearValue'] = $examYearValue;
+
 /* Converting DB to Object Models */
+//select all interest area
 $query_rsInterestArea = "select * from " . $TABLES["interest_area"];
 
+//if sem =2 then exempts2 else exemption (sem=1)
 $exempt_sem = ($examSemValue == 2) ? "s.exemptionS2" : "s.exemption";
+
+//select staff based on exempt sem
 $query_rsStaff = "select s.id as staffid, s.name as staffname, s.position as salutation, s.exemption as exemption, s.exemptionS2 as exemptionS2, coalesce(" . $exempt_sem . ", 0) as workload, coalesce(s.examine, 1) as examine from " . $TABLES['staff'] . " as s where s.examine=1 order by " . $exempt_sem . " asc, staffid asc";
 
+//select project preference with SCE/SCSE
 $query_rsProjPref = "select *, LOWER(staff_id) as staff_id  from " . $TABLES['staff_pref'] . " where (prefer like 'SCE%' or prefer like 'SCSE%') and archive = 0 order by choice asc";
 
 //$query_rsAreaPref = "select * from " . $TABLES['staff_pref'] . " where prefer not like 'SCE%' order by choice asc";
+
+//select area preference linked to interest area
 $query_rsAreaPref = "select *, LOWER(staff_id) as staff_id  from " . $TABLES['staff_pref'] . " as sp inner join " . $TABLES['interest_area'] . " as ia on sp.prefer= ia.key  and  archive =0 order by choice asc";
 
+//get projects that are examinable
 $query_rsExaminableProject = "select t1.pno, t1.staffid, t1.exam_year, t1.exam_sem, t1.ptitle, t1.parea1, t1.parea2, t1.parea3, t1.parea4, t1.parea5, count(t2.projects) as chosen from (select p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 from `fea_projects` as p3 left join `fyp_assign` as p2 on p3.project_id=p2.project_id left join `fyp` as p1 on p2.project_id=p1.project_id where p2.complete = 0 and p3.examine_year = " . $examYearValue . " and p3.examine_sem = " . $examSemValue . ") as t1 left join (select prefer as projects from `fea_staff_pref` where archive = 0) as t2 on t1.pno=t2.projects group by t1.pno order by chosen asc";
-
+//get all the projects
 $query_rsTotalProject = "select p3.project_id as pno, p2.staff_id as staffid, p3.examine_year as exam_year, p3.examine_sem as exam_sem, p1.title as ptitle, p1.Area1 as parea1 , p1.Area2 as parea2 , p1.Area3 as parea3 , p1.Area4 as parea4 , p1.Area5 as parea5 from " . $TABLES['fea_projects'] . " as p3 left join " . $TABLES['fyp_assign'] . " as p2 on p3.project_id=p2.project_id  left join " . $TABLES['fyp'] . " as p1 on p2.project_id=p1.project_id where p2.complete = 0 ";
 
 // Need to get the last 2 sems project list
@@ -219,12 +295,14 @@ try {
 	$areaPrefs = $conn_db_ntu->query($query_rsAreaPref);
 	$totalProjects = $conn_db_ntu->query($query_rsTotalProject);
 	$examinableProject = $conn_db_ntu->query($query_rsExaminableProject);
+
 } catch (PDOException $e) {
 	die($e->getMessage());
 }
 
 // Used for workload calculation
 $WORKLOAD_TOTALPROJECTS = $totalProjects->rowCount();
+
 // No examinableProject or staff
 
 if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
@@ -257,7 +335,6 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 		$staffList[$staff['staffid']] = new StaffAllocate($staff['staffid'], $staff['salutation'], $staff['staffname'], $staff['exemption'], $staff['exemptionS2'], $staff['workload']);
 		$staff_workload += $staff['workload'];
 	}
-
 	// Staff Area Preference (Ordered by staff's choice)
 	foreach ($areaPrefs as $areaPref) { //Area Preference
 		if (!array_key_exists($areaPref['staff_id'], $staffList))
@@ -286,8 +363,8 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 
 	// Workload Sorting (asc) Auto-Correction (Used to patch the workload correction)
 	uasort($staffList, "CmpWorkloadAsc");
-
 	Algorithm_Random($staffList, $sorted_projectlist, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS); //if all no issue
+
 	try {
 		$conn_db_ntu->exec("delete from " . $TABLES['allocation_result']);
 		$conn_db_ntu->exec("delete from " . $TABLES['allocation_result_room']);
@@ -315,12 +392,27 @@ if ($examinableProject->rowCount() <= 0 || $staffs->rowCount() <= 0) {
 
 }
 
+//after allocation has completed, add back staff that are previously removed due to being unavailable
+//while ($temprow = $tsTempAll->fetch(PDO::FETCH_BOTH)) {
+//id of staff is row[0] and put into $staffid
+//	$tempid = $temprow[0];
+
+for($i=0; $i<$totalExemptions; $i++){
+	//add back all the unavailable staff
+	$query_addStaff = "insert into " . $TABLES['staff'] . " select * from " . $TABLES['temp_staff'];// " where id = '$tempid'";
+	$stmt_add = $conn_db_ntu->prepare($query_addStaff);
+	$stmt_add->execute();
+
+	//remove all the staff from temp_staff table
+	$query_deleteTStaff = "delete from " .$TABLES['temp_staff'];// " where id = '$tempid'";
+	$stmt_remove = $conn_db_ntu->prepare($query_deleteTStaff);
+	$stmt_remove->execute();
+
+}
 $conn_db_ntu = null;
 
 //redirect set to true at the end to ensure everything has been executed successfully
 $redirect = true;
-
-
 
 function mergesort($count, $proj_info) {
 	$final_list = array();
@@ -337,7 +429,6 @@ function mergesort($count, $proj_info) {
 }
 
 function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList, $WORKLOAD_PER_PROJECT_EXAMINED, $WORKLOAD_TOTALPROJECTS) {
-
 	// Assignment Initialize
 	$String01 = "RUNNING RANDOM-RANDOM ALOGRITHM\n";
 	$constant = 4;
@@ -369,6 +460,7 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	$exemptS1 = "getExemption";
 	$exemptS2 = "getExemption2";
 	$getExemptions;
+
 	if (date("n") <= 12 && date("n") > 7)
 		$getExemptions = $exemptS1;
 	else
@@ -379,7 +471,8 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	foreach ($WorkingStaffList as $WorkingStaff) {
 		$indexcount++;
 //		if ($WorkingStaff->getWorkload() < $Target_Workload01) {
-//			// Staffs that are underload
+//
+// Staffs that are underload
 		// Staff with Proj preference
 		if (count($WorkingStaff->assignment_project) > 0) {
 			$AL_StaffWithPref_Project[$WorkingStaff->getID()] = $WorkingStaffList[$WorkingStaff->getID()];
@@ -451,16 +544,21 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 	}
 
 	// Preferred projects
+	//Check if staff has any preferred projects
 	foreach ($examinersList as $staff) {
 		if (count($staff->assignment_project) > 0)
+			//If got then put into $projExaminersList array
 			array_push($projExaminersList, $staff);
 	}
 
+	//Ensure $projExaminersList is not empty
 	while (count($projExaminersList) > 0) {
 		foreach ($projExaminersList as $staff) {
 
 			while (count($projExaminersList) != 0) {
+				//double check if staff has preferred projects
 				if (count($staff->assignment_project) == 0) {
+					//if don't have (==0) then remove from list
 					array_shift($projExaminersList);
 					break;
 				}
@@ -468,25 +566,35 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 				//print_r($randomProjectPreferenceKey);
 				$randomProjectPreferenceValue = $staff->assignment_project[$randomProjectPreferenceKey];
 				//echo $randomProjectPreferenceValue;
+
+				//Check if preferred project include in current project list
 				if (array_key_exists($randomProjectPreferenceValue, $WorkingProjectList)) {
+					//current project list is not assign to staff that is already assigned
 					if (!$WorkingProjectList[$randomProjectPreferenceValue]->isAssignedStaff()
 						&& $WorkingProjectList[$randomProjectPreferenceValue]->getStaff() != $staff->getID()
 //							&& $staff->getWorkload() < $Target_Workload01
 					) {
+						//assign current project list to staffID as workload assignment
 						$WorkingProjectList[$randomProjectPreferenceValue]->assignStaff($staff->getID(), "Workload Assignment");
+						//update the staff's new amount of workload and increment the project assigned to staff by 1
 						$Workload_New = $staff->getWorkload() + $WORKLOAD_PER_PROJECT_EXAMINED;
 						$staff->setWorkload($Workload_New);
 						$Total_ProjectAssigned++;
 						//print_r($staff->getID());
+						//remove all the value & key used for the ''current'' staff
 						unset($WorkingProjectList[$randomProjectPreferenceValue]);
 						unset($staff->assignment_project[$randomProjectPreferenceKey]);
+						//add staff into $unassignedList array
 						array_push($unassignedList, $staff);
+						//remove staff from $projExaminersList
 						array_shift($projExaminersList);
 						break;
 					}
 				} else {
+					//if current project list already assigned to staff then remove the key
 					unset($staff->assignment_project[$randomProjectPreferenceKey]);
 					if (count($staff->assignment_project) == 0){
+						//remove staff from $projExaminersList array
 						array_shift($projExaminersList);
 						break;
 					}
@@ -498,8 +606,11 @@ function Algorithm_Random($staffList, $examinableProjectList, $interestAreaList,
 
 
 	// Preferred areas & no preferences
+	// Interest area only
 	for ($i=0; $i<count($examinersList); $i++){
+		//reset() rewinds array's internal pointer to the first element and returns the value of the first array element.
 		if (current($examinersList) !== reset($unassignedList)){
+			//add examiners into newExaminersList
 			array_push($newExaminersList, current($examinersList));
 		}
 		else{array_shift($unassignedList);}

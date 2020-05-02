@@ -30,9 +30,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
     exit("Bad Request");
 }
 
+//initialize once
+if(!isset($_SESSION['researchInterest_pagination'])){
+    $_SESSION["researchInterest_pagination"] = '';
+}
+
+if(!isset($_SESSION['pre_filter_StaffID'])){
+    $_SESSION["pre_filter_StaffID"] = '';
+}
+
 $filter_Search 		= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+
+//reset pagination when staff ID filter changes
+if(isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID'])){
+    if($_SESSION["pre_filter_StaffID"] != $_POST["filter_StaffID"]){
+        $_SESSION["researchInterest_pagination"] = 0;
+    }
+}
+
 $filter_StaffID 	= "%". (isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID']) ?
-        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : '') ."%";
+        preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : '') ;//."%";
+$_pre_filter_StaffID = explode("%",$filter_StaffID);
+$_SESSION["pre_filter_StaffID"] = $_pre_filter_StaffID[1];
+
+$maxRow_researchInterest = 20;
+
+//next page
+if(isset($_POST["nextpage"])){
+    $_SESSION["researchInterest_pagination"]+=1;
+}
+
+//previous page
+if(isset($_POST["previouspage"])){
+    $_SESSION["researchInterest_pagination"]-=1;
+}
+
+//store page number
+$pageNum_researchInterest = (isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID'])) ?
+    $_SESSION["researchInterest_pagination"]: $_SESSION["researchInterest_pagination"];
+
+//ensure valid page number
+if($pageNum_researchInterest == ''){
+    $pageNum_researchInterest = 0;
+    $_SESSION["researchInterest_pagination"] = 0;
+}
+
+$startRow_researchInterest = $pageNum_researchInterest * $maxRow_researchInterest;
 
 $query_rsResearchInterest = "SELECT name, staff_id, GROUP_CONCAT(interest SEPARATOR '---') AS interests FROM " . $TABLES['research_interest'] .
     " LEFT JOIN " . $TABLES['staff'] .
@@ -81,7 +124,6 @@ try {
     asort($AL_Staff_Filter);
     $Total_RowCount 	= count($AL_Staff_Filter);
 
-
     $stmt_2 = $conn_db_ntu->prepare($query_totalRecords);
     $stmt_2->execute();
     $rs_totalRecords = $stmt_2->fetch();
@@ -91,13 +133,60 @@ catch (PDOException $e) {
     die($e->getMessage());
 }
 
-$conn_db_ntu = null;
+$total_pages = ceil($Total_RowCount/$maxRow_researchInterest) - 1;
+
+//limit record to 20 per page
+$query_limit_rsResearchInterest = sprintf("%s LIMIT %d,%d", $query_rsResearchInterest, $startRow_researchInterest, $maxRow_researchInterest);
+
+try {
+    $stmt_0 			= $conn_db_ntu->prepare($query_rsStaff);
+    $stmt_0->execute();
+    $DBData_rsStaff 	= $stmt_0->fetchAll(PDO::FETCH_ASSOC);
+    $AL_Staff			= array();
+    foreach ($DBData_rsStaff as $key => $value) {
+        $AL_Staff[$value["id"]] = $value["name"];
+    }
+    asort($AL_Staff);
+
+    $stmt_1 = $conn_db_ntu->prepare($query_limit_rsResearchInterest);
+    $stmt_1->bindParam(1, $filter_StaffID);
+    $stmt_1->bindParam(2, $filter_Search);
+    $stmt_1->bindParam(3, $filter_Search);
+    $stmt_1->bindParam(4, $filter_Search);
+    $stmt_1->execute();
+    $rsResearchInterest = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
+    $AL_Staff_Filter 		= array();
+    foreach ($rsResearchInterest as $key => $value) {
+        $AL_Staff_Filter[$value["staff_id"]] = $value;
+    }
+    asort($AL_Staff_Filter);
+    $Total_RowCount 	= count($AL_Staff_Filter);
+
+
+
+}catch (PDOException $e) {
+    die($e->getMessage());
+}
+
+$currentPage = $_SERVER ["PHP_SELF"];
+
+$queryString_rsStaff = "";
+$queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_rsStaff);
+
+
 ?>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Research Interests</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../typeahead.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+
     <style>
         #table_research td {white-space:pre-wrap; }
 
@@ -199,12 +288,35 @@ $conn_db_ntu = null;
                                     </select>
                                 </td>
                                 <td colspan="3" style="text-align:right;">
-                                    <input type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" />
+                                    <input id="searching" type="search" name="search" autocomplete="off" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. 'algorithms'or 'Althea'" />
                                     <input type="submit" value="Search" title="Search for a project" class="bt"/>
                                 </td>
                             </tr>
 
+                            <td colspan="6"  style="text-align:right">
+                                <!--pagination-->
+                                <br/>
+                                <?php if ($pageNum_researchInterest >0) { // Show if not first page ?>
+                                    <input type="submit" value="Previous" name="previouspage" class="bt"/>
+                                <?php }?>
+
+                                <?php if ($pageNum_researchInterest < $total_pages) { // Show if not last page ?>
+                                    <input type="submit" value="Next" name="nextpage" class="bt"/>
+                                <?php } // Show if not last page ?>
+                            </td>
+
                         </table>
+                        <div style="text-align:right;">
+                            <br/>
+                            <?php
+                            if($total_pages==-1)
+                            {
+                                echo "Page 0"." of " .($total_pages+1);
+                            }else {
+                                echo "Page ".($pageNum_researchInterest+1)." of " .($total_pages+1);
+                            }
+                            ?>
+                        </div>
                     </form>
 
 
@@ -242,6 +354,14 @@ $conn_db_ntu = null;
                         echo "</tr>";
                     }
 
+                    if (count($rsResearchInterest)==0)
+                    {
+                        echo "<tr class='text-center' >";
+                        echo "<td>" . "</td>";
+                        echo "<td  style='color:red; font-weight: bold'>" . "No Record" . "</td>";
+                        echo "<td>" .  "</td>";
+                    }
+
                     ?>
                 </table>
                 <br /><br />
@@ -256,6 +376,7 @@ $conn_db_ntu = null;
         </div>
     </div>
 </div>
+
 
 <!-- closing navigation div in nav.php -->
 </div>

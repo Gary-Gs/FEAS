@@ -34,19 +34,102 @@ $csrf = new CSRFProtection();
 
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
 
+//initialize once for pagination
+if(!isset($_SESSION['feedback_pagination'])){
+    $_SESSION['feedback_pagination'] = '';
+}
+
+if(!isset($_SESSION['pre_filter_Year'])){
+    $_SESSION["pre_filter_Year"] = '';
+}
+
+if(!isset($_SESSION['pre_filter_Sem'])){
+    $_SESSION["pre_filter_Sem"] = '';
+}
+
+if(!isset($_SESSION['pre_filter_Rating'])){
+    $_SESSION["pre_filter_Rating"] = '';
+}
+
+if(!isset($_SESSION['pre_filter_Type'])){
+    $_SESSION["pre_filter_Type"] = '';
+}
+
 // Set options for feedback type
 $feedback_Type = array("Bug", "Suggestion", "Others");
+
+
+//reset pagination when filter year changes
+if(isset($_POST['filter_Year']) && !empty($_POST['filter_Year'])){
+    if($_SESSION["pre_filter_Year"] != $_POST["filter_Year"]){
+        $_SESSION["feedback_pagination"] = 0;
+    }
+}
 
 // Retrieve feedback table based on these conditions
 $filter_Year 	= "%". (isset($_POST['filter_Year']) && !empty($_POST['filter_Year']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_Year']) : '') ."%";
+$pre_filter_Year = explode("%",$filter_Year);
+$_SESSION["pre_filter_Year"] =$pre_filter_Year[1];
+
+//reset pagination when filter sem changes
+if(isset($_POST['filter_Sem']) && !empty($_POST['filter_Sem'])){
+    if($_SESSION["pre_filter_Sem"] != $_POST["filter_Sem"]){
+        $_SESSION["feedback_pagination"] = 0;
+    }
+}
 $filter_Sem 	= "%". (isset($_POST['filter_Sem']) && !empty($_POST['filter_Sem']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_Sem']) : '') ."%";
+$pre_filter_Sem = explode("%", $filter_Sem);
+$_SESSION["pre_filter_Sem"] =$pre_filter_Sem[1];
+
+//reset pagination when filter rating changes
+if(isset($_POST['filter_Rating']) && !empty($_POST['filter_Rating'])){
+    if($_SESSION["pre_filter_Rating"] != $_POST["filter_Rating"]){
+        $_SESSION["feedback_pagination"] = 0;
+    }
+}
 $filter_Rating 	= "%". (isset($_POST['filter_Rating']) && !empty($_POST['filter_Rating']) ?
         preg_replace('/[^0-9]/','',$_POST['filter_Rating']) : '') ."%";
+$pre_filter_Rating = explode("%", $filter_Rating);
+$_SESSION["pre_filter_Rating"] =$pre_filter_Rating[1];
+
+//reset pagination when filter type changes
+if(isset($_POST['filter_Type']) && !empty($_POST['filter_Type'])){
+    if($_SESSION["pre_filter_Type"] != $_POST["filter_Type"]){
+        $_SESSION["feedback_pagination"] = 0;
+    }
+}
 $filter_Type  	= "%". (isset($_POST['filter_Type']) && !empty($_POST['filter_Type']) ? $_POST['filter_Type'] : '') ."%";
+$pre_filter_Type = explode("%", $filter_Type);
+$_SESSION["pre_filter_Type"] =$pre_filter_Type[1];
+
 $filter_StaffID 	= "%". (isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID']) ?
         preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_StaffID']) : '') ."%";
+
+$maxRow_feedback = 20;
+
+//next page
+if(isset($_POST["nextpage"])) {
+    $_SESSION["feedback_pagination"]+=1;
+}
+
+//previous page
+if(isset($_POST["nextpage"])) {
+    $_SESSION["feedback_pagination"]-=1;
+}
+
+//store page number
+$pageNum_feedback = (isset($_POST['filter_Year']) && !empty($_POST['filter_Year'])) ?
+    $_SESSION['feedback_pagination']: $_SESSION['feedback_pagination'];
+
+//ensure valid page number
+if ($pageNum_feedback == ''){
+    $pageNum_feedback= 0;
+    $_SESSION["feedback_pagination"];
+}
+
+$startRow_feedback = $pageNum_feedback * $maxRow_feedback ;
 
 $query_rsFeedback = "SELECT * FROM " . $TABLES['fea_feedback'] . " as p1 LEFT JOIN " . $TABLES['staff'] . " as p2 ON p1.staff_id = p2.id ".
     "WHERE p1.exam_year LIKE ? AND p1.exam_sem LIKE ? AND p1.rating LIKE ? AND p1.type LIKE ? AND p1.staff_id LIKE ?";
@@ -72,10 +155,47 @@ try {
     $stmt_1->bindParam(5, $filter_StaffID); //Search staff name
     $stmt_1->execute();
     $rsfeedback = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
+    $TotalRowCount = count($rsfeedback);
 }
 catch (PDOException $e) {
     die($e->getMessage());
 }
+
+$total_pages = ceil($TotalRowCount/$maxRow_feedback) - 1;
+
+//limit record to 20 per page
+$query_limit_feedback = sprintf("%s LIMIT %d,%d", $query_rsFeedback, $startRow_feedback, $maxRow_feedback);
+
+try {
+    // Populate staff name in drop down list
+    $stmt_0 = $conn_db_ntu->prepare($query_rsStaff);
+    $stmt_0->execute();
+    $DBData_rsStaff 	= $stmt_0->fetchAll(PDO::FETCH_ASSOC);
+    $AL_Staff			= array();
+    foreach ($DBData_rsStaff as $key => $value) {
+        $AL_Staff[$value["id"]] = $value["name"];
+    }
+    asort($AL_Staff);
+
+    // Retrieve Feedback
+    $stmt_1 = $conn_db_ntu->prepare($query_limit_feedback);
+    $stmt_1->bindParam(1, $filter_Year); //Search project year
+    $stmt_1->bindParam(2, $filter_Sem); //Search project sem
+    $stmt_1->bindParam(3, $filter_Rating); //Search feedback rating
+    $stmt_1->bindParam(4, $filter_Type); //Search feedback type
+    $stmt_1->bindParam(5, $filter_StaffID); //Search staff name
+    $stmt_1->execute();
+    $rsfeedback = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
+    $TotalRowCount = count($rsfeedback);
+}
+catch (PDOException $e) {
+    die($e->getMessage());
+}
+
+$currentPage = $_SERVER["PHP_SELF"];
+
+$queryString_rsStaff = "";
+$queryString_rsStaff = sprintf("&totalRows=%d%s", $TotalRowCount, $queryString_rsStaff);
 
 ?>
 
@@ -259,11 +379,35 @@ catch (PDOException $e) {
                                 <input type="search" id="filter_Search" name="search" value="<!--?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" />
                                 <input type="submit" value="Search" title="Search for a project" class="bt"/>
                             </td-->
+
                             <td colspan="2" style="text-align:right;">
                                 <a href="submit_download_feedback.php" class="btn bg-dark text-white" style="font-size:12px;" title="Download Feedback">Download Feedback</a>
                             </td>
+                            <td colspan="2"  style="text-align:right">
+                                <!--pagination-->
+                                <br/>
+                                <?php if ($pageNum_feedback >0) { // Show if not first page ?>
+                                    <input type="submit" value="Previous" name="previouspage" class="bt"/>
+                                <?php }?>
+
+                                <?php if ($pageNum_feedback < $total_pages) { // Show if not last page ?>
+                                    <input type="submit" value="Next" name="nextpage" class="bt"/>
+                                <?php } // Show if not last page ?>
+                            </td>
                         </tr>
                     </table>
+
+                </div>
+                <div style="text-align:right;">
+                    <br/>
+                    <?php
+                    if($total_pages==-1)
+                    {
+                        echo "Page 0"." of " .($total_pages+1);
+                    }else {
+                        echo "Page ".($pageNum_feedback+1)." of " .($total_pages+1);
+                    }
+                    ?>
                 </div>
                 <?php $csrf->echoInputField();?>
             </form>
@@ -311,6 +455,20 @@ catch (PDOException $e) {
                         echo "<td>" . $row_rsfeedback['rating'] . "</td>";
                         echo "<td>" . $row_rsfeedback['type'] . "</td>";
                         echo "<td>" . $row_rsfeedback['comment'] . "</td>";
+                        echo "</tr>";
+                    }
+
+                    if(count($rsfeedback)==0)
+                    {
+                        echo "<tr class='text-center'>";
+                        echo "<td>" . "</td>";
+                        echo "<td>" . "</td>";
+                        echo "<td>" . "</td>";
+                        echo "<td>" . "</td>";
+                        echo "<td style='color:red; font-weight: bold'>" . "No Record" . "</td>";
+                        echo "<td>" . "</td>";
+                        echo "<td>" . "</td>";
+                        echo "<td>" . "</td>";
                         echo "</tr>";
                     }
                     ?>

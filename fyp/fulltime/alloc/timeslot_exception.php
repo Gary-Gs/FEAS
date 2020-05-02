@@ -1,289 +1,291 @@
 <?php require_once('../../../Connections/db_ntu.php');
-	  require_once('../../../CSRFProtection.php');
-	  require_once('./entity.php');
-	  require_once('../../../Utility.php');
-	  require_once('../../../restriction.php'); ?>
+require_once('../../../CSRFProtection.php');
+require_once('./entity.php');
+require_once('../../../Utility.php');
+require_once('../../../restriction.php'); ?>
 <?php
-	$csrf = new CSRFProtection();
+$csrf = new CSRFProtection();
+
+$_REQUEST['csrf'] = $csrf->cfmRequest();
+
+$MIN_ENTRIES		= 10;
+
+$query_rsExceptions	  = "SELECT * FROM ".$TABLES['fea_settings_availability']." as a";
+$query_rsStaff	  	  = "SELECT s.id as staffid, s.name as staffname, s.position as salutation FROM ".$TABLES['staff']." as s ORDER BY staffname ASC";
 
 
-	$_REQUEST['csrf'] = $csrf->cfmRequest();
+try
+{
+    $staffs			= $conn_db_ntu->query($query_rsStaff);
+    $exceptions		= $conn_db_ntu->query($query_rsExceptions)->fetchAll();
+}
+catch (PDOException $e)
+{
+    die($e->getMessage());
+}
 
-	$MIN_ENTRIES		= 10;
+$NO_OF_DAYS = 3;
 
-	$query_rsExceptions	  = "SELECT * FROM ".$TABLES['fea_settings_availability']." as a";
-	$query_rsStaff	  	  = "SELECT s.id as staffid, s.name as staffname, s.position as salutation FROM ".$TABLES['staff']." as s ORDER BY staffname ASC";
+$exceptionCount	= max(count($exceptions), $MIN_ENTRIES)+1;
 
+//Staff
+$staffList = array();
+foreach($staffs as $staff) {
+    $staffList[ $staff['staffid'] ] = new Staff($staff['staffid'],
+        $staff['salutation'],
+        $staff['staffname']);
+}
 
-	try
-	{
-		$staffs			= $conn_db_ntu->query($query_rsStaff);
-		$exceptions		= $conn_db_ntu->query($query_rsExceptions)->fetchAll();
-	}
-	catch (PDOException $e)
-	{
-		die($e->getMessage());
-	}
+function generateTimeSelect($id, $start, $end, $interval, $selected)
+{
+    $start_time 	= DateTime::createFromFormat('H:i:s', $start);
+    $end_time		= DateTime::createFromFormat('H:i:s', $end);
+    $time_interval	= new DateInterval('PT'.$interval.'M');
 
-	$NO_OF_DAYS = 3;
+    echo '<select id="'.$id.'" name="'.$id.'">';
+    echo '<option value=""></option>';
+    for ($curTime=$start_time; $curTime <= $end_time; $curTime->add($time_interval))
+    {
+        $isSelected = ($curTime == $selected) ? "selected" : "";
+        echo '<option value="'.$curTime->format('H:i:s').'"'.$isSelected.'>'.$curTime->format('H:i').'</option>';
+    }
+    echo '</select>';
+}
 
-	$exceptionCount	= max(count($exceptions), $MIN_ENTRIES)+1;
+function generateStaffSelect($id, $selected)
+{
+    global $staffList;
+    echo '<select id="'.$id.'" name="'.$id.'">';
+    echo '<option value=""></option>';
 
-	//Staff
-	$staffList = array();
-	foreach($staffs as $staff) {
-		$staffList[ $staff['staffid'] ] = new Staff($staff['staffid'],
-													$staff['salutation'],
-													$staff['staffname']);
-	}
+    if ($selected == "*")
+        echo '<option value="*" selected>*</option>';
+    else
+        echo '<option value="*">*</option>';
 
-	function generateTimeSelect($id, $start, $end, $interval, $selected)
-	{
-		$start_time 	= DateTime::createFromFormat('H:i:s', $start);
-		$end_time		= DateTime::createFromFormat('H:i:s', $end);
-		$time_interval	= new DateInterval('PT'.$interval.'M');
+    foreach ($staffList as $staff)
+    {
+        $isSelected = ($staff->getID() == $selected) ? "selected" : "";
+        echo '<option value="'.$staff->getID().'"'.$isSelected.'>'.$staff->toString().'</option>';
+    }
+    echo '</select>';
+}
 
-		echo '<select id="'.$id.'" name="'.$id.'">';
-		echo '<option value=""></option>';
-		for ($curTime=$start_time; $curTime <= $end_time; $curTime->add($time_interval))
-		{
-			$isSelected = ($curTime == $selected) ? "selected" : "";
-			echo '<option value="'.$curTime->format('H:i:s').'"'.$isSelected.'>'.$curTime->format('H:i').'</option>';
-		}
-		echo '</select>';
-	}
+function generateDaySelect($id, $selected)
+{
+    global $NO_OF_DAYS;
+    echo '<select id="'.$id.'" name="'.$id.'">';
+    echo '<option value=""></option>';
 
-	function generateStaffSelect($id, $selected)
-	{
-		global $staffList;
-		echo '<select id="'.$id.'" name="'.$id.'">';
-		echo '<option value=""></option>';
+    if ($selected == "*")
+        echo '<option value="*" selected>*</option>';
+    else
+        echo '<option value="*">*</option>';
 
-		if ($selected == "*")
-			echo '<option value="*" selected>*</option>';
-		else
-			echo '<option value="*">*</option>';
+    for ($i=1; $i<=$NO_OF_DAYS; $i++)
+    {
+        $isSelected = ($i == $selected) ? "selected" : "";
+        echo '<option value="'.$i.'"'.$isSelected.'>'.$i.'</option>';
+    }
+    echo '</select>';
+}
 
-		foreach ($staffList as $staff)
-		{
-			$isSelected = ($staff->getID() == $selected) ? "selected" : "";
-			echo '<option value="'.$staff->getID().'"'.$isSelected.'>'.$staff->toString().'</option>';
-		}
-		echo '</select>';
-	}
+function initEntries()
+{
+    global $exceptions, $MIN_ENTRIES;
 
-	function generateDaySelect($id, $selected)
-	{
-		global $NO_OF_DAYS;
-		echo '<select id="'.$id.'" name="'.$id.'">';
-		echo '<option value=""></option>';
+    $exceptionCount = 1;
+    foreach($exceptions as $exception)
+    {
+        echo '<tr>';
 
-		if ($selected == "*")
-			echo '<option value="*" selected>*</option>';
-		else
-			echo '<option value="*">*</option>';
+        //Staff
+        echo '<td class="exception_td">';
+        generateStaffSelect('staff_'.$exceptionCount, $exception['staff_id']);
+        echo '</td>';
 
-		for ($i=1; $i<=$NO_OF_DAYS; $i++)
-		{
-			$isSelected = ($i == $selected) ? "selected" : "";
-			echo '<option value="'.$i.'"'.$isSelected.'>'.$i.'</option>';
-		}
-		echo '</select>';
-	}
+        //Day
+        echo '<td class="exception_td">';
+        generateDaySelect('day_'.$exceptionCount, $exception['day']);
+        echo '</td>';
 
-	function initEntries()
-	{
-		global $exceptions, $MIN_ENTRIES;
+        //Start Time
+        echo '<td class="exception_td">';
+        $startTime = DateTime::createFromFormat('H:i:s', $exception['time_start']);
+        generateTimeSelect('timestart_'.$exceptionCount, '08:30:00', '17:30:00', '30', $startTime);
+        echo '</td>';
 
-		$exceptionCount = 1;
-		foreach($exceptions as $exception)
-		{
-			echo '<tr>';
+        //End Time
+        echo '<td class="exception_td">';
+        $endTime = DateTime::createFromFormat('H:i:s', $exception['time_end']);
+        generateTimeSelect('timeend_'.$exceptionCount, '08:30:00', '17:30:00', '30', $endTime);
+        echo '</td>';
 
-				//Staff
-				echo '<td class="exception_td">';
-					generateStaffSelect('staff_'.$exceptionCount, $exception['staff_id']);
-				echo '</td>';
+        echo '</tr>';
 
-				//Day
-				echo '<td class="exception_td">';
-					generateDaySelect('day_'.$exceptionCount, $exception['day']);
-				echo '</td>';
+        $exceptionCount++;
+    }
 
-				//Start Time
-				echo '<td class="exception_td">';
-					$startTime = DateTime::createFromFormat('H:i:s', $exception['time_start']);
-					generateTimeSelect('timestart_'.$exceptionCount, '08:30:00', '17:30:00', '30', $startTime);
-				echo '</td>';
+    //Fill Gaps
+    while ($exceptionCount<=$MIN_ENTRIES)
+    {
+        echo '<tr>';
 
-				//End Time
-				echo '<td class="exception_td">';
-					$endTime = DateTime::createFromFormat('H:i:s', $exception['time_end']);
-					generateTimeSelect('timeend_'.$exceptionCount, '08:30:00', '17:30:00', '30', $endTime);
-				echo '</td>';
+        //Staff
+        echo '<td class="exception_td">';
+        generateStaffSelect('staff_'.$exceptionCount, NULL);
+        echo '</td>';
 
-			echo '</tr>';
+        //Day
+        echo '<td class="exception_td">';
+        generateDaySelect('day_'.$exceptionCount, NULL);
+        echo '</td>';
 
-			$exceptionCount++;
-		}
+        //Start Time
+        echo '<td class="exception_td">';
+        generateTimeSelect('timestart_'.$exceptionCount, '08:30:00', '17:30:00', '30', NULL);
+        echo '</td>';
 
-		//Fill Gaps
-		while ($exceptionCount<=$MIN_ENTRIES)
-		{
-			echo '<tr>';
+        //End Time
+        echo '<td class="exception_td">';
+        generateTimeSelect('timeend_'.$exceptionCount, '08:30:00', '17:30:00', '30', NULL);
+        echo '</td>';
 
-			//Staff
-			echo '<td class="exception_td">';
-				generateStaffSelect('staff_'.$exceptionCount, NULL);
-			echo '</td>';
+        echo '</tr>';
 
-			//Day
-			echo '<td class="exception_td">';
-				generateDaySelect('day_'.$exceptionCount, NULL);
-			echo '</td>';
+        $exceptionCount++;
+    }
+}
 
-			//Start Time
-			echo '<td class="exception_td">';
-				generateTimeSelect('timestart_'.$exceptionCount, '08:30:00', '17:30:00', '30', NULL);
-			echo '</td>';
-
-			//End Time
-			echo '<td class="exception_td">';
-				generateTimeSelect('timeend_'.$exceptionCount, '08:30:00', '17:30:00', '30', NULL);
-			echo '</td>';
-
-			echo '</tr>';
-
-			$exceptionCount++;
-		}
-	}
-
-	$conn_db_ntu = null;
+$conn_db_ntu = null;
 ?>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>TimeSlot Exceptions</title>
+    <title>TimeSlot Exceptions</title>
 
-	<style>
-		.exception_td
-		{
-			padding:5px;
-		}
-	</style>
+    <style>
+        .exception_td
+        {
+            padding:5px;
+        }
+    </style>
 
-	<script type="text/javascript">
-		var exceptionCount;
+    <script type="text/javascript">
+        var exceptionCount;
 
-		$(document).ready(function(){
-			exceptionCount = <?php echo $exceptionCount; ?>;
-		});
+        $(document).ready(function(){
+            exceptionCount = <?php echo $exceptionCount; ?>;
+        });
 
-		function addException(val)
-		{
-			var table = document.getElementById("exception_table");
+        function addException(val)
+        {
+            var table = document.getElementById("exception_table");
 
-			for(var i=0;i<val;i++)
-			{
-				var row = table.insertRow(table.rows.length-1);
-				var staff = row.insertCell(0);
-				var day = row.insertCell(1);
-				var starttime = row.insertCell(2);
-				var endtime = row.insertCell(3);
+            for(var i=0;i<val;i++)
+            {
+                var row = table.insertRow(table.rows.length-1);
+                var staff = row.insertCell(0);
+                var day = row.insertCell(1);
+                var starttime = row.insertCell(2);
+                var endtime = row.insertCell(3);
 
-				staff.innerHTML = '<?php generateStaffSelect('new_staff', NULL); ?>';
-				staff.className = 'exception_td';
-				document.getElementById("new_staff").name = 'staff_' + exceptionCount;
-				document.getElementById("new_staff").id = 'staff_' + exceptionCount;
+                staff.innerHTML = '<?php generateStaffSelect('new_staff', NULL); ?>';
+                staff.className = 'exception_td';
+                document.getElementById("new_staff").name = 'staff_' + exceptionCount;
+                document.getElementById("new_staff").id = 'staff_' + exceptionCount;
 
-				day.innerHTML = '<?php generateDaySelect('new_day', NULL); ?>';
-				day.className = 'exception_td';
-				document.getElementById("new_day").name = 'day_' + exceptionCount;
-				document.getElementById("new_day").id = 'day_' + exceptionCount;
+                day.innerHTML = '<?php generateDaySelect('new_day', NULL); ?>';
+                day.className = 'exception_td';
+                document.getElementById("new_day").name = 'day_' + exceptionCount;
+                document.getElementById("new_day").id = 'day_' + exceptionCount;
 
-				starttime.innerHTML = '<?php generateTimeSelect('new_start', '08:30:00', '17:30:00', '30', NULL); ?>';
-				starttime.className = 'exception_td';
-				document.getElementById("new_start").name = 'timestart_' + exceptionCount;
-				document.getElementById("new_start").id = 'timestart_' + exceptionCount;
+                starttime.innerHTML = '<?php generateTimeSelect('new_start', '08:30:00', '17:30:00', '30', NULL); ?>';
+                starttime.className = 'exception_td';
+                document.getElementById("new_start").name = 'timestart_' + exceptionCount;
+                document.getElementById("new_start").id = 'timestart_' + exceptionCount;
 
-				endtime.innerHTML = '<?php generateTimeSelect('new_end', '08:30:00', '17:30:00', '30', NULL); ?>';
-				endtime.className = 'exception_td';
-				document.getElementById("new_end").name = 'timeend_' + exceptionCount;
-				document.getElementById("new_end").id = 'timeend_' + exceptionCount;
+                endtime.innerHTML = '<?php generateTimeSelect('new_end', '08:30:00', '17:30:00', '30', NULL); ?>';
+                endtime.className = 'exception_td';
+                document.getElementById("new_end").name = 'timeend_' + exceptionCount;
+                document.getElementById("new_end").id = 'timeend_' + exceptionCount;
 
-				exceptionCount++;
-			}
-		}
-	</script>
+                exceptionCount++;
+            }
+        }
+    </script>
 </head>
 
 <body>
-   <?php require_once('../../../php_css/headerwnav.php');?>
+<?php require_once('../../../php_css/headerwnav.php');?>
 
-	<div style="margin-left: -15px;">
-		<div class="container-fluid">
-			<?php require_once('../../nav.php'); ?>
-				<div class="container-fluid">
-					<h3>Timeslot Exception for Full Time Projects</h3>
-					<?php
-						if(isset($_SESSION['savete_msg'])) {
-							echo "<p class='success'> Timeslot exception settings saved.</p>";
-							unset($_SESSION['savete_msg']);
-						}
+<div style="margin-left: -15px;">
+    <div class="container-fluid">
+        <?php require_once('../../nav.php'); ?>
+        <div class="container-fluid">
+            <h3>Timeslot Exception for Full Time Projects</h3>
+            <?php
+            if(isset($_SESSION['savete_msg'])) {
+                echo "<p class='success'> Timeslot exception settings saved.</p>";
+                unset($_SESSION['savete_msg']);
+            }
             if(isset($_SESSION['clear'])) {
-							echo "<p class='warn'> Timeslot exceptions changes cleared.</p>";
-							unset($_SESSION['clear']);
-						}
-						if(isset($_REQUEST['call']))
-							echo "<p class='warn'> All timeslot exceptions cleared.</p>";
-						 if (isset($_REQUEST['validate']) || isset($_REQUEST['csrf']))
-							    echo "<p class='warn'> CSRF validation failed.</p>";
-					?>
+                echo "<p class='warn'>All timeslot exceptions cleared.</p>";
+                unset($_SESSION['clear']);
+            }
 
-					<form action="submit_savete.php" method="post">
-						<?php $csrf->echoInputField();?>
-						<div class="table-responsive">
-							<table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
-								<col width="40%" />
-								<col width="20%" />
-								<col width="20%" />
-								<col width="20%" />
+            if(isset($_REQUEST['call'])) {
+                echo "<p class='warn'> All timeslot exceptions cleared.</p>";
+            }
 
-								<tr class="bg-dark text-white text-center" >
-									<td>Staff Name</td>
-									<td>Day</td>
-									<td>Start Time</td>
-									<td>End Time</td>
-								</tr>
-								<?php initEntries(); ?>
+            if (isset($_REQUEST['validate']) || isset($_REQUEST['csrf']))
+                echo "<p class='warn'> CSRF validation failed.</p>";
+            ?>
 
-								<tr>
-									<td class="exception_td"></td>
-									<td class="exception_td"></td>
-									<td class="exception_td"></td>
-									<td class="exception_td"><a onclick="javascript:addException(5);" class="bt" title="Add more exception"/>Add Exception</a></td>
-								</tr>
-							</table>
-						</div>
-						<div style="float:right; padding-top:25px;">
+            <form action="submit_savete.php" method="post">
+                <?php $csrf->echoInputField();?>
+                <div class="table-responsive">
+                    <table id="exception_table" border="1" cellpadding="0" cellspacing="0" width="100%">
+                        <col width="40%" />
+                        <col width="20%" />
+                        <col width="20%" />
+                        <col width="20%" />
 
-						<input type="submit" name="clear" title="Clear changes" value="Clear Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
-						<input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
+                        <tr class="bg-dark text-white text-center" >
+                            <td>Staff Name</td>
+                            <td>Day</td>
+                            <td>Start Time</td>
+                            <td>End Time</td>
+                        </tr>
+                        <?php initEntries(); ?>
 
-						</div>
-					</form>
-					<?php ?>
-				</div>
-			<!-- closing navigation div in nav.php -->
-	        </div>
-	    </div>
-	</div>
-	<?php require_once('../../../footer.php'); ?>
+                        <tr>
+                            <td class="exception_td"></td>
+                            <td class="exception_td"></td>
+                            <td class="exception_td"></td>
+                            <td class="exception_td"><a onclick="javascript:addException(5);" class="bt" title="Add more exception"/>Add Exception</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="float:right; padding-top:25px;">
+
+                    <input type="submit" name="clear" title="Clear All" value="Clear All" class="btn bg-dark text-white" style="font-size:12px !important;"/>
+                    <input type="submit" title="Save all changes" value="Save Changes" class="btn bg-dark text-white" style="font-size:12px !important;"/>
+
+                </div>
+            </form>
+            <?php ?>
+        </div>
+        <!-- closing navigation div in nav.php -->
+    </div>
+</div>
+</div>
+<?php require_once('../../../footer.php'); ?>
 </body>
 </html>
 
 <?php
-	unset($settings);
-	unset($rooms);
+unset($settings);
+unset($rooms);
 ?>

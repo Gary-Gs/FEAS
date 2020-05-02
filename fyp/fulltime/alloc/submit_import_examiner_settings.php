@@ -1,7 +1,7 @@
 <?php
 require_once('../../../Connections/db_ntu.php');
 require_once('../../../CSRFProtection.php');
-//require_once ('../../../PHPExcel/IOFactory.php'); 
+//require_once ('../../../PHPExcel/IOFactory.php');
 require_once('../../../vendor/autoload.php');
 
 ini_set('max_execution_time', 600);
@@ -352,7 +352,7 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
         $RowCount = 0;
         $RowCount_Updated = 0;
         $RowCount_Created = 0;
-
+        $specialNameCount = 0;
 
         $projects = 0;
         $base = 0;
@@ -398,13 +398,45 @@ function HandleExcelData_Exemption($error_code, $ExaminerFile_FullPath, $Exempti
             if (isset($EXCEL_AllData[$RowIndex]["B"]) && !empty($EXCEL_AllData[$RowIndex]["B"])) {
                 $EXCEL_StaffName = trim($EXCEL_AllData[$RowIndex]["B"]);
 
+                //name splitting
+                $splitname = explode(" ",$EXCEL_StaffName);
+                //remove additional commas
+                for($index = 0; $index<sizeof($splitname); $index++){
+                    if (strpos($splitname[$index],',') !== false) {
+                        //str_replace( ',', '', $splitname[$index]);
+                        //echo "<script>console.log( 'Debug0->: " . $splitname[$index] . "' );</script>";
+                        $splitname[$index] = str_replace(',', '', $splitname[$index]);
+                        //echo "<script>console.log( 'Debug->: " . $splitname[$index] . "' );</script>";
 
-                // Check if the staff in excel list is in staff table
-                $Stmt = sprintf("SELECT * FROM  %s WHERE examine=1 AND (name = '%s' OR name2 ='%s')", $TABLES["staff"], $EXCEL_StaffName, $EXCEL_StaffName);
+                    }
+
+                }
+
+                //special treatment for Eg: A B Adam
+                for($index = 0; $index<sizeof($splitname); $index++){
+
+                    if(strlen($splitname[$index]) == 1){
+                        $specialNameCount++;
+                    }
+                }
+
+                // Check if the staff in exemption excel list is in staff table
+                // get staff details if the name1 or name2 is the same as the name in exemption file
+                //for surname + name, length = 2 Eg: Tang Xueyan
+                if(sizeof($splitname) == 2){
+                    $Stmt = sprintf("SELECT * FROM  %s WHERE examine=1 AND ((name LIKE '%s%%' AND name LIKE '%%%s%%') OR (name2 LIKE '%s%%' AND name2 LIKE '%%%s%%') OR (name LIKE '%s%%' AND name LIKE '%%%s%%') OR (name2 LIKE '%s%%' AND name2 LIKE '%%%s%%'))",
+                        $TABLES["staff"],$splitname[0], $splitname[1],$splitname[0], $splitname[1],$splitname[1], $splitname[0],$splitname[1], $splitname[0]);
+                }else if($specialNameCount < 2){ // for those name that have 1 or no single character
+                    $Stmt = sprintf("SELECT * FROM  %s WHERE examine=1 AND ((name LIKE '%%%s%%' AND name LIKE '%%%s%%' AND name LIKE '%%%s%%') OR (name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%') OR (name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%') OR (name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%') OR (name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%') OR (name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%')) ", $TABLES["staff"],$splitname[0], $splitname[1],$splitname[2],$splitname[0], $splitname[1],$splitname[0],  $splitname[2],$splitname[0], $splitname[1],$splitname[2],$splitname[0], $splitname[1],$splitname[0],$splitname[2]);
+                }else{
+                    $Stmt = sprintf("SELECT * FROM  %s WHERE examine=1 AND (name LIKE '%%%s%%' AND name LIKE '%%%s%%' AND name LIKE '%%%s%%'  OR (name2 LIKE '%s%%' AND name2 LIKE '%%%s%%' AND name2 LIKE '%%%s%%'))", $TABLES["staff"],$splitname[0], $splitname[1],$splitname[2],  $splitname[0], $splitname[1],$splitname[2]);
+                }
+
                 $DBOBJ_Result = $conn_db_ntu->prepare($Stmt);
                 $DBOBJ_Result->execute();
                 $Data = $DBOBJ_Result->fetch(PDO::FETCH_ASSOC);
-
+                //reset count for new name
+                $specialNameCount = 0;
                 if (isset($Data['id']) && !empty($Data['id'])) {
 
                     if ($sem == 2) {
