@@ -69,8 +69,12 @@ if(!isset($_SESSION['pre_filter_StaffID'])){
     $_SESSION["pre_filter_StaffID"] = '';
 }
 
+if(!isset($_SESSION['pre_search'])){
+    $_SESSION["pre_search"] = '';
+}
+
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
-$filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+
 //reset pagination when staff ID filter changes
 if(isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID'])){
     if($_SESSION["pre_filter_StaffID"] != $_REQUEST["filter_StaffID"]){
@@ -81,6 +85,16 @@ if(isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID'])){
 $filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : ''); //."%";
 $_pre_filter_StaffID = explode("%",$filter_StaffID);
 $_SESSION["pre_filter_StaffID"] = $_pre_filter_StaffID[1];
+
+//reset pagination when search button is clicked
+if(isset($_POST['click'])) {
+    if($_SESSION["pre_search"] != $_REQUEST["search"]){
+        $_SESSION["faculty_pagination"] = 0;
+    }
+}
+
+$filter_Search = "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+$_SESSION["pre_search"] = explode("%",$filter_Search)[1];
 
 $maxRow_faculty = 20;
 
@@ -378,7 +392,7 @@ catch (PDOException $e)
                             </td>
                             <td colspan="3" style="text-align:right;">
                                 <input id="search" type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. Arijit Khan" />
-                                <input type="submit" value="Search" title="Search for a project" class="bt"/>
+                                <input type="submit" value="Search" title="Search for a project" name="click" class="bt"/>
                             </td>
                         </tr>
 

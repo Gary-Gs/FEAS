@@ -96,7 +96,7 @@ $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST
 $pre_filter_Supervisor = explode("%",$filter_Supervisor);
 $_SESSION["pre_filter_Supervisor"] = $pre_filter_Supervisor[1];
 
-//reset pagination when search buton is clicked
+//reset pagination when search button is clicked
 if(isset($_POST['click'])) {
     if($_SESSION["pre_search"] != $_POST["search"]){
         $_SESSION["project_pagination"] = 0;
