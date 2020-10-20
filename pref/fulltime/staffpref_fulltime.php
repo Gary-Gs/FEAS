@@ -730,7 +730,7 @@
 	 }*/
 
 
-
+	 /*
 	 var submitted = false;
 
 	 $(document).ready(function() {
@@ -744,6 +744,7 @@
 	     }
 	   }
 	 });
+	 */
 
 	</script>
 </head>
