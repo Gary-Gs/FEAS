@@ -104,7 +104,7 @@ if(isset($_POST['click'])) {
 }
 
 $cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
-    preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
+    preg_replace(['/\s+/', '[^a-zA-Z0-9\s\-()]'], ['', ''], $_POST['search']) : '';
 $filter_Search 			= "%". $cleanedSearch . "%";
 $_SESSION["pre_search"] = explode("%",$filter_Search)[1];
 
