@@ -121,8 +121,8 @@ if($pageNum_faculty == ''){
 $startRow_faculty = $pageNum_faculty * $maxRow_faculty;
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
-$query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ?)";
-$query_rsProjPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0 ORDER BY sp.staff_id ASC";
+$query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ?) ORDER BY s.name ASC";
+$query_rsProjPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0";
 $query_rsAreaPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key AND archive=0";
 try
 {
@@ -147,7 +147,7 @@ try
     foreach ($DBData_rsStaff_Filter as $key => $value) {
         $AL_Staff_Filter[$value["id"]] = $value;
     }
-    asort($AL_Staff_Filter);
+
     $Total_RowCount 	= count($AL_Staff_Filter);
 
     // GET STAFF PROJECT PREF
@@ -171,8 +171,6 @@ $total_pages = ceil($Total_RowCount/$maxRow_faculty) - 1;
 
 //limit record to 20 per page
 $query__limit_rsStaff_Filter = sprintf("%s LIMIT %d,%d", $query_rsStaff_Filter, $startRow_faculty, $maxRow_faculty);
-$query_limit_rsProjPref = sprintf("%s LIMIT %d,%d", $query_rsProjPref, $startRow_faculty, $maxRow_faculty);
-$query_limit_rsAreaPref = sprintf("%s LIMIT %d,%d", $query_rsAreaPref, $startRow_faculty, $maxRow_faculty);
 
 try
 {
@@ -197,19 +195,8 @@ try
     foreach ($DBData_rsStaff_Filter as $key => $value) {
         $AL_Staff_Filter[$value["id"]] = $value;
     }
-    asort($AL_Staff_Filter);
+    
     $Total_RowCount 	= count($AL_Staff_Filter);
-
-    // GET STAFF PROJECT PREF
-    $stmt_2 			= $conn_db_ntu->prepare($query_limit_rsProjPref);
-    $stmt_2->execute();
-    $DBData_rsProjPref   = $stmt_2->fetchAll(PDO::FETCH_ASSOC);
-
-    // GET STAFF AREA PREF
-    $stmt_3 			= $conn_db_ntu->prepare($query_limit_rsAreaPref);
-    $stmt_3->execute();
-    $DBData_rsAreaPref   = $stmt_3->fetchAll(PDO::FETCH_ASSOC);
-
 
 }
 catch (PDOException $e)
