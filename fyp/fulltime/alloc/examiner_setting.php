@@ -561,6 +561,29 @@ $conn_db_ntu = null;
                         </tr>
                         <tr>
 
+
+                          <?php
+                          /*
+                          Wee Teck Zong [12.06.2020]
+                          - Check current month of the year and checked if filtered sem has been set through dropdownlist
+                          **If you don't check if it's set through Dropdownlist, the sem will keep stuck at current month's semester since everytime you filter the dropdownlist this code will be runned**
+                          - If not set through dropdownlist, auto set it to sem 1 if current month is Jan-Jul and sem 2 if current month is Aug - Dec
+                          - */
+                          $date = date("M");
+                          if(!isset($_REQUEST["filter_Sem"]) )
+                          {
+                            if($date == "Jan" || $date == "Feb" || $date =="Mar" ||$date == "Apr" || $date =="May" ||$date == "Jun" ||$date == "Jul")
+                            {
+
+                                $_SESSION["semester"] = 1;
+                            }else if( $date == "Aug" || $date == "Sep" || $date == "Oct"  || $date == "Nov" || $date == "Dec" )
+                            {
+
+                                $_SESSION["semester"]= 2;
+                            }
+                          }
+
+                          ?>
                             <td>
                                 <b>Sem</b>
 
@@ -570,16 +593,22 @@ $conn_db_ntu = null;
                                     if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
                                     for ($index = 1; $index < 3; $index++) {
                                         if (isset($_REQUEST["filter_Sem"]) && $_REQUEST["filter_Sem"] == $index) {
-                                            echo "<option selected value='" . $index . "'>" . $index . "</option>";
-                                        } else if (isset($_SESSION["semester"]) && $_SESSION["semester"] == $index) {
-                                            echo "<option selected value='" . $index . "'>" . $index . "</option>";
-                                            unset($_SESSION["semester"]);
-                                        } else {
-                                            echo "<option value='" . $index . "'>" . $index . "</option>";
+                                              echo "<option selected value='" . $index . "'>" . $index . "</option>";
+
+                                            //echo "<option selected value='" . $index . "'> " . $index . "</option>";
                                         }
+                                        else if (isset($_SESSION["semester"]) && $_SESSION["semester"] == $index) {
+                                            echo "<option selected value='" . $index . "'> " . $index . "</option>";
+                                            unset($_SESSION["semester"]);
+                                        }
+                                        else {
+                                              echo "<option value='" . $index . "'>" . $index . "</option>";
+                                        }
+
                                     }
 
-                                    ?>
+
+                                  ?>
                                     ?>
                                 </select>
 
