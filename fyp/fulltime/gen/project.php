@@ -504,6 +504,12 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         echo "<td class='text-center'>" . $value['Supervisor'] . "</td>";
                         echo "<td class='text-center'>" . $value['examine_year'] . "</td>";
                         echo "<td class='text-center'>" . $value['examine_sem'] . "</td>";
+
+                        /*Wee Teck Zong [12.05.2020]
+                         - Create edit button to edit the project in a new webpage i created called "edit.php"
+                         - ProjectID will be passed to edit.php on click
+                        */
+                        echo "<td class='text-center'> <a href='edit.php?edit=" . $value['project_id'] ."'>edit </a> <br/>";
                         echo "</tr>";
                     }
 
