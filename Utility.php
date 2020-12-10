@@ -26,7 +26,10 @@ function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDe
 			if (PHP_VERSION < 6) {
 				$theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
 			}
-			$theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string(mysqli_connect(),$theValue) : mysqli_escape_string(mysqli_connect(),$theValue);
+			global $hostname_db_ntu, $username_db_ntu, $password_db_ntu, $database_db_ntu;
+			$connection = mysqli_connect($hostname_db_ntu, $username_db_ntu, $password_db_ntu, $database_db_ntu);
+			
+			$theValue = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($connection,$theValue) : mysqli_escape_string($connection,$theValue);
 			
 			switch ($theType) {
 				case "text":

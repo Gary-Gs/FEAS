@@ -104,6 +104,15 @@ function HandleExcelData($objPHPExcel){
 	$checkarea5 = trim($AllDataInSheet[1]["Q"]);
 	//check for the correct format, if it's not correct we will not upload into the database
 	if($checkprojheader=="Project No" && $checksupervisor=="Supervisor" && $checkarea5=="Area5"){
+		
+		//delete all old records from fea_projects table
+		$conn_db_ntu->exec("DELETE FROM ".$TABLES['fea_projects']);
+
+		//delete all old records from fyp_assign table
+		$conn_db_ntu->exec("DELETE FROM ".$TABLES['fyp_assign']);
+
+		//delete all old records from fyp table
+		$conn_db_ntu->exec("DELETE FROM ".$TABLES['fyp']);
 
 		for($row = 2; $row <= $highestRow ; $row++ )
 		{
@@ -141,71 +150,24 @@ function HandleExcelData($objPHPExcel){
 				$area4 			= trim($AllDataInSheet[$row]["P"]);
 				$area5 			= trim($AllDataInSheet[$row]["Q"]);
 
-				try {
-					$query_duplicateProject = "SELECT * FROM .". $TABLES['fea_projects']." WHERE `project_id` = ?";
-					$stmt = $conn_db_ntu->prepare($query_duplicateProject);
-					$stmt->bindParam(1, $proj_id);
-					$stmt->execute();
-					$fea_projects = $stmt->fetchAll();
-
-					$query_duplicateFypAssign = "SELECT * FROM .".$TABLES['fyp_assign'] ." WHERE `project_id` = ?";
-					$stmt = $conn_db_ntu->prepare($query_duplicateFypAssign);
-					$stmt->bindParam(1, $proj_id);
-					$stmt->execute();
-					$fyp_assigns = $stmt->fetchAll();
-
-					$query_fyp = "SELECT * FROM .".$TABLES['fyp'] ." WHERE `project_id` = ?";
-					$stmt = $conn_db_ntu->prepare($query_fyp);
-					$stmt->bindParam(1, $proj_id);
-					$stmt->execute();
-					$fyps = $stmt->fetchAll();
-				}
-				catch(PDOException $e)
-				{
-					die($e->getMessage());
-				}
 
 				if($proj_id == "") {
 					continue; //it will jump back to the for loop instead of going to the else statement
 				}
 				else {
-					if($student_status == "Leave of Absence"  || $student_status == "Graduated" || $student_status == "Withdrawn") {
+					if($student_status != "Leave of Absence"  && $student_status != "Graduated" && $student_status != "Withdrawn") {
 
-						$query_delete_proj = sprintf("DELETE FROM %s WHERE `project_id` = '%s' ",$TABLES['fyp_assign'],$proj_id);
-						$conn_db_ntu->exec($query_delete_proj);
-					}
-					else{
-						if ($fea_projects != null || sizeof($fea_projects) >0 ) {
-								//update values of fea_projects table if record exist
-							$query_update_fea_projects =sprintf("UPDATE %s SET `examine_year` = '%s', `examine_sem` = '%s' WHERE `project_id` like '%s' " ,$TABLES['fea_projects'], $examineYear, $examineSem, $proj_id);
-							$conn_db_ntu->exec($query_update_fea_projects);
-						}
-						else {
-								//inserting new projects into fea projects table
-							$query_insert_fea_projects = sprintf("INSERT IGNORE INTO %s (`project_id`, `examine_year`, `examine_sem`) VALUES ('%s','%s','%s') ", $TABLES['fea_projects'],$proj_id,$examineYear,$examineSem);
-							$conn_db_ntu->exec($query_insert_fea_projects);
-						}
-						if ($fyp_assigns != null || sizeof($fyp_assigns) >0) {
-								//update values of fyp_assign table if record exist
-							$query_update_fyp_assign =sprintf("UPDATE %s SET `staff_id` = '%s', `student_id` = '%s', `year`='%s', `sem`='%s' WHERE `project_id` = '%s' " ,$TABLES['fyp_assign'], $staffID, $student_id,$startYear,$startSem, $proj_id);
-							$conn_db_ntu->exec($query_update_fyp_assign);
-						}
-						else {
-								// inserting new projects into fyp_assign table
-							$query_insert_fyp_assign= sprintf("INSERT IGNORE INTO %s (`staff_id`,`project_id`,`student_id`,`year`,`sem`) VALUES('%s','%s','%s','%s','%s') ",$TABLES['fyp_assign'], $staffID,$proj_id,$student_id,$startYear,$startSem);
-							$conn_db_ntu->exec($query_insert_fyp_assign);
-						}
-						if ($fyps != null|| sizeof($fyps) >0) {
-								//update values of fyp table if record exist
-							$query_update_fyp =sprintf("UPDATE %s SET `title` = '%s',`supervisor` = '%s',`Area1` = '%s', `Area2` = '%s',`Area3` = '%s',`Area4` = '%s',`Area5` = '%s'WHERE `project_id` like '%s' ",$TABLES['fyp'], $title,$supervisor, $area1,$area2,$area3,$area4,$area5,$proj_id);
-							$conn_db_ntu->exec($query_update_fyp);
-						}
-						else {
-								//insert new records into fyp table
-							$query_insert_fyp = sprintf("INSERT IGNORE INTO %s (`project_id`, `acad_year`, `sem`, `title`,`Supervisor`,`staff_id`, `Area1`,`Area2`,`Area3`,`Area4`,`Area5`) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s') ",$TABLES['fyp'], $proj_id, $startYear_tmp,$startSem, $title, $supervisor,$staffID,$area1,$area2,$area3,$area4,$area5);
-							$conn_db_ntu->exec($query_insert_fyp);
-						}
+						//inserting new projects into fea projects table
+						$query_insert_fea_projects = sprintf("INSERT IGNORE INTO %s (`project_id`, `examine_year`, `examine_sem`) VALUES ('%s','%s','%s') ", $TABLES['fea_projects'],$proj_id,$examineYear,$examineSem);
+						$conn_db_ntu->exec($query_insert_fea_projects);
 
+						// inserting new projects into fyp_assign table
+						$query_insert_fyp_assign= sprintf("INSERT IGNORE INTO %s (`staff_id`,`project_id`,`student_id`,`year`,`sem`) VALUES('%s','%s','%s','%s','%s') ",$TABLES['fyp_assign'], $staffID,$proj_id,$student_id,$startYear,$startSem);
+						$conn_db_ntu->exec($query_insert_fyp_assign);
+
+						//insert new records into fyp table
+						$query_insert_fyp = sprintf("INSERT IGNORE INTO %s (`project_id`, `acad_year`, `sem`, `title`,`Supervisor`,`staff_id`, `Area1`,`Area2`,`Area3`,`Area4`,`Area5`) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s') ",$TABLES['fyp'], $proj_id, $startYear_tmp,$startSem, $title, $supervisor,$staffID,$area1,$area2,$area3,$area4,$area5);
+						$conn_db_ntu->exec($query_insert_fyp);
 
 					}
 

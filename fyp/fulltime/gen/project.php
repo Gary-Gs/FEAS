@@ -56,9 +56,9 @@ if(!isset($_SESSION['pre_filter_Supervisor'])){
     $_SESSION["pre_filter_Supervisor"] = '';
 }
 
-$cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
-    preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
-$filter_Search 			= "%". $cleanedSearch . "%";
+if(!isset($_SESSION['pre_search'])){
+    $_SESSION["pre_search"] = '';
+}
 
 //reset pagination when project year filter changes
 if(isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear'])){
@@ -84,15 +84,34 @@ $filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST
 $pre_filter_ProjectSem = explode("%",$filter_ProjectSem);
 $_SESSION["pre_filter_ProjectSem"] = $pre_filter_ProjectSem[1];
 
+//reset pagination when supervisor sem filter changes
 if(isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor'])) {
     if ($_SESSION["pre_filter_Supervisor"] != $_POST["filter_Supervisor"]) {
         $_SESSION["project_pagination"] = 0;
     }
 }
+
 $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
         preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : ''); //."%";
 $pre_filter_Supervisor = explode("%",$filter_Supervisor);
 $_SESSION["pre_filter_Supervisor"] = $pre_filter_Supervisor[1];
+
+//reset pagination when search button is clicked
+if(isset($_POST['click'])) {
+    if($_SESSION["pre_search"] != $_POST["search"]){
+        $_SESSION["project_pagination"] = 0;
+    }
+}
+
+$cleanedSearchID = (isset($_POST['search']) && !empty($_POST['search'])) ?
+    preg_replace(['/\s+/', '[^a-zA-Z0-9\s\-()]'], ['', ''], $_POST['search']) : '';
+$filter_SearchID 			= "%". $cleanedSearchID . "%";
+
+$cleanedSearchTitle = (isset($_POST['search']) && !empty($_POST['search'])) ?
+    preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
+$filter_SearchTitle 		= "%". $cleanedSearchTitle . "%";
+$_SESSION["pre_search"] = explode("%",$filter_SearchTitle)[1];
+
 
 $maxRow_Project = 20;
 
@@ -139,8 +158,8 @@ try
 
     // GET Project data
     $stmt 				= $conn_db_ntu->prepare($query_rsProject);
-    $stmt->bindParam(1, $filter_Search);				// Search project id
-    $stmt->bindParam(2, $filter_Search);				// Search project title
+    $stmt->bindParam(1, $filter_SearchID);				// Search project id
+    $stmt->bindParam(2, $filter_SearchTitle);				// Search project title
     $stmt->bindParam(3, $filter_ProjectYear);			// Search project year
     $stmt->bindParam(4, $filter_ProjectSem);			// Search project sem
     $stmt->bindParam(5, $filter_Supervisor);			// Search supervisor
@@ -172,8 +191,8 @@ try {
 
     // GET Project data
     $stmt = $conn_db_ntu->prepare($query_limit_rsProject);
-    $stmt->bindParam(1, $filter_Search);                // Search project id
-    $stmt->bindParam(2, $filter_Search);                // Search project title
+    $stmt->bindParam(1, $filter_SearchID);                // Search project id
+    $stmt->bindParam(2, $filter_SearchTitle);                // Search project title
     $stmt->bindParam(3, $filter_ProjectYear);            // Search project year
     $stmt->bindParam(4, $filter_ProjectSem);            // Search project sem
     $stmt->bindParam(5, $filter_Supervisor);            // Search supervisor*/
@@ -421,8 +440,8 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                             </select>
                         </td>
                         <td colspan="2" style="text-align:right;">
-                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" placeholder="e.g'Web' or 'SCSE19-0553' " />
-                            <input type="submit" value="Search" title="Search for a project" class="bt"/>
+                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearchTitle : '' ?>" placeholder="e.g'Web' or 'SCSE19-0553' " />
+                            <input type="submit" value="Search" title="Search for a project" name="click" class="bt"/>
                         </td>
                     </tr>
 
