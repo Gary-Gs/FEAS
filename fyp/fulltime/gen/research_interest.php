@@ -368,17 +368,20 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
 
                     <?php
                     foreach ($rsResearchInterest as $row_rsResearchInterest) {
-                        echo "<tr class='text-center'>";
-                        echo "<td>" . $row_rsResearchInterest['name'] . "</td>";
-                        echo "<td>" . $row_rsResearchInterest['staff_id'] . "</td>";
+                        if($row_rsResearchInterest['name'] != "")
+                        {
+                          echo "<tr class='text-center'>";
+                          echo "<td>" . $row_rsResearchInterest['name'] . "</td>";
+                          echo "<td>" . $row_rsResearchInterest['staff_id'] . "</td>";
 
-                        $interest = $row_rsResearchInterest["interests"];
-                        if ($interest != "") {
-                            $interest = str_replace('---', "\n", $interest);
+                          $interest = $row_rsResearchInterest["interests"];
+                          if ($interest != "") {
+                              $interest = str_replace('---', "\n", $interest);
+                          }
+
+                          echo "<td>" . $interest . "</td>";
+                          echo "</tr>";
                         }
-
-                        echo "<td>" . $interest . "</td>";
-                        echo "</tr>";
                     }
 
                     if (count($rsResearchInterest)==0)
