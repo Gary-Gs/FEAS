@@ -138,7 +138,7 @@ try {
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
     $stmt_1->bindParam(4, $filter_Search);
-    echo $filter_StaffID;
+  
     $stmt_1->execute();
     $rsResearchInterest = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
