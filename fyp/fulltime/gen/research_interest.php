@@ -70,6 +70,7 @@ $maxRow_researchInterest = 20;
 //next page
 if(isset($_POST["nextpage"])){
     $_SESSION["researchInterest_pagination"]+=1;
+
 }
 
 //previous page
@@ -100,7 +101,7 @@ $startRow_researchInterest = $pageNum_researchInterest * $maxRow_researchInteres
 $query_rsResearchInterest = "SELECT name, staff_id, GROUP_CONCAT(interest SEPARATOR '---') AS interests FROM " . $TABLES['research_interest'] .
     " LEFT JOIN " . $TABLES['staff'] .
     " ON research_interest.staff_id = staff.id " .
-    " WHERE (staff_id LIKE ? OR name LIKE ?) OR staff_id IN (SELECT staff_id FROM ". $TABLES['research_interest'] ." WHERE interest LIKE ?) GROUP BY name, staff_id ORDER BY name ASC ";
+    " WHERE staff_id LIKE ? AND (staff_id LIKE ? OR name LIKE ? OR staff_id IN (SELECT staff_id FROM ". $TABLES['research_interest'] ." WHERE interest LIKE ?)) GROUP BY name, staff_id ORDER BY name ASC ";
 
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
@@ -132,11 +133,12 @@ try {
     asort($AL_Staff);
 
     $stmt_1 = $conn_db_ntu->prepare($query_rsResearchInterest);
-  //  $stmt_1->bindParam(1, $filter_StaffID);
-    $stmt_1->bindParam(1, $filter_Search);
+  //$stmt_1->bindParam(1, $filter_StaffID);
+    $stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
-
+    $stmt_1->bindParam(4, $filter_Search);
+    echo $filter_StaffID;
     $stmt_1->execute();
     $rsResearchInterest = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
@@ -152,6 +154,7 @@ try {
     $stmt_2->execute();
     $rs_totalRecords = $stmt_2->fetch();
     $totalRecords = $rs_totalRecords["total"];
+
 }
 catch (PDOException $e) {
     die($e->getMessage());
@@ -162,35 +165,35 @@ $total_pages = ceil($Total_RowCount/$maxRow_researchInterest) - 1;
 //limit record to 20 per page
 $query_limit_rsResearchInterest = sprintf("%s LIMIT %d,%d", $query_rsResearchInterest, $startRow_researchInterest, $maxRow_researchInterest);
 
-// try {
-//     $stmt_0 			= $conn_db_ntu->prepare($query_rsStaff);
-//     $stmt_0->execute();
-//     $DBData_rsStaff 	= $stmt_0->fetchAll(PDO::FETCH_ASSOC);
-//     $AL_Staff			= array();
-//     foreach ($DBData_rsStaff as $key => $value) {
-//         $AL_Staff[$value["id"]] = $value["name"];
-//     }
-//     asort($AL_Staff);
-//
-//     $stmt_1 = $conn_db_ntu->prepare($query_rsResearchInterest);
-//     $stmt_1->bindParam(1, $filter_StaffID);
-//     $stmt_1->bindParam(2, $filter_Search);
-//     $stmt_1->bindParam(3, $filter_Search);
-//     $stmt_1->bindParam(4, $filter_Search);
-//     $stmt_1->execute();
-//     $rsResearchInterest = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
-//     $AL_Staff_Filter 		= array();
-//     foreach ($rsResearchInterest as $key => $value) {
-//         $AL_Staff_Filter[$value["staff_id"]] = $value;
-//     }
-//     asort($AL_Staff_Filter);
-//     $Total_RowCount 	= count($AL_Staff_Filter);
-//
-//
-//
-// }catch (PDOException $e) {
-//     die($e->getMessage());
-// }
+try {
+    $stmt_0 			= $conn_db_ntu->prepare($query_rsStaff);
+    $stmt_0->execute();
+    $DBData_rsStaff 	= $stmt_0->fetchAll(PDO::FETCH_ASSOC);
+    $AL_Staff			= array();
+    foreach ($DBData_rsStaff as $key => $value) {
+        $AL_Staff[$value["id"]] = $value["name"];
+    }
+    asort($AL_Staff);
+
+    $stmt_1 = $conn_db_ntu->prepare($query_limit_rsResearchInterest);
+    $stmt_1->bindParam(1, $filter_StaffID);
+    $stmt_1->bindParam(2, $filter_Search);
+    $stmt_1->bindParam(3, $filter_Search);
+    $stmt_1->bindParam(4, $filter_Search);
+    $stmt_1->execute();
+    $rsResearchInterest = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
+    $AL_Staff_Filter 		= array();
+    foreach ($rsResearchInterest as $key => $value) {
+        $AL_Staff_Filter[$value["staff_id"]] = $value;
+    }
+    asort($AL_Staff_Filter);
+    $Total_RowCount 	= count($AL_Staff_Filter);
+
+
+
+}catch (PDOException $e) {
+    die($e->getMessage());
+}
 
 $currentPage = $_SERVER ["PHP_SELF"];
 
