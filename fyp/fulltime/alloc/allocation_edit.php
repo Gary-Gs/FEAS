@@ -229,6 +229,21 @@ function generateTimeSelect($id, $selected, $day) {
             });
         }
 
+		function addSupervisor(id){
+			var name = prompt("This project\'s supervisor: " + id + " is not in the Faculty list.\nType the staff name to add this supervisor to the Faculty list");
+			if(name){
+				var data = {name: name, id: id};
+				$.ajax({
+					type: "POST",
+					url: "submit_add_supervisor.php",
+					data: data,
+					success: function() {
+						alert("Supervisor successfully added!");
+					}
+				});
+			}
+		}
+
     </script>
     <style>
         .tdTitle {
@@ -309,8 +324,11 @@ function generateTimeSelect($id, $selected, $day) {
                             <td><?php
 								if (array_key_exists($projData['staffid'], $staffList))
 									echo $staffList[$projData['staffid']]->toString();
-								else
+								else{
 									echo $projData['staffid'];
+									echo '<input type="button" title="Add to Staff List" value="Add to Staff List" class="btn bg-dark text-white"
+									style="font-size:12px; margin-left: 20px !important;" onclick = addSupervisor("' . $projData['staffid'] . '") />';
+								}
 								?>
                             </td>
                         </tr>
