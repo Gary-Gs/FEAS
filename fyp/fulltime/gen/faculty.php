@@ -262,16 +262,6 @@ catch (PDOException $e)
             <h3>Faculty List for Full Time Projects</h3>
 
             <?php
-            if (isset($_SESSION['deleteStaff']) && $_SESSION['deleteStaff'] == 'success') {
-                echo "<p class='success'> All selected staff are deleted.</p>";
-                unset($_SESSION['deleteStaff']);
-            }
-            if (isset($_SESSION['deleteStaff']) && $_SESSION['deleteStaff'] == 'error') {
-                echo "<p class='warn'> Some staff are not deleted.</p>";
-                unset($_SESSION['deleteStaff']);
-            }
-            ?>
-            <?php
             if (isset ($_REQUEST['csrf']) || isset ($_REQUEST['validate'])) {
                 echo "<p class='warn'> CSRF validation failed.</p>";
             }
@@ -395,7 +385,7 @@ catch (PDOException $e)
                                 </select>
                             </td>
                             <td colspan="3" style="text-align:right;">
-                                <input id="search" type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. Arijit Khan" />
+                                <input id="search" type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. 'Arijit Khan' or 'Cloud'" />
                                 <input type="submit" value="Search" title="Search for a staff" name="click" class="bt"/>
                             </td>
                         </tr>
@@ -476,32 +466,6 @@ catch (PDOException $e)
 
             <br/><br/>
         </div>
-
-        <div style="float:right; padding-top:25px;">
-            <!-- Hidden table, to delete afterwards -->
-            <form id="delete_faculty_form" method="post" action="submit_savefaculty.php">
-                <?php $csrf->echoInputField(); ?>
-                <table style="display:none;" id="delete_FacultyTable" border="1" cellpadding="0" cellspacing="0" width="100%" >
-                    <col width="20%"/>
-                    <col width="20%"/>
-                    <col width="20%"/>
-                    <col width="30%"/>
-                    <col width="10%"/>
-
-
-                    <tr class="bg-dark text-white text-center">
-                        <td>Staff Name</td>
-                        <td>Staff ID</td>
-                        <td>Project Preference</td>
-                        <td>Area Preference</td>
-                    </tr>
-                </table>
-                <input type="button"id="deleteEntry" title="Delete entry" class="btn btn-primary text-white text-center" style="font-size:12px;" value="Delete Selected" />
-                <input type="submit" id="saveChanges" title="Save all changes" value="Save Changes" class="btn bg-dark text-white text-center" style="font-size:12px;width:110px !important;"/>
-                <br>
-                <br>
-            </form>
-        </div>
     </div>
     <div class="container col-sm-1 col-md-1 col-lg-1">
         <div style="position: fixed;">
@@ -512,82 +476,6 @@ catch (PDOException $e)
     </div>
 
     <script type="text/javascript">
-        //Deleting
-        var tableArr = [];
-        $(document).ready(function () {
-
-            $("#table_faculty").click(function highlight_row() {
-                var table = document.getElementById("table_faculty");
-                var cells = table.getElementsByTagName("td");
-
-                for (var i = 0; i < cells.length; i++) {
-                    // Take each cell
-                    var cell = cells[i];
-                    // do something on onclick event for cell
-                    cell.onclick = function () {
-
-                        // Get the row id where the cell exists
-                        var rowID = this.parentNode.rowIndex;
-                        console.log("selected" + rowID);
-                        var rowClicked = table.getElementsByTagName("tr")[rowID];
-                        if (rowClicked.style.backgroundColor != "yellow" && !rowClicked.classList.contains("selected")) {
-                            rowClicked.style.backgroundColor = "yellow";
-                            rowClicked.className += " selected";
-                        } else {
-                            rowClicked.style.backgroundColor = "";
-                            rowClicked.classList.remove("selected");
-                        }
-                    }
-                }
-            })
-
-            $("#deleteEntry").click(function deleteRow() {
-                var fTable = document.getElementById("table_faculty");
-                var selectedRowsIndex = getHighlightedRows();
-                if (selectedRowsIndex === undefined || selectedRowsIndex.length == 0)
-                    alert("Select at least one staff to delete. Click anywhere on the row to select.");
-                else {
-                    var r = confirm("Delete the selected staff?");
-                    if (r == true) {
-                        for (var i = 0; i < selectedRowsIndex.length; i++) {
-                            // add to hidden table
-                            let table = document.getElementById("delete_FacultyTable");
-
-                            // Get number of rows in the current hidden table to use it as name of each table cell, will include header so we dont need to + 1
-                            var currentRow = document.getElementById("delete_FacultyTable").rows.length;
-
-                            let tr = table.insertRow(-1);
-                            tr.className = "text-center";
-                            let staff_name = tr.insertCell(0);
-                            let staff_id = tr.insertCell(1);
-                            let project_preference = tr.insertCell(2);
-                            let area_preference = tr.insertCell(3);
-
-                            staff_name.innerHTML = "<input type='text' name='staff[" + currentRow + "][staff_name]'  value='" + fTable.rows[selectedRowsIndex[i]].cells.item(0).innerHTML + "' readonly />";
-                            staff_id.innerHTML = "<input type='text' name='staff[" + currentRow + "][staff_id]'  value='" + fTable.rows[selectedRowsIndex[i]].cells.item(1).innerHTML + "' readonly />";
-                            project_preference.innerHTML = "<input type='text' name='staff[" + currentRow + "][project_preference]'  value='" + fTable.rows[selectedRowsIndex[i]].cells.item(2).innerHTML + "' readonly />";
-                            area_preference.innerHTML = "<input type='text' name='staff[" + currentRow + "][area_preference]'  value='" + fTable.rows[selectedRowsIndex[i]].cells.item(3).innerHTML + "' readonly />";
-
-                            fTable.deleteRow(selectedRowsIndex[i]);
-                        }
-                    }
-                }
-            })
-        });
-
-        function getHighlightedRows(e) {
-            var table = document.getElementById("table_faculty");
-            var rows = table.getElementsByTagName("tr");
-            var selectedRowsIndex = [];
-            for (var i = rows.length-1 ; i >= 0 ; i--) {
-                var row = rows[i];
-                if (row.style.backgroundColor == "yellow" && row.classList.contains("selected")) {
-                    selectedRowsIndex.push(i);
-                }
-            }
-            return selectedRowsIndex;
-        }
-
 
         $("#FORM_FileToUpload_FacultyList").submit(function( event ) {
             uploadFile();
