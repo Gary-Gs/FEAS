@@ -493,6 +493,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         <td>Supervisor</td>
                         <td>Exam Year</td>
                         <td>Exam Sem</td>
+                        <td>Action</td>
                     </tr>
                     <?php
                     foreach ($DBData_rsProject as $key => $value) {

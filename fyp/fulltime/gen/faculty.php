@@ -121,7 +121,12 @@ if($pageNum_faculty == ''){
 $startRow_faculty = $pageNum_faculty * $maxRow_faculty;
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
-$query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ?) ORDER BY s.name ASC";
+//Filter for staff ID, staff name or Area of interest
+$query_rsStaff_Filter 	= "SELECT DISTINCT s.id, s.name FROM " . 
+                            $TABLES['staff'] 		. " as s LEFT JOIN " . 
+                            $TABLES['staff_pref'] 	. " as sp ON s.id 	= sp.staff_id LEFT JOIN " .
+                            $TABLES['interest_area'] . " as ia ON sp.prefer= ia.key AND archive=0 " . 
+                            " WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ? OR ia.title LIKE ?) ORDER BY s.name ASC ";
 $query_rsProjPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0";
 $query_rsAreaPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key AND archive=0";
 try
@@ -141,6 +146,7 @@ try
     $stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
+    $stmt_1->bindParam(4, $filter_Search);
     $stmt_1->execute();
     $DBData_rsStaff_Filter 	= $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
@@ -189,6 +195,7 @@ try
     $stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
+    $stmt_1->bindParam(4, $filter_Search);
     $stmt_1->execute();
     $DBData_rsStaff_Filter 	= $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
