@@ -166,7 +166,42 @@ try
     $stmt->execute();
     $DBData_rsProject   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $Total_RowCount 	= count($DBData_rsProject);
+
+    //Check if there is any Supervisor who is not in the Facult table
+    $new_Staff = array();
+    foreach ($DBData_rsProject as $element) {
+        $new_Staff_row = array();
+        if(!array_key_exists($element['staff_id'], $AL_Staff)){
+            $new_Staff_row["staff_id"] = $element['staff_id'];
+            $new_Staff_row["Supervisor"] = $element['Supervisor'];
+            array_push($new_Staff, $new_Staff_row);
+        }
+    }
+
+    $new_Staff = array_map("unserialize", array_unique(array_map("serialize", $new_Staff)));
+    //Request the serve to add the Supervisor into the Staff List
+    foreach ($new_Staff as $element) {
+        echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+              <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>';
+        echo '<script type="text/javascript">';
+        echo 'if(confirm("' . $element['Supervisor'] . ' is not in the Faculty List. Do you want to add this supervisor into the list?")){';
+        echo '
+                var data = {name:"' . $element['Supervisor'] . '", id:"' . $element['staff_id'] . '"};
+                $.ajax({
+                    type: "POST",
+                    url: "submit_add_supervisor.php",
+                    data: data,
+                    success: function() {
+                        alert("Supervisor successfully added!");
+                    }
+                });';
+        echo '}';
+        echo '</script>';
+        
+    }
+
 }
+
 catch (PDOException $e)
 {
     die($e->getMessage());
