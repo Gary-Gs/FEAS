@@ -34,7 +34,7 @@ require_once('../../../restriction.php');
           $stmt_0->execute();
       $row=  $stmt_0->fetchAll(PDO::FETCH_ASSOC);
       foreach ($row as $key => $value) {
-        echo $value['title'];
+        // echo $value['title'];
       }
   }
 
