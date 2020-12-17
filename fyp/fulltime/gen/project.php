@@ -302,6 +302,7 @@ try
                     }
                 });';
         echo '}';
+        echo 'location.reload();';
         echo '</script>';
         
     }
