@@ -364,7 +364,6 @@
 		$(document).ready(function() {
 			var update_sp = false;
 			var update_ap = false;
-      var save = false;
 			var modified = false;
             // enable warning when leaving the page
             /* 1. window object represents an open window in a browser, the browser creates one window object for the HTML document
@@ -699,6 +698,24 @@
 				UpdateAreaTable(selected_area_table.row(selected).data()[0], true);
 				selected_area_table.row( selected ).remove().draw();
 			});
+
+			$('#saveChanges').on('click', function(e){
+				modified = false;
+			});
+
+			$('#deleteAll').on('click', function(e){
+				modified = false;
+			});
+
+			$('#clearChanges').on('click', function(e){
+				modified = false;
+			});
+
+			window.onbeforeunload = function () {
+				if (modified) {
+				return 'Do you really want to leave the page?';
+				}
+			}
 /*
 			$(window).on('beforeunload', function ()
       {
@@ -730,7 +747,7 @@
 	 }*/
 
 
-
+	 /*
 	 var submitted = false;
 
 	 $(document).ready(function() {
@@ -744,6 +761,7 @@
 	     }
 	   }
 	 });
+	 */
 
 	</script>
 </head>
@@ -752,7 +770,7 @@
 	<!-- need to include header manually so that the javascript does not clash -->
     <div class="container-fluid bg-dark text-white" style="background-color: white; opacity: 0.9; filter: alpha(opacity=90);">
         <?php
-        $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh", "c170098", "teew0007"];
+        $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh", "c170098", "teew0007", "hoang009", "weet0011"];
 
         // only verified users navigate to all modules
         if (in_array($_SESSION['id'], $verifiedUsers)) {
@@ -1003,9 +1021,9 @@
 
 						<!--Buttons-->
 						<div style="float:right; padding-top:25px;">
-                            <input type="submit" name="deleteAll" class="btn bg-dark text-white text-center" title="Delete all selected preferences" style="font-size:12px;" value="Delete All" onclick="return confirm('Delete all preferences?');" />
-                            <input type="submit" name="clearChanges" class="btn bg-dark text-white text-center" title="Clear all selected preferences" style="font-size:12px;" value="Clear Changes" onclick="return confirm('Clear Changes?');" />
-                            <input type="submit" name="saveChanges" class="btn bg-dark text-white text-center" title="Save all selected preferences" value="Save Changes" style="font-size:12px !important;"  onclick="return confirm('Save Changes?');" />
+                            <input id="deleteAll" type="submit" name="deleteAll" class="btn bg-dark text-white text-center" title="Delete all selected preferences" style="font-size:12px;" value="Delete All" onclick="return confirm('Delete all preferences?');" />
+                            <input id="clearChanges" type="submit" name="clearChanges" class="btn bg-dark text-white text-center" title="Clear all selected preferences" style="font-size:12px;" value="Clear Changes" onclick="return confirm('Clear Changes?');" />
+                            <input id="saveChanges" type="submit" name="saveChanges" class="btn bg-dark text-white text-center" title="Save all selected preferences" value="Save Changes" style="font-size:12px !important;"  onclick="return confirm('Save Changes?');" />
 						</div>
 						<br/><br/><br/>
 					</form>

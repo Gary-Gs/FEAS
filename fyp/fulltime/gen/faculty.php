@@ -69,8 +69,12 @@ if(!isset($_SESSION['pre_filter_StaffID'])){
     $_SESSION["pre_filter_StaffID"] = '';
 }
 
+if(!isset($_SESSION['pre_search'])){
+    $_SESSION["pre_search"] = '';
+}
+
 $_REQUEST['csrf'] 	= $csrf->cfmRequest();
-$filter_Search 			= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+
 //reset pagination when staff ID filter changes
 if(isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID'])){
     if($_SESSION["pre_filter_StaffID"] != $_REQUEST["filter_StaffID"]){
@@ -81,6 +85,16 @@ if(isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID'])){
 $filter_StaffID  		= "%". (isset($_REQUEST['filter_StaffID']) && !empty($_REQUEST['filter_StaffID']) ? $_REQUEST['filter_StaffID'] : ''); //."%";
 $_pre_filter_StaffID = explode("%",$filter_StaffID);
 $_SESSION["pre_filter_StaffID"] = $_pre_filter_StaffID[1];
+
+//reset pagination when search button is clicked
+if(isset($_POST['click'])) {
+    if($_SESSION["pre_search"] != $_REQUEST["search"]){
+        $_SESSION["faculty_pagination"] = 0;
+    }
+}
+
+$filter_Search = "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+$_SESSION["pre_search"] = explode("%",$filter_Search)[1];
 
 $maxRow_faculty = 20;
 
@@ -107,8 +121,13 @@ if($pageNum_faculty == ''){
 $startRow_faculty = $pageNum_faculty * $maxRow_faculty;
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
-$query_rsStaff_Filter 	= "SELECT * FROM " . $TABLES['staff'] 		. " as s WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ?)";
-$query_rsProjPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0 ORDER BY sp.staff_id ASC";
+//Filter for staff ID, staff name or Area of interest
+$query_rsStaff_Filter 	= "SELECT DISTINCT s.id, s.name FROM " . 
+                            $TABLES['staff'] 		. " as s LEFT JOIN " . 
+                            $TABLES['staff_pref'] 	. " as sp ON s.id 	= sp.staff_id LEFT JOIN " .
+                            $TABLES['interest_area'] . " as ia ON sp.prefer= ia.key AND archive=0 " . 
+                            " WHERE s.id LIKE ? AND (s.id LIKE ? OR s.name LIKE ? OR ia.title LIKE ?) ORDER BY s.name ASC ";
+$query_rsProjPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp WHERE (sp.prefer LIKE 'SCE%' OR sp.prefer LIKE 'SCSE%') AND archive=0";
 $query_rsAreaPref 		= "SELECT *, LOWER(staff_id) as staff_id  FROM " . $TABLES['staff_pref'] 	. " as sp INNER JOIN ". $TABLES['interest_area'] ." as ia ON sp.prefer= ia.key AND archive=0";
 try
 {
@@ -127,13 +146,14 @@ try
     $stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
+    $stmt_1->bindParam(4, $filter_Search);
     $stmt_1->execute();
     $DBData_rsStaff_Filter 	= $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
     foreach ($DBData_rsStaff_Filter as $key => $value) {
         $AL_Staff_Filter[$value["id"]] = $value;
     }
-    asort($AL_Staff_Filter);
+
     $Total_RowCount 	= count($AL_Staff_Filter);
 
     // GET STAFF PROJECT PREF
@@ -157,8 +177,6 @@ $total_pages = ceil($Total_RowCount/$maxRow_faculty) - 1;
 
 //limit record to 20 per page
 $query__limit_rsStaff_Filter = sprintf("%s LIMIT %d,%d", $query_rsStaff_Filter, $startRow_faculty, $maxRow_faculty);
-$query_limit_rsProjPref = sprintf("%s LIMIT %d,%d", $query_rsProjPref, $startRow_faculty, $maxRow_faculty);
-$query_limit_rsAreaPref = sprintf("%s LIMIT %d,%d", $query_rsAreaPref, $startRow_faculty, $maxRow_faculty);
 
 try
 {
@@ -177,25 +195,15 @@ try
     $stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
+    $stmt_1->bindParam(4, $filter_Search);
     $stmt_1->execute();
     $DBData_rsStaff_Filter 	= $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
     foreach ($DBData_rsStaff_Filter as $key => $value) {
         $AL_Staff_Filter[$value["id"]] = $value;
     }
-    asort($AL_Staff_Filter);
+    
     $Total_RowCount 	= count($AL_Staff_Filter);
-
-    // GET STAFF PROJECT PREF
-    $stmt_2 			= $conn_db_ntu->prepare($query_limit_rsProjPref);
-    $stmt_2->execute();
-    $DBData_rsProjPref   = $stmt_2->fetchAll(PDO::FETCH_ASSOC);
-
-    // GET STAFF AREA PREF
-    $stmt_3 			= $conn_db_ntu->prepare($query_limit_rsAreaPref);
-    $stmt_3->execute();
-    $DBData_rsAreaPref   = $stmt_3->fetchAll(PDO::FETCH_ASSOC);
-
 
 }
 catch (PDOException $e)
@@ -377,8 +385,8 @@ catch (PDOException $e)
                                 </select>
                             </td>
                             <td colspan="3" style="text-align:right;">
-                                <input id="search" type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. Arijit Khan" />
-                                <input type="submit" value="Search" title="Search for a project" class="bt"/>
+                                <input id="search" type="search" name="search" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. 'Arijit Khan' or 'Cloud'" />
+                                <input type="submit" value="Search" title="Search for a staff" name="click" class="bt"/>
                             </td>
                         </tr>
 
@@ -468,6 +476,7 @@ catch (PDOException $e)
     </div>
 
     <script type="text/javascript">
+
         $("#FORM_FileToUpload_FacultyList").submit(function( event ) {
             uploadFile();
             event.preventDefault();

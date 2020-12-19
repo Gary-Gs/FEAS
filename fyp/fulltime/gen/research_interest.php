@@ -39,7 +39,9 @@ if(!isset($_SESSION['pre_filter_StaffID'])){
     $_SESSION["pre_filter_StaffID"] = '';
 }
 
-$filter_Search 		= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+if(!isset($_SESSION['pre_search'])){
+    $_SESSION["pre_search"] = '';
+}
 
 //reset pagination when staff ID filter changes
 if(isset($_POST['filter_StaffID']) && !empty($_POST['filter_StaffID'])){
@@ -53,11 +55,22 @@ $filter_StaffID 	= "%". (isset($_POST['filter_StaffID']) && !empty($_POST['filte
 $_pre_filter_StaffID = explode("%",$filter_StaffID);
 $_SESSION["pre_filter_StaffID"] = $_pre_filter_StaffID[1];
 
+//reset pagination when search button is clicked
+if(isset($_POST['click'])) {
+    if($_SESSION["pre_search"] != $_REQUEST["search"]){
+        $_SESSION["researchInterest_pagination"] = 0;
+    }
+}
+
+$filter_Search 		= "%". (isset($_REQUEST['search']) && !empty($_REQUEST['search']) ? $_REQUEST['search'] : '') ."%";
+$_SESSION["pre_search"] = explode("%",$filter_Search)[1];
+
 $maxRow_researchInterest = 20;
 
 //next page
 if(isset($_POST["nextpage"])){
     $_SESSION["researchInterest_pagination"]+=1;
+
 }
 
 //previous page
@@ -77,10 +90,19 @@ if($pageNum_researchInterest == ''){
 
 $startRow_researchInterest = $pageNum_researchInterest * $maxRow_researchInterest;
 
+// $query_rsResearchInterest = "SELECT name, staff_id, GROUP_CONCAT(interest SEPARATOR '---') AS interests FROM " . $TABLES['research_interest'] .
+//     " LEFT JOIN " . $TABLES['staff'] .
+//     " ON research_interest.staff_id = staff.id " .
+//     " WHERE staff_id LIKE ? AND (staff_id LIKE ? OR name LIKE ? OR interest LIKE ?) GROUP BY name, staff_id ORDER BY name ASC ";
+
+/* Wee Teck Zong [12.6.2020]
+- Edit on the query to pull all research interest by staff ID instead of just specific row of interst
+*/
 $query_rsResearchInterest = "SELECT name, staff_id, GROUP_CONCAT(interest SEPARATOR '---') AS interests FROM " . $TABLES['research_interest'] .
     " LEFT JOIN " . $TABLES['staff'] .
     " ON research_interest.staff_id = staff.id " .
-    " WHERE staff_id LIKE ? AND (staff_id LIKE ? OR name LIKE ? OR interest LIKE ?) GROUP BY name, staff_id ORDER BY name ASC ";
+    " WHERE staff_id LIKE ? AND (staff_id LIKE ? OR name LIKE ? OR staff_id IN (SELECT staff_id FROM ". $TABLES['research_interest'] ." WHERE interest LIKE ?)) GROUP BY name, staff_id ORDER BY name ASC ";
+
 
 $query_rsStaff 			= "SELECT * FROM " . $TABLES['staff'];
 
@@ -111,15 +133,19 @@ try {
     asort($AL_Staff);
 
     $stmt_1 = $conn_db_ntu->prepare($query_rsResearchInterest);
+  //$stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(1, $filter_StaffID);
     $stmt_1->bindParam(2, $filter_Search);
     $stmt_1->bindParam(3, $filter_Search);
     $stmt_1->bindParam(4, $filter_Search);
+  
     $stmt_1->execute();
     $rsResearchInterest = $stmt_1->fetchAll(PDO::FETCH_ASSOC);
     $AL_Staff_Filter 		= array();
     foreach ($rsResearchInterest as $key => $value) {
         $AL_Staff_Filter[$value["staff_id"]] = $value;
+
+
     }
     asort($AL_Staff_Filter);
     $Total_RowCount 	= count($AL_Staff_Filter);
@@ -128,6 +154,7 @@ try {
     $stmt_2->execute();
     $rs_totalRecords = $stmt_2->fetch();
     $totalRecords = $rs_totalRecords["total"];
+
 }
 catch (PDOException $e) {
     die($e->getMessage());
@@ -289,7 +316,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                                 </td>
                                 <td colspan="3" style="text-align:right;">
                                     <input id="searching" type="search" name="search" autocomplete="off" value="<?php echo isset($_REQUEST['search']) ?  $_REQUEST['search'] : '' ?>" placeholder="e.g. 'algorithms'or 'Althea'" />
-                                    <input type="submit" value="Search" title="Search for a project" class="bt"/>
+                                    <input type="submit" value="Search" title="Search for a project" name="click" class="bt"/>
                                 </td>
                             </tr>
 
@@ -341,17 +368,20 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
 
                     <?php
                     foreach ($rsResearchInterest as $row_rsResearchInterest) {
-                        echo "<tr class='text-center'>";
-                        echo "<td>" . $row_rsResearchInterest['name'] . "</td>";
-                        echo "<td>" . $row_rsResearchInterest['staff_id'] . "</td>";
+                        if($row_rsResearchInterest['name'] != "")
+                        {
+                          echo "<tr class='text-center'>";
+                          echo "<td>" . $row_rsResearchInterest['name'] . "</td>";
+                          echo "<td>" . $row_rsResearchInterest['staff_id'] . "</td>";
 
-                        $interest = $row_rsResearchInterest["interests"];
-                        if ($interest != "") {
-                            $interest = str_replace('---', "\n", $interest);
+                          $interest = $row_rsResearchInterest["interests"];
+                          if ($interest != "") {
+                              $interest = str_replace('---', "\n", $interest);
+                          }
+
+                          echo "<td>" . $interest . "</td>";
+                          echo "</tr>";
                         }
-
-                        echo "<td>" . $interest . "</td>";
-                        echo "</tr>";
                     }
 
                     if (count($rsResearchInterest)==0)

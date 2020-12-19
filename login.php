@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_SERVER['QUERY_STRING'])) {
    session_start();
 
    // users who are able to access all modules
-   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh", "c170098", "teew0007"];
+   $verifiedUsers=["asfli", "sguo005", "audr0012", "jwong063", "lees0169", "ngxu0008", "c170155", "c170178", "SNKoh", "c170098", "teew0007", "hoang009", "weet0011"];
 
    //to check if the domain if is ours
    if(isset($_SESSION['login']) && isset($username)){

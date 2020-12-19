@@ -56,9 +56,25 @@ if(!isset($_SESSION['pre_filter_Supervisor'])){
     $_SESSION["pre_filter_Supervisor"] = '';
 }
 
-$cleanedSearch = (isset($_POST['search']) && !empty($_POST['search'])) ?
-    preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
-$filter_Search 			= "%". $cleanedSearch . "%";
+/*Wee Teck Zong [12.16.2020]
+- Set session for filter exam year to be empty if it's not selected
+*/
+if(!isset($_SESSION['pre_filter_ExamYear'])){
+    $_SESSION["pre_filter_ExamYear"] = '';
+}
+
+/*Wee Teck Zong [12.16.2020]
+- Set session for filter exam sem to be empty if it's not selected
+*/
+if(!isset($_SESSION['pre_filter_ExamSem'])){
+    $_SESSION["pre_filter_ExamSem"] = '';
+}
+
+
+
+if(!isset($_SESSION['pre_search'])){
+    $_SESSION["pre_search"] = '';
+}
 
 //reset pagination when project year filter changes
 if(isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear'])){
@@ -84,15 +100,63 @@ $filter_ProjectSem 		= "%". (isset($_POST['filter_ProjectSem']) && !empty($_POST
 $pre_filter_ProjectSem = explode("%",$filter_ProjectSem);
 $_SESSION["pre_filter_ProjectSem"] = $pre_filter_ProjectSem[1];
 
+
+/*Wee Teck Zong [12.16.2020]
+- reset pagination when exam year filter changes
+*/
+if(isset($_POST['filter_ExamYear']) && !empty($_POST['filter_ExamYear'])){
+    if($_SESSION["pre_filter_ExamYear"] != $_POST["filter_ExamYear"]){
+        $_SESSION["project_pagination"] = 0;
+    }
+}
+$filter_ExamYear 	= "%". (isset($_POST['filter_ExamYear']) && !empty($_POST['filter_ExamYear']) ?
+        preg_replace('/[^0-9]/','',$_POST['filter_ExamYear']) : '') ."%";
+$pre_filter_ExamYear = explode("%",$filter_ExamYear);
+$_SESSION["pre_filter_ExamYear"] = $pre_filter_ExamYear[1];
+
+/*Wee Teck Zong [12.16.2020]
+- reset pagination when exam sem filter changes
+*/
+if(isset($_POST['filter_ExamSem']) && !empty($_POST['filter_ExamSem'])) {
+    if ($_SESSION["pre_filter_ExamSem"] != $_POST["filter_ExamSem"]) {
+        $_SESSION["project_pagination"] = 0;
+    }
+}
+$filter_ExamSem 		= "%". (isset($_POST['filter_ExamSem']) && !empty($_POST['filter_ExamSem']) ?
+        preg_replace('/[^0-9]/','',$_POST['filter_ExamSem']) : '') ."%";
+$pre_filter_ExamSem = explode("%",$filter_ExamSem);
+$_SESSION["pre_filter_ExamSem"] = $pre_filter_ExamSem[1];
+
+
+
+//reset pagination when supervisor sem filter changes
 if(isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor'])) {
     if ($_SESSION["pre_filter_Supervisor"] != $_POST["filter_Supervisor"]) {
         $_SESSION["project_pagination"] = 0;
     }
 }
+
 $filter_Supervisor  	= "%". (isset($_POST['filter_Supervisor']) && !empty($_POST['filter_Supervisor']) ?
         preg_replace('/[^a-zA-Z._\s\-]/','',$_POST['filter_Supervisor']) : ''); //."%";
 $pre_filter_Supervisor = explode("%",$filter_Supervisor);
 $_SESSION["pre_filter_Supervisor"] = $pre_filter_Supervisor[1];
+
+//reset pagination when search button is clicked
+if(isset($_POST['click'])) {
+    if($_SESSION["pre_search"] != $_POST["search"]){
+        $_SESSION["project_pagination"] = 0;
+    }
+}
+
+$cleanedSearchID = (isset($_POST['search']) && !empty($_POST['search'])) ?
+    preg_replace(['/\s+/', '[^a-zA-Z0-9\s\-()]'], ['', ''], $_POST['search']) : '';
+$filter_SearchID 			= "%". $cleanedSearchID . "%";
+
+$cleanedSearchTitle = (isset($_POST['search']) && !empty($_POST['search'])) ?
+    preg_replace('[^a-zA-Z0-9\s\-()]', '', $_POST['search']) : '';
+$filter_SearchTitle 		= "%". $cleanedSearchTitle . "%";
+$_SESSION["pre_search"] = explode("%",$filter_SearchTitle)[1];
+
 
 $maxRow_Project = 20;
 
@@ -109,6 +173,7 @@ if(isset($_POST["previouspage"])) {
 $pageNum_Project = (isset($_POST['filter_ProjectYear']) && !empty($_POST['filter_ProjectYear'])) ?
     $_SESSION["project_pagination"]:  $_SESSION["project_pagination"];
 
+
 //ensure valid page number
 if($pageNum_Project == ''){
     $pageNum_Project = 0;
@@ -118,16 +183,71 @@ if($pageNum_Project == ''){
 $startRow_Project = $pageNum_Project * $maxRow_Project; //first page start row = 0 , 2nd page start row = 20
 
 $query_rsStaff				= "SELECT * FROM " . $TABLES["staff"];
+
+/* Wee Teck Zong [12.16.2020]
+- New query to retrieve UNIQUE Exam_Years from database
+*/
+$query_uniqueExamYear				= "SELECT * FROM " . $TABLES["fea_projects"] . " GROUP BY examine_year ORDER BY examine_year";
+
+/* Wee Teck Zong [12.16.2020]
+- New query to retrieve UNIQUE years from database
+*/
+$query_uniqueYear				= "SELECT * FROM " . $TABLES["fyp_assign"] . " GROUP BY year ORDER BY year";
+
+/* Wee Teck Zong [12.16.2020]
+- Comment away due to adding new filter for exam sem and year. New filter query below.
 $query_rsProject 			= "SELECT * FROM " .
     $TABLES['fea_projects'] . " as p1 LEFT JOIN " .
     $TABLES['fyp_assign'] 	. " as p2 ON p1.project_id 	= p2.project_id LEFT JOIN "	.
     $TABLES['fyp']			. " as p3 ON p2.project_id 	= p3.project_id LEFT JOIN "	.
     $TABLES['staff']		. " as p4 ON p2.staff_id 	= p4.id "					.
     "WHERE p2.complete = 0 AND (p2.project_id LIKE ? OR p3.title LIKE ?) AND (p2.year LIKE ? AND p2.sem LIKE ? AND p2.staff_id LIKE ?) ORDER BY p2.project_id DESC";
+*/
 
+/* Wee Teck Zong [12.16.2020]
+- New query to add filter for exam year and exam sem
+*/
+$query_rsProject 			= "SELECT * FROM " .
+    $TABLES['fea_projects'] . " as p1 LEFT JOIN " .
+    $TABLES['fyp_assign'] 	. " as p2 ON p1.project_id 	= p2.project_id LEFT JOIN "	.
+    $TABLES['fyp']			. " as p3 ON p2.project_id 	= p3.project_id LEFT JOIN "	.
+    $TABLES['staff']		. " as p4 ON p2.staff_id 	= p4.id "					.
+    "WHERE p2.complete = 0 AND (p2.project_id LIKE ? OR p3.title LIKE ?) AND (p2.year LIKE ? AND p2.sem LIKE ? AND p1.examine_year LIKE ? AND p1.examine_sem LIKE ? AND p2.staff_id LIKE ?) ORDER BY p2.project_id DESC";
+
+    /* Wee Teck Zong [12.16.2020]
+    - GET Unique year for filter dropdownlist
+    */
+    try
+    {
+        $stmt_11 			= $conn_db_ntu->prepare($query_uniqueYear);
+        $stmt_11->execute();
+        $DBData_rsUniqueYear 	= $stmt_11->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch (PDOException $e)
+    {
+        die($e->getMessage());
+    }
+
+    /* Wee Teck Zong [12.16.2020]
+    - GET Unique exam year for filter dropdownlist
+    */
+    try
+    {
+
+        $stmt_10 			= $conn_db_ntu->prepare($query_uniqueExamYear);
+        $stmt_10->execute();
+        $DBData_rsUniqueExamYear 	= $stmt_10->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch (PDOException $e)
+    {
+        die($e->getMessage());
+    }
+
+
+// GET ALL STAFF FOR FILTER DROP DOWN CONTROL
 try
 {
-    // GET ALL STAFF FOR FILTER DROP DOWN CONTROL
+
     $stmt_0 			= $conn_db_ntu->prepare($query_rsStaff);
     $stmt_0->execute();
     $DBData_rsStaff 	= $stmt_0->fetchAll(PDO::FETCH_ASSOC);
@@ -139,21 +259,63 @@ try
 
     // GET Project data
     $stmt 				= $conn_db_ntu->prepare($query_rsProject);
-    $stmt->bindParam(1, $filter_Search);				// Search project id
-    $stmt->bindParam(2, $filter_Search);				// Search project title
+    $stmt->bindParam(1, $filter_SearchID);				// Search project id
+    $stmt->bindParam(2, $filter_SearchTitle);				// Search project title
     $stmt->bindParam(3, $filter_ProjectYear);			// Search project year
     $stmt->bindParam(4, $filter_ProjectSem);			// Search project sem
-    $stmt->bindParam(5, $filter_Supervisor);			// Search supervisor
+    /* Wee Teck Zong [12.16.2020]
+    - Add bindParam 5 & 6 to filter exam year and exam sem
+    */
+    $stmt->bindParam(5, $filter_ExamYear);			// Search Exam Year
+    $stmt->bindParam(6, $filter_ExamSem);			// Search Exam Sem
+    $stmt->bindParam(7, $filter_Supervisor);			// Search supervisor
     $stmt->execute();
     $DBData_rsProject   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $Total_RowCount 	= count($DBData_rsProject);
+
+    //Check if there is any Supervisor who is not in the Facult table
+    $new_Staff = array();
+    foreach ($DBData_rsProject as $element) {
+        $new_Staff_row = array();
+        if(!array_key_exists($element['staff_id'], $AL_Staff)){
+            $new_Staff_row["staff_id"] = $element['staff_id'];
+            $new_Staff_row["Supervisor"] = $element['Supervisor'];
+            array_push($new_Staff, $new_Staff_row);
+        }
+    }
+
+    $new_Staff = array_map("unserialize", array_unique(array_map("serialize", $new_Staff)));
+    //Request the serve to add the Supervisor into the Staff List
+    foreach ($new_Staff as $element) {
+        echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+              <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>';
+        echo '<script type="text/javascript">';
+        echo 'if(confirm("' . $element['Supervisor'] . ' is not in the Faculty List. Do you want to add this supervisor into the list?")){';
+        echo '
+                var data = {name:"' . $element['Supervisor'] . '", id:"' . $element['staff_id'] . '"};
+                $.ajax({
+                    type: "POST",
+                    url: "submit_add_supervisor.php",
+                    data: data,
+                    success: function() {
+                        alert("Supervisor successfully added!");
+                    }
+                });';
+        echo '}';
+        echo 'location.reload();';
+        echo '</script>';
+        
+    }
+
 }
+
 catch (PDOException $e)
 {
     die($e->getMessage());
 }
 
 $total_pages = ceil($Total_RowCount / $maxRow_Project) - 1;
+
 
 //limit record to 20 per page
 //$query_limit_rsStaff = sprintf("%s LIMIT %d,%d", $query_rsStaff, $startRow_Project, $maxRow_Project);
@@ -172,11 +334,16 @@ try {
 
     // GET Project data
     $stmt = $conn_db_ntu->prepare($query_limit_rsProject);
-    $stmt->bindParam(1, $filter_Search);                // Search project id
-    $stmt->bindParam(2, $filter_Search);                // Search project title
+    $stmt->bindParam(1, $filter_SearchID);                // Search project id
+    $stmt->bindParam(2, $filter_SearchTitle);                // Search project title
     $stmt->bindParam(3, $filter_ProjectYear);            // Search project year
     $stmt->bindParam(4, $filter_ProjectSem);            // Search project sem
-    $stmt->bindParam(5, $filter_Supervisor);            // Search supervisor*/
+    /* Wee Teck Zong [12.16.2020]
+    - Add bindParam 5 & 6 to filter exam year and exam sem
+    */
+    $stmt->bindParam(5, $filter_ExamYear);			// Search Exam Year
+    $stmt->bindParam(6, $filter_ExamSem);			// Search Exam Sem
+    $stmt->bindParam(7, $filter_Supervisor);            // Search supervisor*/
     $stmt->execute();
     $DBData_rsProject = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $Total_RowCount = count($DBData_rsProject);
@@ -343,7 +510,25 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         <td colspan="3">
                             <select id="filter_ProjectYear" name="filter_ProjectYear" onchange="this.form.submit()">
                                 <option value="">SELECT</option>
+
                                 <?php
+                                /*Wee Teck Zong [12.16.2020]
+                                - Added new filter through pulling unique year from database
+                                 */
+                                foreach ($DBData_rsUniqueYear as $row_DBData_rsUniqueYear)
+                                {
+                                  if(isset($_POST["filter_ProjectYear"]) && $_POST["filter_ProjectYear"] == $row_DBData_rsUniqueYear["year"]){
+                                      echo "<option selected value='".$row_DBData_rsUniqueYear["year"]."'>".$row_DBData_rsUniqueYear["year"]."</option>";
+                                  }else{
+                                      echo "<option value='".$row_DBData_rsUniqueYear["year"]."'>".$row_DBData_rsUniqueYear["year"]."</option>";
+                                  }
+
+                                }
+                                /*Wee Teck Zong [12.16.2020]
+                                - Remove hardcoded filter dropdownlist for year added new filter through pulling unique year from database
+                                 */
+
+                               /*
                                 $CurrentYear = sprintf("%02d", substr(date("Y"), -2));
                                 $LastestYear = sprintf("%02d", substr(date("Y"), -2));
                                 $EarlistYear = $CurrentYear - 10;
@@ -357,7 +542,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                                     }else{
                                         echo "<option value='".$i."'>".$i."</option>";
                                     }
-                                }
+                                }*/
                                 ?>
                             </select>
                         </td>
@@ -421,10 +606,62 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                             </select>
                         </td>
                         <td colspan="2" style="text-align:right;">
-                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearch : '' ?>" placeholder="e.g'Web' or 'SCSE19-0553' " />
-                            <input type="submit" value="Search" title="Search for a project" class="bt"/>
+                            <input type="search" id="filter_Search" name="search" value="<?php echo isset($_POST['search']) ?  $cleanedSearchTitle : '' ?>" placeholder="e.g'Web' or 'SCSE19-0553' " />
+                            <input type="submit" value="Search" title="Search for a project" name="click" class="bt"/>
                         </td>
                     </tr>
+
+                    <!-- Wee Teck Zong [12.16.2020]
+                      - Add Filter Exam Year Dropdownlist that pulls unique rows from database
+                    -->
+                    <tr>
+                        <td >
+                            <b>Exam Year</b>
+                        </td>
+                        <td colspan="3">
+                            <select id="filter_ExamYear" name="filter_ExamYear" onchange="this.form.submit()">
+                                <option value="">SELECT</option>
+                                <?php
+
+                                foreach ($DBData_rsUniqueExamYear as $row_DBData_rsUniqueExamYear)
+                                {
+                                  if(isset($_POST["filter_ExamYear"]) && $_POST["filter_ExamYear"] == $row_DBData_rsUniqueExamYear["examine_year"]){
+                                      echo "<option selected value='".$row_DBData_rsUniqueExamYear["examine_year"]."'>".$row_DBData_rsUniqueExamYear["examine_year"]."</option>";
+                                  }else{
+                                      echo "<option value='".$row_DBData_rsUniqueExamYear["examine_year"]."'>".$row_DBData_rsUniqueExamYear["examine_year"]."</option>";
+                                  }
+
+                                }
+
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <!-- Wee Teck Zong [12.16.2020]
+                      - Add Filter Exam Sem Dropdownlist
+                    -->
+                    <tr>
+                        <td >
+                            <b>Exam Sem</b>
+                        </td>
+                        <td>
+                            <select id="filter_ExamSem" name="filter_ExamSem" onchange="this.form.submit()">
+                                <option value="">SELECT</option>
+                                <?php
+                                for($index = 1; $index<3; $index++){
+                                    if(isset($_POST["filter_ExamSem"]) && $_POST["filter_ExamSem"] == $index){
+                                        echo "<option selected value='".$index."'>".$index."</option>";
+                                    }else{
+                                        echo "<option value='".$index."'>".$index."</option>";
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </td>
+                        <td colspan="3"></td>
+                    </tr>
+
 
                     <td colspan="6"  style="text-align:right">
                         <!--pagination-->
@@ -474,6 +711,7 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         <td>Supervisor</td>
                         <td>Exam Year</td>
                         <td>Exam Sem</td>
+                        <td>Action</td>
                     </tr>
                     <?php
                     foreach ($DBData_rsProject as $key => $value) {
@@ -485,6 +723,12 @@ $queryString_rsStaff = sprintf("&totalRows=%d%s", $Total_RowCount, $queryString_
                         echo "<td class='text-center'>" . $value['Supervisor'] . "</td>";
                         echo "<td class='text-center'>" . $value['examine_year'] . "</td>";
                         echo "<td class='text-center'>" . $value['examine_sem'] . "</td>";
+
+                        /*Wee Teck Zong [12.05.2020]
+                         - Create edit button to edit the project in a new webpage i created called "edit.php"
+                         - ProjectID will be passed to edit.php on click
+                        */
+                        echo "<td class='text-center'> <a href='edit.php?edit=" . $value['project_id'] ."'>edit </a> <br/>";
                         echo "</tr>";
                     }
 

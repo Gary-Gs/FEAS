@@ -229,6 +229,7 @@ function generateTimeSelect($id, $selected, $day) {
             });
         }
 
+
     </script>
     <style>
         .tdTitle {
@@ -309,8 +310,9 @@ function generateTimeSelect($id, $selected, $day) {
                             <td><?php
 								if (array_key_exists($projData['staffid'], $staffList))
 									echo $staffList[$projData['staffid']]->toString();
-								else
+								else{
 									echo $projData['staffid'];
+								}
 								?>
                             </td>
                         </tr>
